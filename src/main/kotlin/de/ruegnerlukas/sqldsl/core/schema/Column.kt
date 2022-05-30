@@ -63,13 +63,13 @@ fun <T> Column<T>.foreignKey(column: Column<*>, onDelete: OnDelete = OnDelete.NO
 }
 
 fun Column<Int>.default(value: Int): Column<Int> {
-    return this.apply { register(DefaultValueConstraint(value, Int::class)) }
+    return this.apply { register(DefaultValueConstraint(SqlValue(value, Int::class))) }
 }
 
 fun Column<String>.default(value: String): Column<String> {
-    return this.apply { register(DefaultValueConstraint(value, String::class)) }
+    return this.apply { register(DefaultValueConstraint(SqlValue(value, String::class))) }
 }
 
 fun Column<Boolean>.default(value: Boolean): Column<Boolean> {
-    return this.apply { register(DefaultValueConstraint(value, Boolean::class)) }
+    return this.apply { register(DefaultValueConstraint(SqlValue(value, Boolean::class))) }
 }
