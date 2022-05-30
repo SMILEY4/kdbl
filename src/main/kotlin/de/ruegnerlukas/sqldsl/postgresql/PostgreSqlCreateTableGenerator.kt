@@ -53,7 +53,7 @@ class PostgreSqlCreateTableGenerator(private val prettyPrint: Boolean) : CreateT
     }
 
 
-    private fun columnDefinition(column: Column<*>): Token {
+    private fun columnDefinition(column: Column<*,*>): Token {
         return ListToken()
             .add(column.getName())
             .add(if(column.hasConstraint<AutoIncrementPseudoConstraint>()) "SERIAL" else mapDataType(column.getDataType()))
@@ -65,7 +65,7 @@ class PostgreSqlCreateTableGenerator(private val prettyPrint: Boolean) : CreateT
     }
 
 
-    private fun columnConstraint(column: Column<*>, constraint: ColumnConstraint): Token {
+    private fun columnConstraint(column: Column<*,*>, constraint: ColumnConstraint): Token {
         return when (constraint) {
             is UniqueConstraint -> StringToken("UNIQUE")
             is NotNullConstraint -> StringToken("NOT NULL")
@@ -148,7 +148,7 @@ class PostgreSqlCreateTableGenerator(private val prettyPrint: Boolean) : CreateT
     }
 
 
-    private fun getPrimaryKeyColumns(table: Table): List<Column<*>> {
+    private fun getPrimaryKeyColumns(table: Table): List<Column<*,*>> {
         return table.getTableColumns().filter { it.hasConstraint<PrimaryKeyConstraint>() }
     }
 

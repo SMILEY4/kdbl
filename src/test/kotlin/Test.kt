@@ -1,5 +1,4 @@
 import de.ruegnerlukas.sqldsl.core.actions.insert.insertInto
-import de.ruegnerlukas.sqldsl.core.actions.select.query
 import de.ruegnerlukas.sqldsl.core.schema.Create
 import de.ruegnerlukas.sqldsl.core.schema.OnDelete
 import de.ruegnerlukas.sqldsl.core.schema.Table
@@ -55,24 +54,33 @@ fun main() {
 		}
 		.build()
 
+//
+//	query {
+//
+//		val contacts = table(Contacts)
+//		val groups = table(Groups, "contactGroups")
+//
+//		from(
+//			contacts,
+//			groups
+//		)
+//		select(
+//			contacts.column(Contacts.email),
+//			groups.column(Groups.name, "groupName")
+//		)
+//
+//		or(
+//			and(
+//				column(contacts.column(Contacts.email)).eq(const("free_shipping")),
+//				column("value") eq const("yes")
+//			),
+//			and(
+//				column("key") eq const("price"),
+//				column("value") eq const("5")
+//			)
+//		)
+//	}
 
-
-	query {
-
-		val contacts = table(Contacts)
-		val groups = table(Groups, "contactGroups")
-
-		from(
-			contacts,
-			groups
-		)
-
-		select(
-			contacts.column(Contacts.email),
-			groups.column(Groups.name)
-		)
-
-	}
 
 
 

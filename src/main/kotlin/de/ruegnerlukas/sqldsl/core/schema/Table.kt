@@ -1,14 +1,18 @@
 package de.ruegnerlukas.sqldsl.core.schema
 
-open class Table(private val name: String, private val create: Create = Create.ALWAYS) {
+import de.ruegnerlukas.sqldsl.core.actions.query.TableRef
 
-	private val columns = mutableListOf<Column<*>>()
+open class Table(private val name: String, private val create: Create = Create.ALWAYS) : TableRef {
 
-	fun register(column: Column<*>) {
+	private val columns = mutableListOf<Column<*, *>>()
+
+	fun register(column: Column<*, *>) {
 		columns.add(column)
 	}
 
-	fun getTableName() = name
+	override fun getTableName() = name
+
+	override fun getTable() = this
 
 	fun getCreatePolicy() = create
 

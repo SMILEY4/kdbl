@@ -33,13 +33,13 @@ object InsertIntoBuilder {
 		fun orDoNothing() = or(OnConflict.IGNORE)
 		fun orDoUpdate() = or(OnConflict.REPLACE)
 
-		fun columns(vararg columns: Column<*>) = ItemsStep(table, onConflict, columns.toList())
-		fun columns(columns: List<Column<*>>) = ItemsStep(table, onConflict, columns)
+		fun columns(vararg columns: Column<*,*>) = ItemsStep(table, onConflict, columns.toList())
+		fun columns(columns: List<Column<*,*>>) = ItemsStep(table, onConflict, columns)
 		fun columnsAll() = ItemsStep(table, onConflict, table.getTableColumns())
 	}
 
 
-	class ItemsStep(private val table: Table, private val onConflict: OnConflict, private val columns: List<Column<*>>) {
+	class ItemsStep(private val table: Table, private val onConflict: OnConflict, private val columns: List<Column<*,*>>) {
 		private val items = mutableListOf<InsertStatement.Item>()
 
 		fun item(item: InsertStatement.Item) = this.apply { items.add(item) }

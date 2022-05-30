@@ -8,27 +8,27 @@ import de.ruegnerlukas.sqldsl.core.schema.Table
 data class InsertStatement(
 	val table: Table,
 	val onConflict: OnConflict,
-	val columns: List<Column<*>>,
+	val columns: List<Column<*,*>>,
 	val items: List<Item>
 ) {
 
 	class Item {
 
-		private val values = mutableMapOf<Column<*>, SqlValue<*>>()
+		private val values = mutableMapOf<Column<*,*>, SqlValue<*>>()
 
-		fun set(column: Column<Int>, value: Int) {
+		fun set(column: Column<Int,*>, value: Int) {
 			values[column] = SqlValue(value, Int::class)
 		}
 
-		fun set(column: Column<String>, value: String) {
+		fun set(column: Column<String,*>, value: String) {
 			values[column] = SqlValue(value, String::class)
 		}
 
-		fun set(column: Column<Boolean>, value: Boolean) {
+		fun set(column: Column<Boolean,*>, value: Boolean) {
 			values[column] = SqlValue(value, Boolean::class)
 		}
 
-		fun <T> get(column: Column<T>) = values[column]
+		fun <T> get(column: Column<T,*>) = values[column]
 
 	}
 
