@@ -54,36 +54,6 @@ fun main() {
 		}
 		.build()
 
-//
-//	query {
-//
-//		val contacts = table(Contacts)
-//		val groups = table(Groups, "contactGroups")
-//
-//		from(
-//			contacts,
-//			groups
-//		)
-//		select(
-//			contacts.column(Contacts.email),
-//			groups.column(Groups.name, "groupName")
-//		)
-//
-//		or(
-//			and(
-//				column(contacts.column(Contacts.email)).eq(const("free_shipping")),
-//				column("value") eq const("yes")
-//			),
-//			and(
-//				column("key") eq const("price"),
-//				column("value") eq const("5")
-//			)
-//		)
-//	}
-
-
-
-
 
 	println("\n\n\n\n=== Sqlite ===")
 

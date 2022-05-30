@@ -15,7 +15,7 @@ open class Column<D, T : Table>(
 		constraints.add(constraint)
 	}
 
-	fun getName() = name
+	override fun getColumnName() = name
 
 	fun getDataType() = type
 

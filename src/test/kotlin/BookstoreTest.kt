@@ -1,38 +1,65 @@
+import de.ruegnerlukas.sqldsl.core.actions.query.Dir
+import de.ruegnerlukas.sqldsl.core.actions.query.alias
+import de.ruegnerlukas.sqldsl.core.actions.query.all
+import de.ruegnerlukas.sqldsl.core.actions.query.count
+import de.ruegnerlukas.sqldsl.core.actions.query.eq
+import de.ruegnerlukas.sqldsl.core.actions.query.get
+import de.ruegnerlukas.sqldsl.core.actions.query.innerJoin
+import de.ruegnerlukas.sqldsl.core.actions.query.order
+import de.ruegnerlukas.sqldsl.core.actions.query.query
+import de.ruegnerlukas.sqldsl.db.CustomerOrder
+import de.ruegnerlukas.sqldsl.db.OrderLine
+import de.ruegnerlukas.sqldsl.sqlite.SQLiteQueryGenerator
+
 // SCHEMA AND EXAMPLES FROM:
 // https://www.databasestar.com/complex-sql-query-example/
 
 fun main() {
 
+	val builder = SQLiteQueryGenerator()
+
 	/*
 	SELECT order_date
 	FROM cust_order;
 	 */
-
-//	query()
-//		.select(CustomerOrder.orderDate)
-//		.from(CustomerOrder)
+	println(
+		builder.build(
+			query()
+				.select(CustomerOrder.orderDate)
+				.from(CustomerOrder)
+				.build()
+		)
+	)
 
 	/*
 	SELECT order_date
 	FROM cust_order
 	ORDER BY order_date ASC;
 	 */
-
-//	query()
-//		.select(CustomerOrder.orderDate)
-//		.from(CustomerOrder)
-//		.orderBy(CustomerOrder.orderDate, Dir.ASC)
+	println(
+		builder.build(
+			query()
+				.select(CustomerOrder.orderDate)
+				.from(CustomerOrder)
+				.orderBy(CustomerOrder.orderDate order Dir.ASC)
+				.build()
+		)
+	)
 
 	/*
 	SELECT order_date, COUNT(*)
 	FROM cust_order
 	ORDER BY order_date ASC;
 	 */
-
-//	query()
-//		.select(CustomerOrder.orderDate, count().alias("count"))
-//		.from(CustomerOrder)
-//		.orderBy(CustomerOrder.orderDate, Dir.ASC)
+	println(
+		builder.build(
+			query()
+				.select(CustomerOrder.orderDate, count().alias("count"))
+				.from(CustomerOrder)
+				.orderBy(CustomerOrder.orderDate order Dir.ASC)
+				.build()
+		)
+	)
 
 	/*
 	SELECT order_date, COUNT(*)
@@ -40,12 +67,16 @@ fun main() {
 	GROUP BY order_date
 	ORDER BY order_date ASC;
 	 */
-
-//	query()
-//		.select(CustomerOrder.orderDate, count().alias("count"))
-//		.from(CustomerOrder)
+	println(
+		builder.build(
+			query()
+				.select(CustomerOrder.orderDate, count().alias("count"))
+				.from(CustomerOrder)
+				.orderBy(CustomerOrder.orderDate order Dir.ASC)
+				.build()
 //		.groupBy(CustomerOrder.orderDate)
-//		.orderBy(CustomerOrder.orderDate, Dir.ASC)
+		)
+	)
 
 	/*
 	SELECT DATE_FORMAT(order_date, '%Y-%m-%d'), COUNT(*)
@@ -67,21 +98,28 @@ fun main() {
 	SELECT *
 	FROM cust_order;
 	 */
-
-//	query()
-//		.select(all())
-//		.from(CustomerOrder)
-
+	println(
+		builder.build(
+			query()
+				.select(all())
+				.from(CustomerOrder)
+				.build()
+		)
+	)
 	/*
 	SELECT *
 	FROM order_line
 	WHERE order_id = 3;
 	 */
-
-//	query()
-//		.select(all())
-//		.from(CustomerOrder)
+	println(
+		builder.build(
+			query()
+				.select(all())
+				.from(CustomerOrder)
+				.build()
 //		.where(CustomerOrder.orderId eq const("3"))
+		)
+	)
 
 	/*
 	SELECT
@@ -92,20 +130,23 @@ fun main() {
 	GROUP BY co.order_date
 	ORDER BY co.order_date ASC;
 	 */
-
-//	val co = CustomerOrder.alias("co")
-//	val ol = OrderLine.alias("ol")
-//
-//	query()
-//		.select(
-//			co.col(CustomerOrder.orderDate, "order_day"),
-//			count(co.col(CustomerOrder.orderId), "num_orders")
-//		)
-//		.from(
-//			innerJoin(co, ol, co.col(CustomerOrder.orderId) eq ol.col(OrderLine.orderId))
-//		)
+	val co = CustomerOrder.alias("co")
+	val ol = OrderLine.alias("ol")
+	println(
+		builder.build(
+			query()
+				.select(
+					co[CustomerOrder.orderDate].alias("order_day"),
+					count(co[CustomerOrder.orderId]).alias("num_orders")
+				)
+				.from(
+					innerJoin(co, ol, co[CustomerOrder.orderId] eq ol[OrderLine.orderId])
+				)
+				.orderBy(co[CustomerOrder.orderDate] order Dir.ASC)
+				.build()
 //		.groupBy(co.col(CustomerOrder.orderDate))
-//		.orderBy(co.col(CustomerOrder.orderDate), Dir.ASC)
+		)
+	)
 
 	/*
 	SELECT
@@ -115,19 +156,22 @@ fun main() {
 		INNER JOIN order_line ol ON co.order_id = ol.order_id
 	WHERE co.order_date = '2018-07-10';
 	 */
-
-//	query()
-//		.select(
-//			co.all(),
-//			ol.all()
-//		)
-//		.from(
-//			innerJoin(co, ol, co.col(CustomerOrder.orderId) eq ol.col(CustomerOrder.orderId))
-//		)
+	println(
+		builder.build(
+			query()
+				.select(
+					all(co),
+					all(ol)
+				)
+				.from(
+					innerJoin(co, ol, co[CustomerOrder.orderId] eq ol[OrderLine.orderId])
+				)
+				.build()
 //		.where(
 //			co.col(CustomerOrder.orderDate) eq const("2018-07-10")
 //		)
-
+		)
+	)
 }
 
 

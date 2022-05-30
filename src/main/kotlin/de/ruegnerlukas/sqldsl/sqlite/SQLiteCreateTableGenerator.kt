@@ -56,7 +56,7 @@ class SQLiteCreateTableGenerator(private val prettyPrint: Boolean) : CreateTable
 
     private fun columnDefinition(column: Column<*,*>): Token {
         return ListToken()
-            .add(column.getName())
+            .add(column.getColumnName())
             .add(mapDataType(column.getDataType()))
             .then {
                 column.getConstraints().forEach {
@@ -92,7 +92,7 @@ class SQLiteCreateTableGenerator(private val prettyPrint: Boolean) : CreateTable
                 ListToken()
                     .add("REFERENCES")
                     .add(constraint.table.getTableName())
-                    .addIf("(${constraint.column?.getName()})") { constraint.column != null }
+                    .addIf("(${constraint.column?.getColumnName()})") { constraint.column != null }
                     .addIf("ON DELETE ${mapOnDelete(constraint.onDelete)}") { constraint.onDelete !== OnDelete.NO_ACTION }
                     .addIf("ON UPDATE ${mapOnUpdate(constraint.onUpdate)}") { constraint.onUpdate !== OnUpdate.NO_ACTION }
             }
@@ -102,7 +102,7 @@ class SQLiteCreateTableGenerator(private val prettyPrint: Boolean) : CreateTable
                     .add(constraint.getValueAsString())
             }
             is AutoIncrementPseudoConstraint -> NoOpToken()
-            else -> throw Exception("Unknown sqlite-column-constraint: $constraint for column ${column.getName()}")
+            else -> throw Exception("Unknown sqlite-column-constraint: $constraint for column ${column.getColumnName()}")
         }
     }
 
@@ -114,7 +114,7 @@ class SQLiteCreateTableGenerator(private val prettyPrint: Boolean) : CreateTable
                 .add(
                     GroupToken(
                         CsvListToken(
-                            getPrimaryKeyColumns(table).map { StringToken(it.getName()) }
+                            getPrimaryKeyColumns(table).map { StringToken(it.getColumnName()) }
                         )
                     )
                 )

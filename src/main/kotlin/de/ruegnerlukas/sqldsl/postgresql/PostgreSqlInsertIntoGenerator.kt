@@ -19,7 +19,7 @@ class PostgreSqlInsertIntoGenerator : InsertIntoGenerator {
 			.add(
 				GroupToken(
 					CsvListToken(
-						stmt.columns.map { it.getName() }.map { StringToken(it) }
+						stmt.columns.map { it.getColumnName() }.map { StringToken(it) }
 					),
 				)
 			)
