@@ -5,12 +5,12 @@ import de.ruegnerlukas.sqldsl.core.schema.OnConflict
 import de.ruegnerlukas.sqldsl.core.schema.Table
 
 
-fun insertInto() = InsertInto.start()
+fun insertInto() = InsertIntoBuilder.start()
 
-fun insertInto(table: Table) = InsertInto.start(table)
+fun insertInto(table: Table) = InsertIntoBuilder.start(table)
 
 
-object InsertInto {
+object InsertIntoBuilder {
 
 	fun start() = TableStep()
 	fun start(table: Table) = ColumnsStep(table)

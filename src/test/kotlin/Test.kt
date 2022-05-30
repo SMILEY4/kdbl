@@ -1,6 +1,6 @@
 import de.ruegnerlukas.sqldsl.core.actions.insert.insertInto
+import de.ruegnerlukas.sqldsl.core.actions.select.query
 import de.ruegnerlukas.sqldsl.core.schema.Create
-import de.ruegnerlukas.sqldsl.core.schema.OnConflict
 import de.ruegnerlukas.sqldsl.core.schema.OnDelete
 import de.ruegnerlukas.sqldsl.core.schema.Table
 import de.ruegnerlukas.sqldsl.core.schema.autoIncrement
@@ -54,6 +54,25 @@ fun main() {
 			set(Contacts.phone, "+0123 54321")
 		}
 		.build()
+
+
+
+	query {
+
+		val contacts = table(Contacts)
+		val groups = table(Groups, "contactGroups")
+
+		from(
+			contacts,
+			groups
+		)
+
+		select(
+			contacts.column(Contacts.email),
+			groups.column(Groups.name)
+		)
+
+	}
 
 
 
