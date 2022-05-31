@@ -1,0 +1,147 @@
+/* VIEW IN https://www.bottlecaps.de/rr/ui */
+
+
+/* REFS */
+/* https://forcedotcom.github.io/phoenix/index.html#table_expression */
+/* http://www.h2database.com/html/grammar.html */
+/* https://www.researchgate.net/figure/The-base-SQL-grammar-before-augmentation-with-schema-specific-and-utterance-specific_fig1_333564231 */
+/* https://www.cockroachlabs.com/docs/stable/sql-grammar.html */
+/* https://www.sqlite.org/lang_select.html */
+
+
+
+
+Query ::= SelectStatement FromStatement WhereStatement? GroupByStatement? HavingStatement? OrderByStatement? LimitStatement?
+
+
+
+
+/* SELECT */
+
+SelectStatement ::= SELECT DISTINCT? SelectExpression ( ',' SelectExpression )*
+
+SelectExpression ::= ColumnSelectExpression | WildcardSelectExpression
+
+ColumnSelectExpression ::= (ColumnRef | Function) AS columnAlias
+
+WildcardSelectExpression ::= (tableName '.' )? '*'
+
+
+
+
+/* FROM */
+
+FromStatement ::= FROM FromExpression ( ',' FromExpression )*
+
+FromExpression ::= TableFromExpression | QueryFromExpression | JoinFromExpression
+
+TableFromExpression ::= tableName (AS tableAlias)?
+
+QueryFromExpression ::= '(' Query ')' AS tableAlias
+
+JoinFromExpression ::= '(' FromExpression JoinOperator FromExpression JoinConstraint ')' AS tableAlias
+
+JoinOperator ::= LEFT JOIN | INNER JOIN | CROSS JOIN
+
+JoinConstraint ::= ConditionJoinConstraint | UsingJoinConstraint
+
+ConditionJoinConstraint ::= ON Expression
+
+UsingJoinConstraint ::= USING '(' ColumnRef (',' ColumnRef )* ')'
+
+
+
+
+/* WHERE */
+
+WhereStatement ::= WHERE Expression
+
+
+
+
+/* GROUP BY */
+
+GroupByStatement ::= GROUP BY ColumnRef (',' ColumnRef)*
+
+
+
+
+/* HAVING */
+
+HavingStatement ::= HAVING Expression
+
+
+
+
+/* ORDER BY */
+
+OrderByStatement ::= ORDER BY OrderEntry ( ',' OrderEntry )*
+
+OrderEntry ::= ColumnRef (ASC | DESC)
+
+
+
+
+/* LIMIT */
+
+LimitStatement ::= LIMIT value
+
+
+
+
+/* MISC */
+
+ColumnRef ::= (tableName '.')? columnName
+
+Function ::= CountFunc | CountDistinctFunc | CountAllFunc | AvgFunc | MinFunc | MaxFunc | SumFunc | '...'
+
+CountFunc ::= COUNT '(' Expression ')'
+
+CountDistinctFunc ::= COUNT '(' DISTINCT Expression ')'
+
+CountAllFunc ::= COUNT '(' '*' ')'
+
+AvgFunc ::= AVG '(' Expression ')'
+
+MinFunc ::= MIN '(' Expression ')'
+
+MaxFunc ::= MAX '(' Expression ')'
+
+SumFunc ::= SUM '(' Expression ')'
+
+
+/* CONDITIONS, EXPRESSIONS */
+
+Expression ::= LiteralValue | Condition | Operation | Query
+
+
+
+Condition ::= NotCondition | IsNullCondition | AndCondition | OrCondition | LikeCondition | BetweenCondition | '...'
+
+NotCondition ::= NOT Expression
+
+IsNullCondition ::= IS NULL Expression
+
+AndCondition ::= Expression AND Expression
+
+OrCondition ::= Expression OR Expression
+
+LikeCondition ::= Expression LIKE stringValue
+
+BetweenCondition ::= Expression BETWEEN Expression AND Expression
+
+
+
+Operation ::= Function | SubOperation | AddOperation | MulOperation | '...'
+
+SubOperation ::= Expression '-' Expression
+
+AddOperation ::= Expression '+' Expression
+
+MulOperation ::= Expression '*' Expression
+
+
+
+LiteralValue ::= ColumnRef | intValue | stringValue | booleanValue | NULL | CURRENT_TIMESTAMP | ( '(' LiteralValue (',' LiteralValue)* ')' ) | '...'
+
+
