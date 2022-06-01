@@ -7,6 +7,7 @@ class TableRefContainer : TableRef {
 	private var content: QueryFromExpression? = null
 
 	fun fill(query: QueryFromExpression): TableRef {
+		this.content = query
 		return this
 	}
 

@@ -18,7 +18,7 @@ class PostFromQueryBuilder(
 	private val fromStatement: FromStatement
 ) {
 
-	fun where(expression: Expression): PostWhereQueryBuilder {
+	fun where(expression: Expression<*>): PostWhereQueryBuilder {
 		return PostWhereQueryBuilder(selectStatement, fromStatement, WhereStatement(expression))
 	}
 
@@ -73,7 +73,7 @@ class PostGroupByQueryBuilder(
 	private val groupByStatement: GroupByStatement
 ) {
 
-	fun having(expression: Expression): PostHavingQueryBuilder {
+	fun having(expression: Expression<*>): PostHavingQueryBuilder {
 		return PostHavingQueryBuilder(selectStatement, fromStatement, whereStatement, groupByStatement, HavingStatement(expression))
 	}
 

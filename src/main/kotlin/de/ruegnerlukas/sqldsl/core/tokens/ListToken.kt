@@ -16,11 +16,21 @@ class ListToken(tokens: List<Token> = listOf(), private val newLines: Boolean = 
 		return this
 	}
 
+	fun addIf(condition: Boolean, token: String): ListToken {
+		if (condition) {
+			tokens.add(StringToken(token))
+		}
+		return this
+	}
+
+
 	fun add(token: String): ListToken {
 		tokens.add(StringToken(token))
 		return this
 	}
 
+
+	@Deprecated("dont put token in normal arg -> get evaluated no matter condition")
 	fun addIf(token: String, condition: () -> Boolean): ListToken {
 		if (condition()) {
 			tokens.add(StringToken(token))

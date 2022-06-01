@@ -22,13 +22,3 @@ class QueryBuilder {
 
 }
 
-
-fun all(): AllColumnsSelectExpression {
-	return AllColumnsSelectExpression()
-}
-
-fun all(table: TableRef): AllColumnsSelectExpression {
-	return AllColumnsSelectExpression()
-}
-
-

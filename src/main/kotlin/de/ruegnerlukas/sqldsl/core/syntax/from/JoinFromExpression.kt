@@ -1,6 +1,7 @@
 package de.ruegnerlukas.sqldsl.core.syntax.from
 
 import de.ruegnerlukas.sqldsl.core.syntax.expression.Expression
+import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.Condition
 import de.ruegnerlukas.sqldsl.core.syntax.refs.column.ColumnRef
 import de.ruegnerlukas.sqldsl.core.syntax.refs.table.TableRef
 
@@ -19,7 +20,7 @@ enum class JoinOp {
 
 interface JoinConstraint
 
-class ConditionJoinConstraint(val expression: Expression) : JoinConstraint
+class ConditionJoinConstraint(val expression: Expression<*>) : JoinConstraint
 
 class UsingJoinConstraint(val columns: List<ColumnRef<*, *>>) : JoinConstraint
 
@@ -40,7 +41,7 @@ class JoinBuilder(private val op: JoinOp) {
 
 	private var left: FromExpression? = null
 	private var right: FromExpression? = null
-	private var on: Expression? = null
+	private var on: Condition? = null
 	private var using: List<ColumnRef<*, *>>? = null
 
 	fun left(table: TableRef) {
@@ -51,8 +52,8 @@ class JoinBuilder(private val op: JoinOp) {
 		this.right = table
 	}
 
-	fun on(expression: Expression) {
-		this.on = expression
+	fun on(condition: Condition) {
+		this.on = condition
 	}
 
 	fun using(vararg columns: ColumnRef<*, *>) {

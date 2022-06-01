@@ -1,11 +1,9 @@
-import de.ruegnerlukas.sqldsl.core.builders.query.all
 import de.ruegnerlukas.sqldsl.core.builders.query.query
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.EqualCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.GreaterThanCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.LessThanCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.OrCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.IntLiteralValue
-import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.StringLiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.SubOperation
 import de.ruegnerlukas.sqldsl.core.syntax.from.alias
 import de.ruegnerlukas.sqldsl.core.syntax.from.joinLeft
@@ -17,10 +15,11 @@ import de.ruegnerlukas.sqldsl.core.syntax.refs.column.get
 import de.ruegnerlukas.sqldsl.core.syntax.refs.table.TableRefContainer
 import de.ruegnerlukas.sqldsl.core.syntax.refs.table.alias
 import de.ruegnerlukas.sqldsl.core.syntax.select.CountAllSelectExpression
+import de.ruegnerlukas.sqldsl.core.syntax.select.all
 import de.ruegnerlukas.sqldsl.db.Book
 import de.ruegnerlukas.sqldsl.db.BookLanguage
 import de.ruegnerlukas.sqldsl.db.CustomerOrder
-import de.ruegnerlukas.sqldsl.sqlite.NewSqliteQueryGenerator
+import de.ruegnerlukas.sqldsl.sqlite.SQLiteQueryGenerator
 
 fun main() {
 
@@ -31,11 +30,11 @@ fun main() {
 	val query = query()
 		.select(
 			all(),
-			all(Book),
+			Book,
 			Book.title,
 			tblOrders[CustomerOrder.orderId],
 			tblOrders[CustomerOrder.orderDate].alias("date"),
-			colCount.fill(CountAllSelectExpression())
+			colCount.fill(CountAllSelectExpression("colCount"))
 		)
 		.from(
 			Book,
@@ -86,8 +85,9 @@ fun main() {
 		.limit(50)
 		.build()
 
-	println(
-		NewSqliteQueryGenerator().build(query)
+
+	print(
+		SQLiteQueryGenerator.build(query)
 	)
 
 }

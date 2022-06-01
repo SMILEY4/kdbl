@@ -8,6 +8,7 @@ class ColumnRefContainer<D> : ColumnRef<D, UnknownTable> {
 	private var content: FunctionSelectExpression? = null
 
 	fun fill(func: FunctionSelectExpression): ColumnRef<D, UnknownTable> {
+		this.content = func
 		return this
 	}
 

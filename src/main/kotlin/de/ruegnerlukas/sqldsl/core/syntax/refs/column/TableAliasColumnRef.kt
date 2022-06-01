@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.core.syntax.refs.column
 
-import de.ruegnerlukas.sqldsl.core.syntax.refs.AliasTableRef
+import de.ruegnerlukas.sqldsl.core.syntax.refs.table.AliasTableRef
 import de.ruegnerlukas.sqldsl.core.schema.Column
 import de.ruegnerlukas.sqldsl.core.schema.Table
 
