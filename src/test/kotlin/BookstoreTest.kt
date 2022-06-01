@@ -4,8 +4,9 @@ import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.EqualCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.GreaterThanCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.LessThanCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.OrCondition
+import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.IntLiteralValue
+import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.StringLiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.SubOperation
-import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.literal
 import de.ruegnerlukas.sqldsl.core.syntax.from.alias
 import de.ruegnerlukas.sqldsl.core.syntax.from.joinLeft
 import de.ruegnerlukas.sqldsl.core.syntax.refs.column.ColumnRefContainer
@@ -61,11 +62,11 @@ fun main() {
 			OrCondition(
 				EqualCondition(
 					Book.publisherId,
-					literal(42)
+					IntLiteralValue(42)
 				),
 				LessThanCondition(
 					tblOrders[CustomerOrder.orderDate],
-					literal("01.01.1990")
+					IntLiteralValue(1990)
 				)
 			)
 		)
@@ -74,8 +75,8 @@ fun main() {
 		)
 		.having(
 			GreaterThanCondition(
-				SubOperation(colCount, literal(2)),
-				literal(8)
+				SubOperation(colCount, IntLiteralValue(2)),
+				IntLiteralValue(8)
 			)
 		)
 		.orderBy(

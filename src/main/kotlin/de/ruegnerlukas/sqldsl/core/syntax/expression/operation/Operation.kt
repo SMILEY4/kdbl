@@ -2,24 +2,25 @@ package de.ruegnerlukas.sqldsl.core.syntax.expression.operation
 
 import de.ruegnerlukas.sqldsl.core.syntax.expression.Expression
 
-interface Operation: Expression
-
-class SubOperation(val left: Expression, val right: Expression): Operation
-
-class AddOperation(val left: Expression, val right: Expression): Operation
-
-class MulOperation(val left: Expression, val right: Expression): Operation
+/**
+ * An expression that represents an (arithmetic) operation that results in a new value
+ */
+interface Operation<T> : Expression<T>
 
 
+/**
+ * "left - right"
+ */
+class SubOperation(val left: Expression<Int>, val right: Expression<Int>) : Operation<Int>
 
-fun sub(left: Expression, right: Expression): Operation {
-    return SubOperation(left, right)
-}
 
-fun add(left: Expression, right: Expression): Operation {
-    return AddOperation(left, right)
-}
+/**
+ * left + right
+ */
+class AddOperation(val left: Expression<Int>, val right: Expression<Int>) : Operation<Int>
 
-fun mul(left: Expression, right: Expression): Operation {
-    return MulOperation(left, right)
-}
+
+/**
+ * left * right
+ */
+class MulOperation(val left: Expression<Int>, val right: Expression<Int>) : Operation<Int>

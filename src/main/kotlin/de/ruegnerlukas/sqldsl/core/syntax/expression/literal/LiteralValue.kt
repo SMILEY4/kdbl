@@ -2,45 +2,43 @@ package de.ruegnerlukas.sqldsl.core.syntax.expression.literal
 
 import de.ruegnerlukas.sqldsl.core.syntax.expression.Expression
 
-interface LiteralValue: Expression
-
-class IntLiteralValue(val value: Int) : LiteralValue
-
-class StringLiteralValue(val value: String) : LiteralValue
-
-class BooleanLiteralValue(val value: Boolean) : LiteralValue
-
-class NullLiteralValue : LiteralValue
-
-class CurrentTimestampLiteralValue : LiteralValue
-
-class ListLiteralValue(val literals: List<LiteralValue>) : LiteralValue
+/**
+ * An expression that represents a fixed value
+ */
+interface LiteralValue<T> : Expression<T>
 
 
-fun literal(value: Int): LiteralValue {
-    return IntLiteralValue(value)
-}
+/**
+ * A fixed integer value
+ */
+class IntLiteralValue(val value: Int) : LiteralValue<Int>
 
-fun literal(value: String): LiteralValue {
-    return StringLiteralValue(value)
-}
 
-fun literal(value: Boolean): LiteralValue {
-    return BooleanLiteralValue(value)
-}
+/**
+ * A fixed string value
+ */
+class StringLiteralValue(val value: String) : LiteralValue<String>
 
-fun literalNull(): LiteralValue {
-    return NullLiteralValue()
-}
 
-fun literalCurrentTimestamp(): LiteralValue {
-    return CurrentTimestampLiteralValue()
-}
+/**
+ * A fixed boolean value
+ */
+class BooleanLiteralValue(val value: Boolean) : LiteralValue<Boolean>
 
-fun literalList(vararg literals: LiteralValue): LiteralValue {
-    return ListLiteralValue(literals.toList())
-}
 
-fun literalList(literals: List<LiteralValue>): LiteralValue {
-    return ListLiteralValue(literals)
-}
+/**
+ * NULL
+ */
+class NullLiteralValue : LiteralValue<Any>
+
+
+/**
+ * the current timestamp
+ */
+class CurrentTimestampLiteralValue : LiteralValue<Int>
+
+
+/**
+ * A fixed list of other literals
+ */
+class ListLiteralValue<T>(val literals: List<LiteralValue<T>>) : LiteralValue<Any>

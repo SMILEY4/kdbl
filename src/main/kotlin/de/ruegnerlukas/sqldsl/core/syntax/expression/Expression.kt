@@ -1,3 +1,6 @@
 package de.ruegnerlukas.sqldsl.core.syntax.expression
 
-interface Expression
+/**
+ * Represents a generic expression
+ */
+interface Expression<T>
