@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.core.grammar.statements
 
-import de.ruegnerlukas.sqldsl.core.grammar.refs.ColumnRef
+import de.ruegnerlukas.sqldsl.core.grammar.refs.column.ColumnRef
 
 class OrderByStatement(val entries: List<OrderByEntry>)
 

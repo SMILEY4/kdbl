@@ -1,4 +1,6 @@
-package de.ruegnerlukas.sqldsl.core.grammar.expression
+package de.ruegnerlukas.sqldsl.core.grammar.expression.operation
+
+import de.ruegnerlukas.sqldsl.core.grammar.expression.Expression
 
 interface Operation: Expression
 

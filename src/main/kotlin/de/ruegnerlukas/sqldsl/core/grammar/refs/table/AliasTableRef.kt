@@ -1,11 +1,6 @@
-package de.ruegnerlukas.sqldsl.core.grammar.refs
+package de.ruegnerlukas.sqldsl.core.grammar.refs.table
 
-import de.ruegnerlukas.sqldsl.core.grammar.from.FromExpression
 import de.ruegnerlukas.sqldsl.core.schema.Table
-
-interface TableRef : FromExpression
-
-interface DirectTableRef : TableRef
 
 class AliasTableRef<T : Table>(val table: T, val alias: String) : TableRef
 

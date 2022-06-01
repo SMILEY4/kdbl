@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.core.builders.query
 
-import de.ruegnerlukas.sqldsl.core.grammar.refs.TableRef
+import de.ruegnerlukas.sqldsl.core.grammar.refs.table.TableRef
 import de.ruegnerlukas.sqldsl.core.grammar.select.AllColumnsSelectExpression
 import de.ruegnerlukas.sqldsl.core.grammar.select.SelectExpression
 import de.ruegnerlukas.sqldsl.core.grammar.statements.SelectStatement

@@ -1,6 +1,6 @@
-package de.ruegnerlukas.sqldsl.core.grammar.expression
+package de.ruegnerlukas.sqldsl.core.grammar.expression.literal
 
-import de.ruegnerlukas.sqldsl.core.schema.Column
+import de.ruegnerlukas.sqldsl.core.grammar.expression.Expression
 
 interface LiteralValue: Expression
 

@@ -5,9 +5,9 @@ import de.ruegnerlukas.sqldsl.core.grammar.from.FromExpression
 import de.ruegnerlukas.sqldsl.core.grammar.from.JoinFromExpression
 import de.ruegnerlukas.sqldsl.core.grammar.from.QueryFromExpression
 import de.ruegnerlukas.sqldsl.core.grammar.from.TableFromExpression
-import de.ruegnerlukas.sqldsl.core.grammar.join.ConditionJoinConstraint
-import de.ruegnerlukas.sqldsl.core.grammar.join.JoinOp
-import de.ruegnerlukas.sqldsl.core.grammar.join.UsingJoinConstraint
+import de.ruegnerlukas.sqldsl.core.grammar.from.join.ConditionJoinConstraint
+import de.ruegnerlukas.sqldsl.core.grammar.from.join.JoinOp
+import de.ruegnerlukas.sqldsl.core.grammar.from.join.UsingJoinConstraint
 import de.ruegnerlukas.sqldsl.core.grammar.select.AliasSelectExpression
 import de.ruegnerlukas.sqldsl.core.grammar.select.AllColumnsSelectExpression
 import de.ruegnerlukas.sqldsl.core.grammar.select.SelectExpression

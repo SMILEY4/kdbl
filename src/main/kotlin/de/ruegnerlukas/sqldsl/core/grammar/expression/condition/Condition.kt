@@ -1,4 +1,6 @@
-package de.ruegnerlukas.sqldsl.core.grammar.expression
+package de.ruegnerlukas.sqldsl.core.grammar.expression.condition
+
+import de.ruegnerlukas.sqldsl.core.grammar.expression.Expression
 
 interface Condition : Expression
 
@@ -11,3 +13,4 @@ class LikeCondition(val expression: Expression, val pattern: String) : Condition
 class BetweenCondition(val expression: Expression, val min: Expression, val max: Expression) : Condition
 class EqualCondition(val left: Expression, val right: Expression) : Condition
 class LessThanCondition(val left: Expression, val right: Expression) : Condition
+class GreaterThanCondition(val left: Expression, val right: Expression) : Condition

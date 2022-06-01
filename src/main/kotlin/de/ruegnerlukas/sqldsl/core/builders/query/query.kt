@@ -1,7 +1,7 @@
 package de.ruegnerlukas.sqldsl.core.builders.query
 
 import de.ruegnerlukas.sqldsl.core.grammar.expression.Expression
-import de.ruegnerlukas.sqldsl.core.grammar.refs.ColumnRef
+import de.ruegnerlukas.sqldsl.core.grammar.refs.column.ColumnRef
 import de.ruegnerlukas.sqldsl.core.grammar.statements.FromStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.GroupByStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.HavingStatement

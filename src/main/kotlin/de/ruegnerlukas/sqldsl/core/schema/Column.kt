@@ -1,12 +1,12 @@
 package de.ruegnerlukas.sqldsl.core.schema
 
-import de.ruegnerlukas.sqldsl.core.grammar.refs.DirectColumnRef
+import de.ruegnerlukas.sqldsl.core.grammar.refs.column.DirectColumnRef
 
 open class Column<D, T : Table>(
 	private val parentTable: T,
 	private val name: String,
 	private val type: DataType
-): DirectColumnRef<D,T> {
+): DirectColumnRef<D, T> {
 
 	private val constraints = mutableListOf<ColumnConstraint>()
 
