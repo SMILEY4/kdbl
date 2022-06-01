@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.core.schema
 
-import de.ruegnerlukas.sqldsl.core.grammar.refs.table.DirectTableRef
+import de.ruegnerlukas.sqldsl.core.syntax.refs.table.DirectTableRef
 
 
 open class Table(

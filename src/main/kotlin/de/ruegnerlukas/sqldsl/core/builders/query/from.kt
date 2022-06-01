@@ -1,8 +1,8 @@
 package de.ruegnerlukas.sqldsl.core.builders.query
 
-import de.ruegnerlukas.sqldsl.core.grammar.from.FromExpression
-import de.ruegnerlukas.sqldsl.core.grammar.statements.FromStatement
-import de.ruegnerlukas.sqldsl.core.grammar.statements.SelectStatement
+import de.ruegnerlukas.sqldsl.core.syntax.from.FromExpression
+import de.ruegnerlukas.sqldsl.core.syntax.statements.FromStatement
+import de.ruegnerlukas.sqldsl.core.syntax.statements.SelectStatement
 
 
 class PostSelectQueryBuilder(private val selectStatement: SelectStatement) {

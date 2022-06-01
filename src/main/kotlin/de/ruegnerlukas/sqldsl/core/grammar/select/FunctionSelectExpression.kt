@@ -1,5 +1,0 @@
-package de.ruegnerlukas.sqldsl.core.grammar.select
-
-interface FunctionSelectExpression: SelectExpression
-
-class CountAllSelectExpression: FunctionSelectExpression

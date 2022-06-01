@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.core.schema
 
-import de.ruegnerlukas.sqldsl.core.grammar.refs.column.DirectColumnRef
+import de.ruegnerlukas.sqldsl.core.syntax.refs.column.DirectColumnRef
 
 open class Column<D, T : Table>(
 	private val parentTable: T,

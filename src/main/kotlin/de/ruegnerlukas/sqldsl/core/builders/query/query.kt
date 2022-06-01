@@ -1,16 +1,16 @@
 package de.ruegnerlukas.sqldsl.core.builders.query
 
-import de.ruegnerlukas.sqldsl.core.grammar.expression.Expression
-import de.ruegnerlukas.sqldsl.core.grammar.refs.column.ColumnRef
-import de.ruegnerlukas.sqldsl.core.grammar.statements.FromStatement
-import de.ruegnerlukas.sqldsl.core.grammar.statements.GroupByStatement
-import de.ruegnerlukas.sqldsl.core.grammar.statements.HavingStatement
-import de.ruegnerlukas.sqldsl.core.grammar.statements.LimitStatement
-import de.ruegnerlukas.sqldsl.core.grammar.statements.OrderByEntry
-import de.ruegnerlukas.sqldsl.core.grammar.statements.OrderByStatement
-import de.ruegnerlukas.sqldsl.core.grammar.statements.QueryStatement
-import de.ruegnerlukas.sqldsl.core.grammar.statements.SelectStatement
-import de.ruegnerlukas.sqldsl.core.grammar.statements.WhereStatement
+import de.ruegnerlukas.sqldsl.core.syntax.expression.Expression
+import de.ruegnerlukas.sqldsl.core.syntax.refs.column.ColumnRef
+import de.ruegnerlukas.sqldsl.core.syntax.statements.FromStatement
+import de.ruegnerlukas.sqldsl.core.syntax.statements.GroupByStatement
+import de.ruegnerlukas.sqldsl.core.syntax.statements.HavingStatement
+import de.ruegnerlukas.sqldsl.core.syntax.statements.LimitStatement
+import de.ruegnerlukas.sqldsl.core.syntax.statements.OrderByEntry
+import de.ruegnerlukas.sqldsl.core.syntax.statements.OrderByStatement
+import de.ruegnerlukas.sqldsl.core.syntax.statements.QueryStatement
+import de.ruegnerlukas.sqldsl.core.syntax.statements.SelectStatement
+import de.ruegnerlukas.sqldsl.core.syntax.statements.WhereStatement
 
 
 class PostFromQueryBuilder(
