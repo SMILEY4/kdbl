@@ -1,8 +1,12 @@
 package de.ruegnerlukas.sqldsl.core.schema
 
-import de.ruegnerlukas.sqldsl.core.actions.query.TableRef
+import de.ruegnerlukas.sqldsl.core.grammar.refs.DirectTableRef
 
-open class Table(private val name: String, private val create: Create = Create.ALWAYS) : TableRef {
+
+open class Table(
+	private val name: String,
+	private val create: Create = Create.ALWAYS
+): DirectTableRef {
 
 	private val columns = mutableListOf<Column<*, *>>()
 
@@ -10,9 +14,7 @@ open class Table(private val name: String, private val create: Create = Create.A
 		columns.add(column)
 	}
 
-	override fun getTableName() = name
-
-	override fun getTable() = this
+	fun getTableName() = name
 
 	fun getCreatePolicy() = create
 

@@ -8,9 +8,8 @@ import de.ruegnerlukas.sqldsl.core.grammar.from.TableFromExpression
 import de.ruegnerlukas.sqldsl.core.grammar.join.ConditionJoinConstraint
 import de.ruegnerlukas.sqldsl.core.grammar.join.JoinOp
 import de.ruegnerlukas.sqldsl.core.grammar.join.UsingJoinConstraint
-import de.ruegnerlukas.sqldsl.core.grammar.select.AllColumnsOfSelectExpression
+import de.ruegnerlukas.sqldsl.core.grammar.select.AliasSelectExpression
 import de.ruegnerlukas.sqldsl.core.grammar.select.AllColumnsSelectExpression
-import de.ruegnerlukas.sqldsl.core.grammar.select.ColumnSelectExpression
 import de.ruegnerlukas.sqldsl.core.grammar.select.SelectExpression
 import de.ruegnerlukas.sqldsl.core.grammar.statements.Dir
 import de.ruegnerlukas.sqldsl.core.grammar.statements.FromStatement
@@ -21,6 +20,8 @@ import de.ruegnerlukas.sqldsl.core.grammar.statements.OrderByStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.QueryStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.SelectStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.WhereStatement
+import de.ruegnerlukas.sqldsl.core.schema.Column
+import de.ruegnerlukas.sqldsl.core.schema.Table
 import de.ruegnerlukas.sqldsl.core.tokens.CsvListToken
 import de.ruegnerlukas.sqldsl.core.tokens.ListToken
 import de.ruegnerlukas.sqldsl.core.tokens.StringToken
@@ -56,8 +57,9 @@ class NewSqliteQueryGenerator {
 	private fun selectExpression(expression: SelectExpression): Token {
 		return when (expression) {
 			is AllColumnsSelectExpression -> StringToken("*")
-			is AllColumnsOfSelectExpression -> StringToken("${expression.table.getTableName()}.*")
-			is ColumnSelectExpression -> StringToken("${expression.column.getTableName()}.${expression.column.getColumnName()} AS ${expression.alias}")
+			is Table -> StringToken("${expression.getTableName()}.*")
+			is Column<*, *> -> StringToken(expression.getColumnName())
+			is AliasSelectExpression -> StringToken("${selectExpression(expression.source)} AS ${expression.alias}")
 			else -> {
 				throw IllegalStateException("Unknown SelectExpression: $expression")
 			}

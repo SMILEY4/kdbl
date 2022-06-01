@@ -5,6 +5,6 @@ import de.ruegnerlukas.sqldsl.core.grammar.refs.ColumnRef
 
 interface JoinConstraint
 
-class ConditionJoinConstraint(val expression: Expression): JoinConstraint
+class ConditionJoinConstraint(val expression: Expression) : JoinConstraint
 
-class UsingJoinConstraint(val columns: List<ColumnRef>): JoinConstraint
+class UsingJoinConstraint(val columns: List<ColumnRef<*, *>>) : JoinConstraint

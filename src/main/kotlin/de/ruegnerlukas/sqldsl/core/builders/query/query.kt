@@ -1,19 +1,7 @@
-package de.ruegnerlukas.sqldsl.core.builders
+package de.ruegnerlukas.sqldsl.core.builders.query
 
 import de.ruegnerlukas.sqldsl.core.grammar.expression.Expression
-import de.ruegnerlukas.sqldsl.core.grammar.from.FromExpression
-import de.ruegnerlukas.sqldsl.core.grammar.from.JoinFromExpression
-import de.ruegnerlukas.sqldsl.core.grammar.from.QueryFromExpression
-import de.ruegnerlukas.sqldsl.core.grammar.from.TableFromExpression
-import de.ruegnerlukas.sqldsl.core.grammar.join.ConditionJoinConstraint
-import de.ruegnerlukas.sqldsl.core.grammar.join.JoinOp
-import de.ruegnerlukas.sqldsl.core.grammar.join.UsingJoinConstraint
 import de.ruegnerlukas.sqldsl.core.grammar.refs.ColumnRef
-import de.ruegnerlukas.sqldsl.core.grammar.refs.ref
-import de.ruegnerlukas.sqldsl.core.grammar.select.AllColumnsOfSelectExpression
-import de.ruegnerlukas.sqldsl.core.grammar.select.AllColumnsSelectExpression
-import de.ruegnerlukas.sqldsl.core.grammar.select.ColumnSelectExpression
-import de.ruegnerlukas.sqldsl.core.grammar.select.SelectExpression
 import de.ruegnerlukas.sqldsl.core.grammar.statements.FromStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.GroupByStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.HavingStatement
@@ -23,38 +11,6 @@ import de.ruegnerlukas.sqldsl.core.grammar.statements.OrderByStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.QueryStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.SelectStatement
 import de.ruegnerlukas.sqldsl.core.grammar.statements.WhereStatement
-import de.ruegnerlukas.sqldsl.core.schema.Column
-import de.ruegnerlukas.sqldsl.core.schema.Table
-
-class QueryBuilder {
-
-	fun select(block: SelectQueryBuilder.() -> Unit): PostSelectQueryBuilder {
-		val selectStmt = SelectQueryBuilder(false)
-			.apply(block)
-			.buildStatement()
-		return PostSelectQueryBuilder(selectStmt)
-	}
-
-	fun selectDistinct(block: SelectQueryBuilder.() -> Unit): PostSelectQueryBuilder {
-		val selectStmt = SelectQueryBuilder(true)
-			.apply(block)
-			.buildStatement()
-		return PostSelectQueryBuilder(selectStmt)
-	}
-
-}
-
-
-class PostSelectQueryBuilder(
-	private val selectStatement: SelectStatement
-) {
-
-	fun from(block: FromQueryBuilder.() -> Unit): PostFromQueryBuilder {
-		val fromStmt = FromQueryBuilder().apply(block).buildStatement()
-		return PostFromQueryBuilder(selectStatement, fromStmt)
-	}
-
-}
 
 
 class PostFromQueryBuilder(
@@ -66,7 +22,7 @@ class PostFromQueryBuilder(
 		return PostWhereQueryBuilder(selectStatement, fromStatement, WhereStatement(expression))
 	}
 
-	fun groupBy(vararg columns: ColumnRef): PostGroupByQueryBuilder {
+	fun groupBy(vararg columns: ColumnRef<*, *>): PostGroupByQueryBuilder {
 		return PostGroupByQueryBuilder(selectStatement, fromStatement, null, GroupByStatement(columns.toList()))
 	}
 
@@ -91,7 +47,7 @@ class PostWhereQueryBuilder(
 	private val whereStatement: WhereStatement
 ) {
 
-	fun groupBy(vararg columns: ColumnRef): PostGroupByQueryBuilder {
+	fun groupBy(vararg columns: ColumnRef<*, *>): PostGroupByQueryBuilder {
 		return PostGroupByQueryBuilder(selectStatement, fromStatement, whereStatement, GroupByStatement(columns.toList()))
 	}
 
@@ -229,108 +185,6 @@ class PostLimitQueryBuilder(
 			orderByStatement,
 			limitStatement
 		)
-	}
-
-}
-
-
-class SelectQueryBuilder(private val distinct: Boolean) {
-
-	private val expressions = mutableListOf<SelectExpression>()
-
-	fun column(column: Column<*, *>) {
-		expressions.add(ColumnSelectExpression(ref(column), column.getColumnName()))
-	}
-
-	fun column(column: Column<*, *>, alias: String) {
-		expressions.add(ColumnSelectExpression(ref(column), alias))
-	}
-
-	fun all() {
-		expressions.add(AllColumnsSelectExpression())
-	}
-
-	fun all(table: Table) {
-		expressions.add(AllColumnsOfSelectExpression(table))
-	}
-
-	internal fun buildStatement(): SelectStatement {
-		return SelectStatement(distinct, expressions)
-	}
-
-}
-
-
-class FromQueryBuilder {
-
-	private val expressions = mutableListOf<FromExpression>()
-
-	fun table(table: Table) {
-		expressions.add(TableFromExpression(table, table.getTableName()))
-	}
-
-	fun table(table: Table, alias: String) {
-		expressions.add(TableFromExpression(table, alias))
-	}
-
-	fun subQuery(query: QueryStatement, alias: String) {
-		expressions.add(QueryFromExpression(query, alias))
-	}
-
-	fun joinLeft(block: JoinBuilder.() -> Unit) {
-		expressions.add(JoinBuilder(JoinOp.LEFT).apply(block).build())
-	}
-
-	fun joinInner(block: JoinBuilder.() -> Unit) {
-		expressions.add(JoinBuilder(JoinOp.INNER).apply(block).build())
-	}
-
-	fun joinCross(block: JoinBuilder.() -> Unit) {
-		expressions.add(JoinBuilder(JoinOp.CROSS).apply(block).build())
-	}
-
-	class JoinBuilder(private val op: JoinOp) {
-
-		private var left: FromExpression? = null
-		private var right: FromExpression? = null
-		private var on: Expression? = null
-		private var using: List<ColumnRef>? = null
-
-		fun left(table: Table) {
-			this.left = TableFromExpression(table, table.getTableName())
-		}
-
-		fun left(table: Table, alias: String) {
-			this.left = TableFromExpression(table, alias)
-		}
-
-		fun right(table: Table) {
-			this.right = TableFromExpression(table, table.getTableName())
-		}
-
-		fun right(table: Table, alias: String) {
-			this.right = TableFromExpression(table, alias)
-		}
-
-		fun on(expression: Expression) {
-			this.on = expression
-		}
-
-		fun using(vararg columns: ColumnRef) {
-			this.using = columns.toList()
-		}
-
-		internal fun build(): JoinFromExpression {
-			if (on != null) {
-				return JoinFromExpression(left!!, right!!, op, ConditionJoinConstraint(on!!))
-			} else {
-				return JoinFromExpression(left!!, right!!, op, UsingJoinConstraint(using!!))
-			}
-		}
-	}
-
-	fun buildStatement(): FromStatement {
-		return FromStatement(expressions)
 	}
 
 }

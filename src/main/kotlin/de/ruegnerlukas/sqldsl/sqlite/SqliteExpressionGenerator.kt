@@ -22,7 +22,7 @@ import de.ruegnerlukas.sqldsl.core.grammar.expression.Operation
 import de.ruegnerlukas.sqldsl.core.grammar.expression.OrCondition
 import de.ruegnerlukas.sqldsl.core.grammar.expression.StringLiteralValue
 import de.ruegnerlukas.sqldsl.core.grammar.expression.SubOperation
-import de.ruegnerlukas.sqldsl.core.grammar.refs.ColumnRef
+import de.ruegnerlukas.sqldsl.core.grammar.refs.LiteralColumnRef
 import de.ruegnerlukas.sqldsl.core.tokens.CsvListToken
 import de.ruegnerlukas.sqldsl.core.tokens.GroupToken
 import de.ruegnerlukas.sqldsl.core.tokens.ListToken
@@ -54,7 +54,7 @@ class SqliteExpressionGenerator {
 			is NullLiteralValue -> StringToken("NULL")
 			is CurrentTimestampLiteralValue -> StringToken("CURRENT_TIMESTAMP")
 			is ListLiteralValue -> GroupToken(CsvListToken(e.literals.map { literal(it) }))
-			is ColumnRef -> StringToken("${e.getTableName()}.${e.getColumnName()}")
+			is LiteralColumnRef -> StringToken("${e.getTableName()}.${e.getColumnName()}")
 			else -> {
 				throw IllegalStateException("Unknown LiteralValue: $e")
 			}

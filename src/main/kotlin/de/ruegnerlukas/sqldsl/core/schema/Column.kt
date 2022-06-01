@@ -1,13 +1,12 @@
 package de.ruegnerlukas.sqldsl.core.schema
 
-import de.ruegnerlukas.sqldsl.core.actions.query.ColumnRef
-
+import de.ruegnerlukas.sqldsl.core.grammar.refs.DirectColumnRef
 
 open class Column<D, T : Table>(
 	private val parentTable: T,
 	private val name: String,
 	private val type: DataType
-) : ColumnRef<D, T> {
+): DirectColumnRef<D,T> {
 
 	private val constraints = mutableListOf<ColumnConstraint>()
 
@@ -15,7 +14,7 @@ open class Column<D, T : Table>(
 		constraints.add(constraint)
 	}
 
-	override fun getColumnName() = name
+	fun getColumnName() = name
 
 	fun getDataType() = type
 
@@ -26,10 +25,6 @@ open class Column<D, T : Table>(
 	inline fun <reified T> hasConstraint(): Boolean {
 		return getConstraints().filterIsInstance<T>().isNotEmpty()
 	}
-
-	override fun getTableRef() = parentTable
-
-	override fun getColumn() = this
 
 }
 

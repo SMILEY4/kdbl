@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.sqlite
 
-import de.ruegnerlukas.sqldsl.core.actions.insert.InsertStatement
+import de.ruegnerlukas.sqldsl.core.builders.insert.InsertStatement
 import de.ruegnerlukas.sqldsl.core.generators.InsertIntoGenerator
 import de.ruegnerlukas.sqldsl.core.schema.OnConflict
 import de.ruegnerlukas.sqldsl.core.tokens.CsvListToken

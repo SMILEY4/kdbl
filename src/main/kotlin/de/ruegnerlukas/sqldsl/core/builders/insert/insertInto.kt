@@ -1,4 +1,4 @@
-package de.ruegnerlukas.sqldsl.core.actions.insert
+package de.ruegnerlukas.sqldsl.core.builders.insert
 
 import de.ruegnerlukas.sqldsl.core.schema.Column
 import de.ruegnerlukas.sqldsl.core.schema.OnConflict

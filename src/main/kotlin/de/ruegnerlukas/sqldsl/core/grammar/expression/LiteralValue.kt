@@ -1,5 +1,7 @@
 package de.ruegnerlukas.sqldsl.core.grammar.expression
 
+import de.ruegnerlukas.sqldsl.core.schema.Column
+
 interface LiteralValue: Expression
 
 class IntLiteralValue(val value: Int) : LiteralValue
