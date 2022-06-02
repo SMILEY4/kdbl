@@ -26,15 +26,17 @@ fun main() {
 	val tblOrders = CustomerOrder.alias("orders")
 	val tblTitles = TableRefContainer()
 	val colCount = ColumnRefContainer<Int>()
+	val colPublisher = Book.publisherId.alias("publisher")
 
 	val query = query()
 		.select(
 			all(),
 			Book,
 			Book.title,
+			colPublisher,
 			tblOrders[CustomerOrder.orderId],
 			tblOrders[CustomerOrder.orderDate].alias("date"),
-			colCount.fill(CountAllSelectExpression("colCount"))
+			colCount.fill(CountAllSelectExpression("colCount")),
 		)
 		.from(
 			Book,
@@ -60,7 +62,7 @@ fun main() {
 		.where(
 			OrCondition(
 				EqualCondition(
-					Book.publisherId,
+					colPublisher,
 					IntLiteralValue(42)
 				),
 				LessThanCondition(

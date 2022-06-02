@@ -29,7 +29,6 @@ import de.ruegnerlukas.sqldsl.core.tokens.Token
 
 object SQLiteExpressionGenerator {
 
-
 	fun build(expression: Expression<*>): String {
 		return buildToken(expression).buildString()
 	}
@@ -51,9 +50,9 @@ object SQLiteExpressionGenerator {
 
 	private fun operation(e: Operation<*>): Token {
 		return when (e) {
-			is SubOperation -> StringToken("(${expression(e.left)}) - (${expression(e.right)})")
-			is AddOperation -> StringToken("(${expression(e.left)}) + (${expression(e.right)})")
-			is MulOperation -> StringToken("(${expression(e.left)}) * (${expression(e.right)})")
+			is SubOperation -> StringToken("(${expression(e.left).buildString()}) - (${expression(e.right).buildString()})")
+			is AddOperation -> StringToken("(${expression(e.left).buildString()}) + (${expression(e.right).buildString()})")
+			is MulOperation -> StringToken("(${expression(e.left).buildString()}) * (${expression(e.right).buildString()})")
 			else -> {
 				throw Exception("Unknown Operation: $e")
 			}
@@ -62,16 +61,22 @@ object SQLiteExpressionGenerator {
 
 	private fun condition(e: Condition): Token {
 		return when (e) {
-			is NotCondition -> StringToken("NOT (${condition(e.condition)})")
-			is IsNullCondition -> StringToken("(${expression(e.expression)}) IS NULL")
-			is IsNotNullCondition -> StringToken("(${expression(e.expression)}) IS NOT NULL")
-			is AndCondition -> StringToken("(${condition(e.left)}) AND (${condition(e.right)})")
-			is OrCondition -> StringToken("(${condition(e.left)}) OR (${condition(e.right)})")
+			is NotCondition -> StringToken("NOT (${condition(e.condition).buildString()})")
+			is IsNullCondition -> StringToken("(${expression(e.expression).buildString()}) IS NULL")
+			is IsNotNullCondition -> StringToken("(${expression(e.expression).buildString()}) IS NOT NULL")
+			is AndCondition -> StringToken("(${condition(e.left).buildString()}) AND (${condition(e.right).buildString()})")
+			is OrCondition -> StringToken("(${condition(e.left).buildString()}) OR (${condition(e.right).buildString()})")
 			is LikeCondition -> StringToken("(${expression(e.expression)}) LIKE '${e.pattern}'")
-			is BetweenCondition -> StringToken("(${expression(e.expression)}) BETWEEN (${expression(e.min)}) AND (${expression(e.max)})")
-			is EqualCondition<*> -> StringToken("(${expression(e.left)}) == (${expression(e.right)})")
-			is LessThanCondition -> StringToken("(${expression(e.left)}) < (${expression(e.right)})")
-			is GreaterThanCondition -> StringToken("(${expression(e.left)}) > (${expression(e.right)})")
+			is BetweenCondition -> StringToken(
+				"(${expression(e.expression).buildString()}) BETWEEN (${expression(e.min).buildString()}) AND (${
+					expression(
+						e.max
+					).buildString()
+				})"
+			)
+			is EqualCondition<*> -> StringToken("(${expression(e.left).buildString()}) == (${expression(e.right).buildString()})")
+			is LessThanCondition -> StringToken("(${expression(e.left).buildString()}) < (${expression(e.right).buildString()})")
+			is GreaterThanCondition -> StringToken("(${expression(e.left).buildString()}) > (${expression(e.right).buildString()})")
 			else -> {
 				throw Exception("Unknown Condition: $e")
 			}
@@ -86,7 +91,7 @@ object SQLiteExpressionGenerator {
 			is NullLiteralValue -> StringToken("NULL")
 			is CurrentTimestampLiteralValue -> StringToken("CURRENT_TIMESTAMP")
 			is ListLiteralValue<*> -> StringToken("(${e.literals.map { literalValue(it) }.joinToString(",")})")
-			is ColumnRef<*, *> -> SQLiteRefGenerator.column(e)
+			is ColumnRef<*, *> -> SQLiteColumnRefGenerator.build(GenContext.UNKNOWN, e)
 			else -> {
 				throw Exception("Unknown LiteralValue: $e")
 			}

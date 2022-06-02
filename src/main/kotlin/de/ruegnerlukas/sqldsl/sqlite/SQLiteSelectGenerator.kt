@@ -29,8 +29,8 @@ object SQLiteSelectGenerator {
 
 	private fun selectExpression(e: SelectExpression): Token {
 		return when (e) {
-			is ColumnRef<*, *> -> SQLiteRefGenerator.column(e)
-			is TableRef -> StringToken("${SQLiteRefGenerator.table(e).buildString()}.*")
+			is ColumnRef<*, *> -> SQLiteColumnRefGenerator.build(GenContext.SELECT, e)
+			is TableRef -> StringToken("${SQLiteTableRefGenerator.build(GenContext.SELECT, e).buildString()}.*")
 			is AllColumnsSelectExpression -> StringToken("*")
 			is FunctionSelectExpression -> function(e)
 			else -> {

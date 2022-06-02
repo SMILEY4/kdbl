@@ -14,6 +14,11 @@ object SQLiteQueryGenerator {
 		return ListToken()
 			.add(SQLiteSelectGenerator.buildToken(query.select))
 			.add(SQLiteFromGenerator.buildToken(query.from))
+			.addIf(query.where != null) { SQLiteWhereGenerator.buildToken(query.where!!) }
+			.addIf(query.group != null) { SQLiteGroupByGenerator.buildToken(query.group!!) }
+			.addIf(query.having != null) { SQLiteHavingGenerator.buildToken(query.having!!) }
+			.addIf(query.order != null) { SQLiteOrderByGenerator.buildToken(query.order!!) }
+			.addIf(query.limit != null) { SQLiteLimitGenerator.buildToken(query.limit!!) }
 	}
 
 }

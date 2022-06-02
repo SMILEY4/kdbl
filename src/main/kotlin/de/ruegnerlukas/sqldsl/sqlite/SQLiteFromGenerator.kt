@@ -29,7 +29,7 @@ object SQLiteFromGenerator {
 
 	private fun fromExpression(e: FromExpression): Token {
 		return when (e) {
-			is TableRef -> SQLiteRefGenerator.table(e)
+			is TableRef -> SQLiteTableRefGenerator.build(GenContext.FROM, e)
 			is JoinFromExpression -> join(e)
 			is QueryFromExpression -> subQuery(e)
 			else -> {
@@ -65,7 +65,7 @@ object SQLiteFromGenerator {
 				ListToken()
 					.add("USING")
 					.then {
-						e.columns.forEach { add(SQLiteRefGenerator.column(it)) }
+						e.columns.forEach { add(SQLiteColumnRefGenerator.build(GenContext.JOIN_USING, it)) }
 					}
 			}
 			else -> {
