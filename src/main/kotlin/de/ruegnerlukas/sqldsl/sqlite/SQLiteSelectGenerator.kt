@@ -1,10 +1,10 @@
 package de.ruegnerlukas.sqldsl.sqlite
 
+import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.Operation
 import de.ruegnerlukas.sqldsl.core.syntax.refs.column.ColumnRef
 import de.ruegnerlukas.sqldsl.core.syntax.refs.table.TableRef
 import de.ruegnerlukas.sqldsl.core.syntax.select.AllColumnsSelectExpression
-import de.ruegnerlukas.sqldsl.core.syntax.select.CountAllSelectExpression
-import de.ruegnerlukas.sqldsl.core.syntax.select.FunctionSelectExpression
+import de.ruegnerlukas.sqldsl.core.syntax.select.OperationSelectExpression
 import de.ruegnerlukas.sqldsl.core.syntax.select.SelectExpression
 import de.ruegnerlukas.sqldsl.core.syntax.statements.SelectStatement
 import de.ruegnerlukas.sqldsl.core.tokens.CsvListToken
@@ -32,16 +32,16 @@ object SQLiteSelectGenerator {
 			is ColumnRef<*, *> -> SQLiteColumnRefGenerator.build(GenContext.SELECT, e)
 			is TableRef -> StringToken("${SQLiteTableRefGenerator.build(GenContext.SELECT, e).buildString()}.*")
 			is AllColumnsSelectExpression -> StringToken("*")
-			is FunctionSelectExpression -> function(e)
+			is OperationSelectExpression -> operation(e)
 			else -> {
 				throw Exception("Unknown SelectExpression: $e")
 			}
 		}
 	}
 
-	private fun function(e: FunctionSelectExpression): Token {
+	private fun operation(e: OperationSelectExpression): Token {
 		return when (e) {
-			is CountAllSelectExpression -> StringToken("COUNT(*) AS ${e.alias}")
+			is Operation<*> -> SQLiteExpressionGenerator.buildToken(e)
 			else -> {
 				throw Exception("Unknown FunctionSelectExpression: $e")
 			}

@@ -4,6 +4,7 @@ import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.GreaterThanCondit
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.LessThanCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.OrCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.IntLiteralValue
+import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.CountAllOperation
 import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.SubOperation
 import de.ruegnerlukas.sqldsl.core.syntax.from.alias
 import de.ruegnerlukas.sqldsl.core.syntax.from.joinLeft
@@ -14,7 +15,6 @@ import de.ruegnerlukas.sqldsl.core.syntax.refs.column.desc
 import de.ruegnerlukas.sqldsl.core.syntax.refs.column.get
 import de.ruegnerlukas.sqldsl.core.syntax.refs.table.TableRefContainer
 import de.ruegnerlukas.sqldsl.core.syntax.refs.table.alias
-import de.ruegnerlukas.sqldsl.core.syntax.select.CountAllSelectExpression
 import de.ruegnerlukas.sqldsl.core.syntax.select.all
 import de.ruegnerlukas.sqldsl.db.Book
 import de.ruegnerlukas.sqldsl.db.BookLanguage
@@ -36,7 +36,7 @@ fun main() {
 			colPublisher,
 			tblOrders[CustomerOrder.orderId],
 			tblOrders[CustomerOrder.orderDate].alias("date"),
-			colCount.fill(CountAllSelectExpression("colCount")),
+			colCount.fill(CountAllOperation().alias("count")),
 		)
 		.from(
 			Book,
@@ -48,16 +48,12 @@ fun main() {
 					.build()
 					.alias("titles")
 			),
-			joinLeft {
-				left(Book)
-				right(tblOrders)
-				on(
-					EqualCondition(
-						Book.languageId,
-						BookLanguage.languageId
-					)
+			Book.joinLeft(tblOrders).on(
+				EqualCondition(
+					Book.languageId,
+					BookLanguage.languageId
 				)
-			}
+			)
 		)
 		.where(
 			OrCondition(

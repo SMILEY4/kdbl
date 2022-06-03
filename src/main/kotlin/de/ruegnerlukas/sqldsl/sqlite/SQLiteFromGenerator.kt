@@ -59,7 +59,7 @@ object SQLiteFromGenerator {
 			is ConditionJoinConstraint -> {
 				ListToken()
 					.add("ON")
-					.add(SQLiteExpressionGenerator.buildToken(e.expression))
+					.add(SQLiteExpressionGenerator.buildToken(e.condition))
 			}
 			is UsingJoinConstraint -> {
 				ListToken()

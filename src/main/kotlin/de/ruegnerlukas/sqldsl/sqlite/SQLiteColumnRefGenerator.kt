@@ -1,21 +1,26 @@
 package de.ruegnerlukas.sqldsl.sqlite
 
 import de.ruegnerlukas.sqldsl.core.schema.Column
+import de.ruegnerlukas.sqldsl.core.syntax.refs.column.AliasRef
 import de.ruegnerlukas.sqldsl.core.syntax.refs.column.ColumnAliasRef
 import de.ruegnerlukas.sqldsl.core.syntax.refs.column.ColumnRef
 import de.ruegnerlukas.sqldsl.core.syntax.refs.column.ColumnRefContainer
+import de.ruegnerlukas.sqldsl.core.syntax.refs.column.ExpressionAliasRef
 import de.ruegnerlukas.sqldsl.core.syntax.refs.column.TableAliasColumnAliasRef
 import de.ruegnerlukas.sqldsl.core.syntax.refs.column.TableAliasColumnRef
-import de.ruegnerlukas.sqldsl.core.syntax.select.CountAllSelectExpression
 import de.ruegnerlukas.sqldsl.core.tokens.StringToken
 import de.ruegnerlukas.sqldsl.core.tokens.Token
 
 object SQLiteColumnRefGenerator {
 
+	fun buildString(ctx: GenContext, ref: ColumnRef<*, *>): String {
+		return build(ctx, ref).buildString()
+	}
+
 	fun build(ctx: GenContext, ref: ColumnRef<*, *>): Token {
 		return when (ref) {
 			is Column<*, *> -> directColumnRef(ctx, ref)
-			is ColumnAliasRef<*, *> -> columnAliasRef(ctx, ref)
+			is AliasRef<*, *> -> aliasRef(ctx, ref)
 			is TableAliasColumnRef<*, *> -> tableAliasColumnRef(ctx, ref)
 			is TableAliasColumnAliasRef<*, *> -> tableAliasColumnAliasRef(ctx, ref)
 			is ColumnRefContainer<*> -> columnContainer(ctx, ref)
@@ -31,11 +36,25 @@ object SQLiteColumnRefGenerator {
 	}
 
 
-	private fun columnAliasRef(ctx: GenContext, ref: ColumnAliasRef<*, *>): Token {
-		if (ctx == GenContext.SELECT) {
-			return StringToken("${ref.column.getColumnName()} AS ${ref.alias}")
-		} else {
-			return StringToken(ref.alias)
+	private fun aliasRef(ctx: GenContext, ref: AliasRef<*, *>): Token {
+		return when (ref) {
+			is ColumnAliasRef<*, *> -> {
+				if (ctx == GenContext.SELECT) {
+					StringToken("${ref.column.getColumnName()} AS ${ref.alias}")
+				} else {
+					StringToken(ref.alias)
+				}
+			}
+			is ExpressionAliasRef<*> -> {
+				if (ctx == GenContext.SELECT) {
+					StringToken("${SQLiteExpressionGenerator.build(ref.expression)} AS ${ref.alias}")
+				} else {
+					StringToken(ref.alias)
+				}
+			}
+			else -> {
+				throw Exception("Unknown AliasRef: $ref")
+			}
 		}
 	}
 
@@ -60,17 +79,10 @@ object SQLiteColumnRefGenerator {
 		if (content == null) {
 			throw Exception("Content of column-ref-container is null")
 		} else {
-			return when (content) {
-				is CountAllSelectExpression -> {
-					if (ctx == GenContext.SELECT) {
-						StringToken("COUNT(*) AS ${content.alias}")
-					} else {
-						StringToken(content.alias)
-					}
-				}
-				else -> {
-					throw Exception("Unknown columnRefContainer-content: ${ref.getContent()}")
-				}
+			if (ctx == GenContext.SELECT) {
+				return StringToken("(${SQLiteExpressionGenerator.build(content.expression)}) AS ${content.alias}")
+			} else {
+				return StringToken(content.alias)
 			}
 		}
 	}

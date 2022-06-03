@@ -20,6 +20,8 @@ import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.LiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.NullLiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.StringLiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.AddOperation
+import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.CountAllOperation
+import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.CountDistinctOperation
 import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.MulOperation
 import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.Operation
 import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.SubOperation
@@ -53,6 +55,8 @@ object SQLiteExpressionGenerator {
 			is SubOperation -> StringToken("(${expression(e.left).buildString()}) - (${expression(e.right).buildString()})")
 			is AddOperation -> StringToken("(${expression(e.left).buildString()}) + (${expression(e.right).buildString()})")
 			is MulOperation -> StringToken("(${expression(e.left).buildString()}) * (${expression(e.right).buildString()})")
+			is CountAllOperation -> StringToken("COUNT(*)")
+			is CountDistinctOperation -> StringToken("COUNT(DISTINCT {${SQLiteColumnRefGenerator.buildString(GenContext.UNKNOWN, e.column)}})")
 			else -> {
 				throw Exception("Unknown Operation: $e")
 			}
