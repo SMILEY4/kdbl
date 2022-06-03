@@ -1,0 +1,7 @@
+class SQLiteTest {
+
+	fun test() {
+	}
+
+
+}

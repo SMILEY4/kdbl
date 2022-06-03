@@ -20,6 +20,8 @@ import de.ruegnerlukas.sqldsl.db.Book
 import de.ruegnerlukas.sqldsl.db.BookLanguage
 import de.ruegnerlukas.sqldsl.db.CustomerOrder
 import de.ruegnerlukas.sqldsl.sqlite.SQLiteQueryGenerator
+import java.lang.Long.max
+import java.lang.Long.min
 
 fun main() {
 
@@ -83,9 +85,24 @@ fun main() {
 		.limit(50)
 		.build()
 
+	val nIterations = 1000
 
-	print(
+	var min = Long.MAX_VALUE
+	var max = Long.MIN_VALUE
+	var sum = 0L
+
+	for (i in 1..nIterations) {
+		val ts = System.nanoTime()
 		SQLiteQueryGenerator.build(query)
-	)
+		val te = System.nanoTime()
+		val t = (te-ts)
+		min = min(min, t)
+		max = max(max, t)
+		sum += t
+	}
+
+	println("MIN $min")
+	println("MAX $min")
+	println("AVG ${sum.toDouble()/nIterations.toDouble()}")
 
 }

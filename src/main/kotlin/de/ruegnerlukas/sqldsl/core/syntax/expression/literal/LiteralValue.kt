@@ -9,6 +9,12 @@ interface LiteralValue<T> : Expression<T>
 
 
 /**
+ * A placeholder value for prepared statements
+ */
+class PlaceholderLiteralValue() : LiteralValue<Any>
+
+
+/**
  * A fixed integer value
  */
 class IntLiteralValue(val value: Int) : LiteralValue<Int>

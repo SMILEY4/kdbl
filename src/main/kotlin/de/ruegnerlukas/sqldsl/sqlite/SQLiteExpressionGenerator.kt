@@ -18,6 +18,7 @@ import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.IntLiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.ListLiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.LiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.NullLiteralValue
+import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.PlaceholderLiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.literal.StringLiteralValue
 import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.AddOperation
 import de.ruegnerlukas.sqldsl.core.syntax.expression.operation.CountAllOperation
@@ -92,6 +93,7 @@ object SQLiteExpressionGenerator {
 			is IntLiteralValue -> StringToken("${e.value}")
 			is StringLiteralValue -> StringToken("'${e.value}'")
 			is BooleanLiteralValue -> StringToken(if (e.value) "TRUE" else "FALSE")
+			is PlaceholderLiteralValue -> StringToken("?")
 			is NullLiteralValue -> StringToken("NULL")
 			is CurrentTimestampLiteralValue -> StringToken("CURRENT_TIMESTAMP")
 			is ListLiteralValue<*> -> StringToken("(${e.literals.map { literalValue(it) }.joinToString(",")})")
