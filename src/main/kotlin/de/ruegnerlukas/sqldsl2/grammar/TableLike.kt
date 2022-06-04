@@ -1,7 +1,11 @@
 package de.ruegnerlukas.sqldsl2.grammar
 
-import de.ruegnerlukas.sqldsl2.grammar.from.TableFromExpression
+import de.ruegnerlukas.sqldsl2.grammar.from.TableAliasFromExpression
 
-interface TableLike: TableFromExpression
 
-class Table(val name: String): TableLike
+interface TableLike
+
+interface TableAlias : TableLike, TableAliasFromExpression {
+	val alias: String
+	val tableName: String
+}

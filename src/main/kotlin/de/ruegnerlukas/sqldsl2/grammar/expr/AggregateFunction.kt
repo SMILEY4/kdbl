@@ -1,9 +1,7 @@
-package de.ruegnerlukas.sqldsl2.grammar.aggregate
+package de.ruegnerlukas.sqldsl2.grammar.expr
 
-import de.ruegnerlukas.sqldsl2.grammar.expr.Expr
-import de.ruegnerlukas.sqldsl2.grammar.select.AggregateSelectExpression
 
-interface AggregateFunction : AggregateSelectExpression, Expr
+interface AggregateFunction : Expr
 
 class CountAllAggFunction : AggregateFunction
 

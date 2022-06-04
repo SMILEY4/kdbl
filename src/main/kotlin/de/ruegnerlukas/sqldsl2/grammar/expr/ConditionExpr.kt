@@ -24,21 +24,21 @@ class GreaterOrEqualThanCondition(val left: Expr, val right: Expr) : ConditionEx
 
 class LessThanCondition(val left: Expr, val right: Expr) : ConditionExpr
 
-class NotCondition(val value: ConditionExpr) : ConditionExpr
+class NotCondition(val expression: ConditionExpr) : ConditionExpr
 
-class IsNotNullCondition(val value: Expr) : ConditionExpr
+class IsNotNullCondition(val expression: Expr) : ConditionExpr
 
-class IsNullCondition(val value: Expr) : ConditionExpr
+class IsNullCondition(val expression: Expr) : ConditionExpr
 
-class InListCondition(val value: Expr, val list: ListLiteral) : ConditionExpr
+class InListCondition(val expression: Expr, val list: ListLiteral) : ConditionExpr
 
-class NotInListCondition(val value: Expr, val list: ListLiteral) : ConditionExpr
+class NotInListCondition(val expression: Expr, val list: ListLiteral) : ConditionExpr
 
-class InSubQueryCondition(val value: Expr, val query: QueryStatement) : ConditionExpr
+class InSubQueryCondition(val expression: Expr, val query: QueryStatement) : ConditionExpr
 
-class NotInSubQueryCondition(val value: Expr, val query: QueryStatement) : ConditionExpr
+class NotInSubQueryCondition(val expression: Expr, val query: QueryStatement) : ConditionExpr
 
-class BetweenCondition(val value: Expr, val lower: Expr, val upper: Expr) : ConditionExpr
+class BetweenCondition(val expression: Expr, val lower: Expr, val upper: Expr) : ConditionExpr
 
-class LikeCondition(val value: Expr, val pattern: String) : ConditionExpr
+class LikeCondition(val expression: Expr, val pattern: String) : ConditionExpr
 

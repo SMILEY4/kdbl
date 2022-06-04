@@ -1,9 +1,21 @@
 package v2
 
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericAggregateFunctionGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericColumnExprGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericExpressionGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericFromExpressionGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericGroupByExpressionGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericHavingExpressionGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericLiteralValueGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericOperationExprGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericOrderByExpressionGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericQueryGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericSelectExpressionGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericWhereExpressionGenerator
 import de.ruegnerlukas.sqldsl2.grammar.Table
-import de.ruegnerlukas.sqldsl2.grammar.aggregate.CountAllAggFunction
-import de.ruegnerlukas.sqldsl2.grammar.aggregate.MaxAggFunction
-import de.ruegnerlukas.sqldsl2.grammar.aggregate.MinAggFunction
+import de.ruegnerlukas.sqldsl2.grammar.expr.CountAllAggFunction
+import de.ruegnerlukas.sqldsl2.grammar.expr.MaxAggFunction
+import de.ruegnerlukas.sqldsl2.grammar.expr.MinAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.AndChainCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.AndCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.Column
@@ -18,7 +30,6 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.NullLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.QualifiedColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.SubQueryLiteral
-import de.ruegnerlukas.sqldsl2.grammar.from.AliasTableFromExpression
 import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl2.grammar.groupby.GroupByStatement
 import de.ruegnerlukas.sqldsl2.grammar.having.HavingStatement
@@ -39,6 +50,26 @@ import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
  * https://www.w3resource.com/sql-exercises/movie-database-exercise/subqueries-exercises-on-movie-database.php
  */
 class MovieDbSubQueriesTest {
+
+	fun generator(): GenericQueryGenerator {
+		return GenericQueryGenerator(
+			GenericSelectExpressionGenerator(
+				GenericExpressionGenerator(
+					GenericLiteralValueGenerator(),
+					GenericOperationExprGenerator(),
+					GenericAggregateFunctionGenerator(),
+					GenericColumnExprGenerator()
+				),
+				GenericColumnExprGenerator()
+			),
+			GenericFromExpressionGenerator(),
+			GenericWhereExpressionGenerator(),
+			GenericGroupByExpressionGenerator(),
+			GenericHavingExpressionGenerator(),
+			GenericOrderByExpressionGenerator()
+		)
+	}
+
 
 	/**
 	 * SELECT

@@ -1,4 +1,4 @@
-package de.ruegnerlukas.sqldsl.core.tokens
+package de.ruegnerlukas.sqldsl2.tokens
 
 abstract class Token {
     abstract fun buildString(): String

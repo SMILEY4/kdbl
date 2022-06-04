@@ -1,6 +1,5 @@
 package v2
 
-import de.ruegnerlukas.sqldsl2.grammar.Table
 import de.ruegnerlukas.sqldsl2.grammar.expr.AndCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.Column
 import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
