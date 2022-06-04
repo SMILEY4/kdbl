@@ -1,3 +1,5 @@
+package v1
+
 import de.ruegnerlukas.sqldsl.core.builders.query.query
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.EqualCondition
 import de.ruegnerlukas.sqldsl.core.syntax.expression.condition.GreaterThanCondition

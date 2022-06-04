@@ -1,3 +1,5 @@
+package v1
+
 import de.ruegnerlukas.sqldsl.core.builders.insert.insertInto
 import de.ruegnerlukas.sqldsl.core.schema.Create
 import de.ruegnerlukas.sqldsl.core.schema.OnDelete
