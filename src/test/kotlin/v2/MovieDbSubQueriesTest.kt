@@ -1,33 +1,20 @@
 package v2
 
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericAggregateFunctionGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericColumnExprGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericExpressionGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericFromExpressionGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericGroupByExpressionGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericHavingExpressionGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericLiteralValueGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericOperationExprGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericOrderByExpressionGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericGeneratorContext
 import de.ruegnerlukas.sqldsl2.generators.generic.GenericQueryGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericSelectExpressionGenerator
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericWhereExpressionGenerator
-import de.ruegnerlukas.sqldsl2.grammar.Table
-import de.ruegnerlukas.sqldsl2.grammar.expr.CountAllAggFunction
-import de.ruegnerlukas.sqldsl2.grammar.expr.MaxAggFunction
-import de.ruegnerlukas.sqldsl2.grammar.expr.MinAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.AndChainCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.AndCondition
-import de.ruegnerlukas.sqldsl2.grammar.expr.Column
+import de.ruegnerlukas.sqldsl2.grammar.expr.CountAllAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.InSubQueryCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.IntLiteral
+import de.ruegnerlukas.sqldsl2.grammar.expr.IsNotNullCondition
+import de.ruegnerlukas.sqldsl2.grammar.expr.IsNullCondition
+import de.ruegnerlukas.sqldsl2.grammar.expr.MaxAggFunction
+import de.ruegnerlukas.sqldsl2.grammar.expr.MinAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.NotEqualCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.NotInSubQueryCondition
-import de.ruegnerlukas.sqldsl2.grammar.expr.IsNotNullCondition
-import de.ruegnerlukas.sqldsl2.grammar.expr.NullLiteral
-import de.ruegnerlukas.sqldsl2.grammar.expr.QualifiedColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.SubQueryLiteral
 import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
@@ -40,34 +27,55 @@ import de.ruegnerlukas.sqldsl2.grammar.orderby.Dir
 import de.ruegnerlukas.sqldsl2.grammar.orderby.OrderByExpression
 import de.ruegnerlukas.sqldsl2.grammar.orderby.OrderByStatement
 import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl2.grammar.select.AliasSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.AllSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectDistinctStatement
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
+
+
+fun main() {
+	MovieDbSubQueriesTest().all()
+}
+
 
 /**
  * https://www.w3resource.com/sql-exercises/movie-database-exercise/subqueries-exercises-on-movie-database.php
  */
 class MovieDbSubQueriesTest {
 
-	fun generator(): GenericQueryGenerator {
-		return GenericQueryGenerator(
-			GenericSelectExpressionGenerator(
-				GenericExpressionGenerator(
-					GenericLiteralValueGenerator(),
-					GenericOperationExprGenerator(),
-					GenericAggregateFunctionGenerator(),
-					GenericColumnExprGenerator()
-				),
-				GenericColumnExprGenerator()
-			),
-			GenericFromExpressionGenerator(),
-			GenericWhereExpressionGenerator(),
-			GenericGroupByExpressionGenerator(),
-			GenericHavingExpressionGenerator(),
-			GenericOrderByExpressionGenerator()
-		)
+	private val generator = GenericQueryGenerator(GenericGeneratorContext())
+
+	fun all() {
+		println()
+		printQuery("1", query1())
+		printQuery("2", query2())
+		printQuery("3", query3())
+		printQuery("4", query4())
+		printQuery("5", query5())
+		printQuery("6", query6())
+		printQuery("7", query7())
+		printQuery("8", query8())
+		printQuery("9", query9())
+		printQuery("10", query10())
+		printQuery("11", query11())
+		printQuery("12", query12())
+		printQuery("13", query13())
+		printQuery("14", query14())
+		printQuery("15", query15())
+		printQuery("16", query16())
+
+	}
+
+
+	private fun printQuery(name: String, query: QueryStatement?) {
+		println("QUERY $name:")
+		if (query != null) {
+			val str = generator.buildString(query)
+			println(str)
+		} else {
+			println("-")
+		}
+		println()
 	}
 
 
@@ -92,40 +100,40 @@ class MovieDbSubQueriesTest {
 		),
 		from = FromStatement(
 			listOf(
-				Table("actor")
+				Actor
 			)
 		),
 		where = WhereStatement(
 			InSubQueryCondition(
-				Column("act_id"),
+				Actor.id,
 				QueryStatement(
 					select = SelectStatement(
 						listOf(
-							Column("act_id")
+							MovieCast.actorId
 						)
 					),
 					from = FromStatement(
 						listOf(
-							Table("movie_cast")
+							MovieCast
 						)
 					),
 					where = WhereStatement(
 						InSubQueryCondition(
-							Column("mov_id"),
+							MovieCast.movieId,
 							QueryStatement(
 								select = SelectStatement(
 									listOf(
-										Column("mov_id")
+										Movie.id
 									)
 								),
 								from = FromStatement(
 									listOf(
-										Table("movie")
+										Movie
 									)
 								),
 								where = WhereStatement(
 									EqualCondition(
-										Column("movie_title"),
+										Movie.title,
 										StringLiteral("Annie Hall")
 									)
 								)
@@ -177,21 +185,21 @@ class MovieDbSubQueriesTest {
 	private fun query3() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_title"),
-				Column("mov_year"),
-				Column("mov_time"),
-				AliasSelectExpression(Column("mov_dt_rel"), "date_of_release"),
-				AliasSelectExpression(Column("mov_rel_country"), "releasing_country"),
+				Movie.title,
+				Movie.year,
+				Movie.time,
+				Movie.dateRelease.alias("date_of_release"),
+				Movie.releaseCountry.alias("releasing_country")
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		),
 		where = WhereStatement(
 			NotEqualCondition(
-				Column("mov_rel_country"),
+				Movie.releaseCountry,
 				StringLiteral("UK")
 			)
 		)
@@ -223,64 +231,66 @@ class MovieDbSubQueriesTest {
 	 *      AND g.act_id = f.act_id
 	 * 	 	AND e.rev_name IS NULL;
 	 */
-	private fun query4() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				Column("mov_title"),
-				Column("mov_year"),
-				Column("mov_dt_rel"),
-				Column("dir_fname"),
-				Column("dir_lname"),
-				Column("act_fname"),
-				Column("act_lname"),
-			)
-		),
-		from = FromStatement(
-			listOf(
-				AliasTableFromExpression(Table("movie"), "a"),
-				AliasTableFromExpression(Table("movie_direction"), "b"),
-				AliasTableFromExpression(Table("director"), "c"),
-				AliasTableFromExpression(Table("rating"), "d"),
-				AliasTableFromExpression(Table("reviewer"), "e"),
-				AliasTableFromExpression(Table("actor"), "f"),
-				AliasTableFromExpression(Table("movie_cast"), "g")
-			)
-		),
-		where = WhereStatement(
-			AndChainCondition(
+	private fun query4(): QueryStatement {
+
+		val a = Movie.alias("a")
+		val b = MovieDirection.alias("b")
+		val c = Director.alias("c")
+		val d = Rating.alias("d")
+		val e = Reviewer.alias("e")
+		val f = Actor.alias("f")
+		val g = MovieCast.alias("g")
+
+		return QueryStatement(
+			select = SelectStatement(
 				listOf(
-					EqualCondition(
-						QualifiedColumn(Table("a"), Column("mov_id")),
-						QualifiedColumn(Table("b"), Column("mov_id"))
-					),
-					EqualCondition(
-						QualifiedColumn(Table("b"), Column("dir_id")),
-						QualifiedColumn(Table("c"), Column("dir_id"))
-					),
-					EqualCondition(
-						QualifiedColumn(Table("a"), Column("mov_id")),
-						QualifiedColumn(Table("d"), Column("mov_id"))
-					),
-					EqualCondition(
-						QualifiedColumn(Table("d"), Column("rev_id")),
-						QualifiedColumn(Table("e"), Column("rev_id"))
-					),
-					EqualCondition(
-						QualifiedColumn(Table("a"), Column("mov_id")),
-						QualifiedColumn(Table("g"), Column("mov_id"))
-					),
-					EqualCondition(
-						QualifiedColumn(Table("g"), Column("act_id")),
-						QualifiedColumn(Table("f"), Column("act_id"))
-					),
-					EqualCondition(
-						QualifiedColumn(Table("e"), Column("rev_name")),
-						NullLiteral()
+					a.title,
+					a.year,
+					a.dateRelease,
+					c.fName,
+					c.lName,
+					f.fName,
+					f.lName
+				)
+			),
+			from = FromStatement(
+				listOf(
+					a, b, c, d, e, f, g
+				)
+			),
+			where = WhereStatement(
+				AndChainCondition(
+					listOf(
+						EqualCondition(
+							a.id,
+							b.movieId
+						),
+						EqualCondition(
+							b.directorId,
+							c.id
+						),
+						EqualCondition(
+							a.id,
+							d.movieId
+						),
+						EqualCondition(
+							d.reviewerId,
+							e.id
+						),
+						EqualCondition(
+							a.id,
+							g.movieId
+						),
+						EqualCondition(
+							g.actorId,
+							f.id
+						),
+						IsNullCondition(e.name)
 					)
 				)
 			)
 		)
-	)
+	}
 
 
 	/**
@@ -315,31 +325,31 @@ class MovieDbSubQueriesTest {
 	private fun query6() = QueryStatement(
 		select = SelectDistinctStatement(
 			listOf(
-				Column("mov_year")
+				Movie.year
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		),
 		where = WhereStatement(
 			InSubQueryCondition(
-				Column("mov_id"),
+				Movie.id,
 				QueryStatement(
 					select = SelectStatement(
 						listOf(
-							Column("mov_id")
+							Rating.movieId
 						)
 					),
 					from = FromStatement(
 						listOf(
-							Table("rating")
+							Rating
 						)
 					),
 					where = WhereStatement(
 						GreaterThanCondition(
-							Column("rev_stars"),
+							Rating.stars,
 							IntLiteral(3)
 						)
 					)
@@ -348,7 +358,7 @@ class MovieDbSubQueriesTest {
 		),
 		orderBy = OrderByStatement(
 			listOf(
-				OrderByExpression(Column("mov_year"), Dir.ASC)
+				OrderByExpression(Movie.year, Dir.ASC)
 			)
 		)
 	)
@@ -368,51 +378,46 @@ class MovieDbSubQueriesTest {
 	private fun query7() = QueryStatement(
 		select = SelectDistinctStatement(
 			listOf(
-				Column("mov_title")
+				Movie.title
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		),
 		where = WhereStatement(
 			InSubQueryCondition(
-				Column("mov_id"),
+				Movie.id,
 				QueryStatement(
 					select = SelectStatement(
 						listOf(
-							Column("mov_id")
+							Movie.id
 						)
 					),
 					from = FromStatement(
 						listOf(
-							Table("movie")
+							Movie
 						)
 					),
 					where = WhereStatement(
 						NotInSubQueryCondition(
-							Column("mov_id"),
+							Movie.id,
 							QueryStatement(
 								select = SelectDistinctStatement(
 									listOf(
-										Column("mov_id")
+										Rating.movieId
 									)
 								),
 								from = FromStatement(
 									listOf(
-										Table("rating")
+										Rating
 									)
 								)
 							)
 						)
 					)
 				)
-			)
-		),
-		orderBy = OrderByStatement(
-			listOf(
-				OrderByExpression(Column("mov_year"), Dir.ASC)
 			)
 		)
 	)
@@ -469,52 +474,55 @@ class MovieDbSubQueriesTest {
 	 * GROUP BY rev_name, mov_title
 	 * HAVING count(*) > 1;
 	 */
-	private fun query10() = QueryStatement(
-		select = SelectDistinctStatement(
-			listOf(
-				Column("rev_name"),
-				Column("mov_title")
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Table("reviewer"),
-				Table("movie"),
-				Table("rating"),
-				AliasTableFromExpression(Table("rating"), "r2")
-			)
-		),
-		where = WhereStatement(
-			AndChainCondition(
+	private fun query10(): QueryStatement {
+		val r2 = Rating.alias("r2")
+		return QueryStatement(
+			select = SelectStatement(
 				listOf(
-					EqualCondition(
-						QualifiedColumn(Table("rating"), Column("mov_id")),
-						QualifiedColumn(Table("movie"), Column("mov_id"))
-					),
-					EqualCondition(
-						QualifiedColumn(Table("reviewer"), Column("rev_id")),
-						QualifiedColumn(Table("rating"), Column("rev_id"))
-					),
-					EqualCondition(
-						QualifiedColumn(Table("rating"), Column("rev_id")),
-						QualifiedColumn(Table("r2"), Column("rev_id"))
+					Reviewer.name,
+					Movie.title
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Reviewer,
+					Movie,
+					Rating,
+					r2
+				)
+			),
+			where = WhereStatement(
+				AndChainCondition(
+					listOf(
+						EqualCondition(
+							Rating.movieId,
+							Movie.id
+						),
+						EqualCondition(
+							Reviewer.id,
+							Rating.reviewerId
+						),
+						EqualCondition(
+							Rating.reviewerId,
+							r2.reviewerId
+						)
 					)
 				)
-			)
-		),
-		groupBy = GroupByStatement(
-			listOf(
-				Column("rev_name"),
-				Column("mov_title")
-			)
-		),
-		having = HavingStatement(
-			GreaterThanCondition(
-				CountAllAggFunction(),
-				IntLiteral(1)
+			),
+			groupBy = GroupByStatement(
+				listOf(
+					Reviewer.name,
+					Movie.title
+				)
+			),
+			having = HavingStatement(
+				GreaterThanCondition(
+					CountAllAggFunction(),
+					IntLiteral(1)
+				)
 			)
 		)
-	)
+	}
 
 
 	/**
@@ -528,35 +536,35 @@ class MovieDbSubQueriesTest {
 	private fun query11() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_title"),
-				MaxAggFunction(Column("rev_stars"))
+				Movie.title,
+				MaxAggFunction(Rating.stars)
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie"),
-				Table("rating")
+				Movie,
+				Rating
 			)
 		),
 		where = WhereStatement(
 			AndCondition(
 				EqualCondition(
-					QualifiedColumn(Table("movie"), Column("mov_id")),
-					QualifiedColumn(Table("rating"), Column("mov_id")),
+					Movie.id,
+					Rating.movieId
 				),
 				IsNotNullCondition(
-					QualifiedColumn(Table("rating"), Column("rev_stars")),
+					Rating.stars
 				)
 			)
 		),
 		groupBy = GroupByStatement(
 			listOf(
-				Column("mov_title")
+				Movie.title
 			)
 		),
 		orderBy = OrderByStatement(
 			listOf(
-				OrderByExpression(Column("mov_title"), Dir.ASC)
+				OrderByExpression(Movie.title, Dir.ASC)
 			)
 		)
 	)
@@ -610,45 +618,45 @@ class MovieDbSubQueriesTest {
 	private fun query14() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				QualifiedColumn(Table("reviewer"), Column("rev_name")),
-				QualifiedColumn(Table("movie"), Column("mov_title")),
-				QualifiedColumn(Table("rating"), Column("rev_stars"))
+				Reviewer.name,
+				Movie.title,
+				Rating.stars
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("reviewer"),
-				Table("movie"),
-				Table("rating")
+				Reviewer,
+				Movie,
+				Rating
 			)
 		),
 		where = WhereStatement(
 			AndChainCondition(
 				listOf(
 					EqualCondition(
-						QualifiedColumn(Table("rating"), Column("rev_stars")),
+						Rating.stars,
 						SubQueryLiteral(
 							QueryStatement(
 								select = SelectStatement(
 									listOf(
-										MinAggFunction(QualifiedColumn(Table("rating"), Column("rev_stars")))
+										MinAggFunction(Rating.stars)
 									)
 								),
 								from = FromStatement(
 									listOf(
-										Table("rating")
+										Rating
 									)
 								)
 							)
 						)
 					),
 					EqualCondition(
-						QualifiedColumn(Table("rating"), Column("rev_id")),
-						QualifiedColumn(Table("reviewer"), Column("rev_id"))
+						Rating.reviewerId,
+						Reviewer.id
 					),
 					EqualCondition(
-						QualifiedColumn(Table("rating"), Column("mov_id")),
-						QualifiedColumn(Table("movie"), Column("mov_id"))
+						Rating.movieId,
+						Movie.id
 					)
 				)
 			)
@@ -660,15 +668,15 @@ class MovieDbSubQueriesTest {
 	 * SELECT mov_title
 	 * FROM movie
 	 * 		JOIN  movie_direction
-	 *  	ON movie.mov_id=movie_direction.mov_id
+	 *  	ON movie.mov_id = movie_direction.mov_id
 	 * 			JOIN  director
-	 *  		ON movie_direction.dir_id=director.dir_id
+	 *  		ON movie_direction.dir_id = director.dir_id
 	 * WHERE dir_fname = 'James' AND dir_lname='Cameron';
 	 */
 	private fun query15() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_title")
+				Movie.title
 			)
 		),
 		from = FromStatement(
@@ -677,20 +685,20 @@ class MovieDbSubQueriesTest {
 					JoinOp.LEFT,
 					JoinClause(
 						JoinOp.LEFT,
-						Table("movie"),
-						Table("movie_direction"),
+						Movie,
+						MovieDirection,
 						ConditionJoinConstraint(
 							EqualCondition(
-								QualifiedColumn(Table("movie"), Column("mov_id")),
-								QualifiedColumn(Table("movie_direction"), Column("mov_id"))
+								Movie.id,
+								MovieDirection.movieId
 							)
 						)
 					),
-					Table("director"),
+					Director,
 					ConditionJoinConstraint(
 						EqualCondition(
-							QualifiedColumn(Table("movie_direction"), Column("dir_id")),
-							QualifiedColumn(Table("director"), Column("dir_id"))
+							MovieDirection.directorId,
+							Director.id
 						)
 					)
 				)
@@ -699,11 +707,11 @@ class MovieDbSubQueriesTest {
 		where = WhereStatement(
 			AndCondition(
 				EqualCondition(
-					Column("dir_fname"),
+					Director.fName,
 					StringLiteral("James")
 				),
 				EqualCondition(
-					Column("dir_lname"),
+					Director.lName,
 					StringLiteral("Cameron")
 				)
 			)

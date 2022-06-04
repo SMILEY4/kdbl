@@ -2,6 +2,9 @@ package de.ruegnerlukas.sqldsl2.generators.generic
 
 import de.ruegnerlukas.sqldsl2.generators.GeneratorContext
 import de.ruegnerlukas.sqldsl2.generators.JoinClauseGenerator
+import de.ruegnerlukas.sqldsl2.grammar.from.FromExpression
+import de.ruegnerlukas.sqldsl2.grammar.from.JoinFromExpression
+import de.ruegnerlukas.sqldsl2.grammar.from.QueryFromExpression
 import de.ruegnerlukas.sqldsl2.grammar.join.ConditionJoinConstraint
 import de.ruegnerlukas.sqldsl2.grammar.join.JoinClause
 import de.ruegnerlukas.sqldsl2.grammar.join.JoinConstraint
@@ -16,10 +19,18 @@ open class GenericJoinClauseGenerator(private val genCtx: GeneratorContext) : Jo
 
 	override fun buildToken(e: JoinClause): Token {
 		return ListToken()
-			.add(GroupToken(genCtx.from().buildToken(e.left)))
+			.add(sourceTable(e.left))
 			.add(mapOp(e.op))
-			.add(GroupToken(genCtx.from().buildToken(e.right)))
-			.add(GroupToken(constraint(e.constraint)))
+			.add(sourceTable(e.right))
+			.add(constraint(e.constraint))
+	}
+
+	protected fun sourceTable(e: FromExpression): Token {
+		return when(e) {
+			is QueryFromExpression -> GroupToken(genCtx.from().buildToken(e))
+			is JoinFromExpression-> GroupToken(genCtx.from().buildToken(e))
+			else -> genCtx.from().buildToken(e)
+		}
 	}
 
 	protected fun mapOp(op: JoinOp): String {

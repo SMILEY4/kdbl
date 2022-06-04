@@ -41,7 +41,7 @@ open class GenericLiteralValueGenerator(private val genCtx: GeneratorContext) : 
 	}
 
 	protected fun stringLiteral(e: StringLiteral): Token {
-		return StringToken("\"${e.value}\"")
+		return StringToken("'${e.value}'")
 	}
 
 	protected fun booleanLiteral(e: BooleanLiteral): Token {
@@ -51,7 +51,7 @@ open class GenericLiteralValueGenerator(private val genCtx: GeneratorContext) : 
 	protected fun listLiteral(e: ListLiteral): Token {
 		return GroupToken(
 			CsvListToken(
-				e.values.map { buildToken(e) }
+				e.values.map { buildToken(it) }
 			)
 		)
 	}

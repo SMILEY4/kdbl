@@ -1,9 +1,18 @@
 package de.ruegnerlukas.sqldsl2.grammar.expr
 
-import de.ruegnerlukas.sqldsl2.grammar.TableLike
+import de.ruegnerlukas.sqldsl2.grammar.select.AliasSelectExpression
+import de.ruegnerlukas.sqldsl2.schema.Column
 
-interface ColumnExpr : Expr
+interface ColumnExpr : Expr {
+	fun alias(alias: String): AliasSelectExpression {
+		return AliasSelectExpression(this, alias)
+	}
+}
 
-class Column(val columnName: String) : ColumnExpr
+class UnqualifiedColumn(val columnName: String) : ColumnExpr
 
-class QualifiedColumn(val qualifier: TableLike, val column: Column) : ColumnExpr
+interface QualifiedColumn : ColumnExpr
+
+fun Column.anyTable(): UnqualifiedColumn {
+	return UnqualifiedColumn(this.columnName)
+}

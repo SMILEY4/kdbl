@@ -1,8 +1,8 @@
 package de.ruegnerlukas.sqldsl2.schema
 
-import de.ruegnerlukas.sqldsl2.grammar.expr.ColumnExpr
+import de.ruegnerlukas.sqldsl2.grammar.expr.QualifiedColumn
 
-open class Column(val parentTable: Table<*>, val columnName: String): ColumnExpr {
+open class Column(val parentTable: Table<*>, val columnName: String): QualifiedColumn {
 
 	private val constraints = mutableListOf<ColumnConstraint>()
 

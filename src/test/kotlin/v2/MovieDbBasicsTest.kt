@@ -1,18 +1,18 @@
 package v2
 
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericQueryGenerator
 import de.ruegnerlukas.sqldsl2.grammar.expr.AndCondition
-import de.ruegnerlukas.sqldsl2.grammar.expr.Column
 import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterOrEqualThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.InListCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.InSubQueryCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.IntLiteral
+import de.ruegnerlukas.sqldsl2.grammar.expr.IsNotNullCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.LessThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.LikeCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.ListLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.NotCondition
-import de.ruegnerlukas.sqldsl2.grammar.expr.IsNotNullCondition
-import de.ruegnerlukas.sqldsl2.grammar.expr.QualifiedColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
 import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl2.grammar.orderby.Dir
@@ -22,22 +22,42 @@ import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
 
+fun main() {
+	MovieDbBasicsTest().all()
+}
+
+
 /**
  * https://www.w3resource.com/sql-exercises/movie-database-exercise/basic-exercises-on-movie-database.php
  */
 class MovieDbBasicsTest {
 
+	private val generator = GenericQueryGenerator(GenericGeneratorContext())
+
 	fun all() {
-		query1()
-		query2()
-		query3()
-		query4()
-		query5()
-		query6()
-		query7()
-		query8()
-		query9()
-		query10()
+		println()
+		printQuery("1", query1())
+		printQuery("2", query2())
+		printQuery("3", query3())
+		printQuery("4", query4())
+		printQuery("5", query5())
+		printQuery("6", query6())
+		printQuery("7", query7())
+		printQuery("8", query8())
+		printQuery("9", query9())
+		printQuery("10", query10())
+	}
+
+
+	private fun printQuery(name: String, query: QueryStatement?) {
+		println("QUERY $name:")
+		if (query != null) {
+			val str = generator.buildString(query)
+			println(str)
+		} else {
+			println("-")
+		}
+		println()
 	}
 
 
@@ -48,13 +68,13 @@ class MovieDbBasicsTest {
 	private fun query1() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_title"),
-				Column("mov_year")
+				Movie.title,
+				Movie.year
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		)
 	)
@@ -68,16 +88,16 @@ class MovieDbBasicsTest {
 	private fun query2() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_year"),
+				Movie.year
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		),
 		where = WhereStatement(
-			EqualCondition(Column("mov_title"), StringLiteral("American Beauty"))
+			EqualCondition(Movie.title, StringLiteral("American Beauty"))
 		)
 	)
 
@@ -90,16 +110,16 @@ class MovieDbBasicsTest {
 	private fun query3() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_title")
+				Movie.title
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		),
 		where = WhereStatement(
-			EqualCondition(Column("mov_year"), IntLiteral(1999))
+			EqualCondition(Movie.year, IntLiteral(1999))
 		)
 	)
 
@@ -112,16 +132,16 @@ class MovieDbBasicsTest {
 	private fun query4() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_title")
+				Movie.title
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		),
 		where = WhereStatement(
-			LessThanCondition(Column("mov_year"), IntLiteral(1999))
+			LessThanCondition(Movie.year, IntLiteral(1999))
 		)
 	)
 
@@ -149,28 +169,28 @@ class MovieDbBasicsTest {
 	private fun query6() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				QualifiedColumn(Table("reviewer"), Column("rev_name"))
+				Reviewer.name
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("reviewer"),
-				Table("rating")
+				Reviewer,
+				Rating
 			)
 		),
 		where = WhereStatement(
 			AndCondition(
 				EqualCondition(
-					QualifiedColumn(Table("rating"), Column("rev_id")),
-					QualifiedColumn(Table("reviewer"), Column("rev_id"))
+					Rating.reviewerId,
+					Reviewer.id
 				),
 				AndCondition(
 					GreaterOrEqualThanCondition(
-						QualifiedColumn(Table("rating"), Column("rev_stars")),
+						Rating.stars,
 						IntLiteral(7)
 					),
 					IsNotNullCondition(
-						QualifiedColumn(Table("reviewer"), Column("rev_name"))
+						Reviewer.name
 					)
 				)
 			)
@@ -186,27 +206,27 @@ class MovieDbBasicsTest {
 	private fun query7() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_title")
+				Movie.title
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		),
 		where = WhereStatement(
 			NotCondition(
 				InSubQueryCondition(
-					Column("movie_id"),
+					Movie.id,
 					QueryStatement(
 						SelectStatement(
 							listOf(
-								Column("mov_id")
+								Rating.movieId
 							)
 						),
 						FromStatement(
 							listOf(
-								Table("rating")
+								Rating
 							)
 						)
 					)
@@ -224,24 +244,22 @@ class MovieDbBasicsTest {
 	private fun query8() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_title")
+				Movie.title
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		),
 		where = WhereStatement(
-			NotCondition(
-				InListCondition(
-					Column("movie_id"),
-					ListLiteral(
-						listOf(
-							IntLiteral(905),
-							IntLiteral(907),
-							IntLiteral(917)
-						)
+			InListCondition(
+				Movie.id,
+				ListLiteral(
+					listOf(
+						IntLiteral(905),
+						IntLiteral(907),
+						IntLiteral(917)
 					)
 				)
 			)
@@ -258,25 +276,25 @@ class MovieDbBasicsTest {
 	private fun query9() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("mov_id"),
-				Column("mov_title"),
-				Column("mov_year")
+				Movie.id,
+				Movie.title,
+				Movie.year
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("movie")
+				Movie
 			)
 		),
 		where = WhereStatement(
 			LikeCondition(
-				Column("mov_title"),
+				Movie.title,
 				"%Boogie%Nights%"
 			)
 		),
 		orderBy = OrderByStatement(
 			listOf(
-				OrderByExpression(Column("mov_year"), Dir.ASC)
+				OrderByExpression(Movie.year, Dir.ASC)
 			)
 		)
 	)
@@ -291,22 +309,22 @@ class MovieDbBasicsTest {
 	private fun query10() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("act_id"),
+				Actor.id
 			)
 		),
 		from = FromStatement(
 			listOf(
-				Table("actor")
+				Actor
 			)
 		),
 		where = WhereStatement(
 			AndCondition(
 				EqualCondition(
-					Column("act_fname"),
+					Actor.fName,
 					StringLiteral("Woddy")
 				),
 				EqualCondition(
-					Column("act_lname"),
+					Actor.lName,
 					StringLiteral("Allen")
 				)
 			)

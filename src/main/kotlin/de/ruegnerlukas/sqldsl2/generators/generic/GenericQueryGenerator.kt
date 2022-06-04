@@ -18,8 +18,8 @@ open class GenericQueryGenerator(private val genCtx: GeneratorContext) : QueryGe
 
 	override fun buildToken(e: QueryStatement): Token {
 		return ListToken()
-			.add(from(e.from))
 			.add(select(e.select))
+			.add(from(e.from))
 			.addIf(e.where != null) { where(e.where!!) }
 			.addIf(e.groupBy != null) { groupBy(e.groupBy!!) }
 			.addIf(e.having != null) { having(e.having!!) }
@@ -30,6 +30,7 @@ open class GenericQueryGenerator(private val genCtx: GeneratorContext) : QueryGe
 	protected fun select(statement: SelectStatement): Token {
 		return ListToken()
 			.add("SELECT")
+			.addIf(statement.distinct, "DISTINCT")
 			.add(CsvListToken(statement.expressions.map { genCtx.select().buildToken(it) }))
 	}
 
@@ -53,7 +54,7 @@ open class GenericQueryGenerator(private val genCtx: GeneratorContext) : QueryGe
 
 	protected fun having(statement: HavingStatement): Token {
 		return ListToken()
-			.add("WHERE")
+			.add("HAVING")
 			.add(genCtx.having().buildToken(statement.expression))
 	}
 

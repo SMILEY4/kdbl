@@ -2,7 +2,6 @@ package de.ruegnerlukas.sqldsl2.generators.generic
 
 import de.ruegnerlukas.sqldsl2.generators.GeneratorContext
 import de.ruegnerlukas.sqldsl2.generators.SelectExpressionGenerator
-import de.ruegnerlukas.sqldsl2.grammar.Table
 import de.ruegnerlukas.sqldsl2.grammar.TableAlias
 import de.ruegnerlukas.sqldsl2.grammar.expr.ColumnExpr
 import de.ruegnerlukas.sqldsl2.grammar.expr.Expr
@@ -11,6 +10,7 @@ import de.ruegnerlukas.sqldsl2.grammar.select.AllSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.ExprSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.QualifiedAllSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectExpression
+import de.ruegnerlukas.sqldsl2.schema.Table
 import de.ruegnerlukas.sqldsl2.tokens.GroupToken
 import de.ruegnerlukas.sqldsl2.tokens.ListToken
 import de.ruegnerlukas.sqldsl2.tokens.StringToken

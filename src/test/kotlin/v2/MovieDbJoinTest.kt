@@ -1,8 +1,7 @@
 package v2
 
-import de.ruegnerlukas.sqldsl2.grammar.Table
-import de.ruegnerlukas.sqldsl2.grammar.expr.Column
 import de.ruegnerlukas.sqldsl2.grammar.expr.IsNullCondition
+import de.ruegnerlukas.sqldsl2.grammar.expr.anyTable
 import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl2.grammar.join.JoinClause
 import de.ruegnerlukas.sqldsl2.grammar.join.JoinOp
@@ -25,18 +24,18 @@ class MovieDbJoinTest {
 	fun query1() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				Column("rev_name")
+				Reviewer.name.anyTable()
 			)
 		),
 		from = FromStatement(
 			listOf(
 				JoinClause(
 					JoinOp.INNER,
-					Table("reviewer"),
-					Table("rating"),
+					Reviewer,
+					Rating,
 					UsingJoinConstraint(
 						listOf(
-							Column("rev_id")
+							Reviewer.id.anyTable()
 						)
 					)
 				)
@@ -44,7 +43,7 @@ class MovieDbJoinTest {
 		),
 		where = WhereStatement(
 			IsNullCondition(
-				Column("rev_stars")
+				Rating.stars.anyTable()
 			)
 		)
 	)

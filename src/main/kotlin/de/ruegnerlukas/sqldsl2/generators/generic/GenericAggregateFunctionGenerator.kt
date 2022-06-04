@@ -28,15 +28,15 @@ open class GenericAggregateFunctionGenerator(private val genCtx: GeneratorContex
 	}
 
 	private fun count(e: CountAggFunction): Token {
-		return NamedGroupToken("COUNT", genCtx.expr().buildToken(e))
+		return NamedGroupToken("COUNT", genCtx.expr().buildToken(e.expression))
 	}
 
 	private fun max(e: MaxAggFunction): Token {
-		return NamedGroupToken("MAX", genCtx.expr().buildToken(e))
+		return NamedGroupToken("MAX", genCtx.expr().buildToken(e.expression))
 	}
 
 	private fun min(e: MinAggFunction): Token {
-		return NamedGroupToken("MIN", genCtx.expr().buildToken(e))
+		return NamedGroupToken("MIN", genCtx.expr().buildToken(e.expression))
 	}
 
 }

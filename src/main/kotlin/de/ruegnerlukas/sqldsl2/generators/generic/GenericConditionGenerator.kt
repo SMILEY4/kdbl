@@ -189,7 +189,7 @@ open class GenericConditionGenerator(private val genCtx: GeneratorContext) : Con
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.expression)))
 			.add("LIKE")
-			.add("\"${e.pattern}\"")
+			.add("'${e.pattern}'")
 	}
 
 }

@@ -1,12 +1,11 @@
 package de.ruegnerlukas.sqldsl2.grammar.from
 
-import de.ruegnerlukas.sqldsl2.grammar.TableLike
 import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
 
 
 interface FromExpression
 
-interface TableFromExpression : TableLike
+interface TableFromExpression : FromExpression
 
 interface TableAliasFromExpression : FromExpression
 
