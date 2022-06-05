@@ -1,6 +1,7 @@
 package v2
 
-import de.ruegnerlukas.sqldsl2.grammar.TableAlias
+import de.ruegnerlukas.sqldsl2.grammar.table.AliasTable
+import de.ruegnerlukas.sqldsl2.grammar.table.TableBase
 import de.ruegnerlukas.sqldsl2.schema.IntColumn.Companion.integer
 import de.ruegnerlukas.sqldsl2.schema.Table
 import de.ruegnerlukas.sqldsl2.schema.TextColumn.Companion.text
@@ -14,11 +15,11 @@ sealed class ActorTableDef : Table<ActorTableDef>("actor") {
 	val gender = text("act_gender").notNull()
 
 	companion object {
-		class ActorTableDefAlias(override val alias: String) : ActorTableDef(), TableAlias
+		class ActorTableDefAlias(override val baseTable: TableBase, override val aliasName: String): ActorTableDef(), AliasTable
 	}
 
-	override fun alias(alias: String): ActorTableDef {
-		return ActorTableDefAlias(alias)
+	override fun alias(alias: String): ActorTableDefAlias {
+		return ActorTableDefAlias(this, alias)
 	}
 }
 
@@ -31,11 +32,11 @@ sealed class MovieCastTableDef : Table<MovieCastTableDef>("movie_cast") {
 	val role = text("role").notNull()
 
 	companion object {
-		class MovieCastTableDefAlias(override val alias: String) : MovieCastTableDef(), TableAlias
+		class MovieCastTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : MovieCastTableDef(), AliasTable
 	}
 
 	override fun alias(alias: String): MovieCastTableDef {
-		return MovieCastTableDefAlias(alias)
+		return MovieCastTableDefAlias(this, alias)
 	}
 }
 
@@ -52,11 +53,11 @@ sealed class MovieTableDef : Table<MovieTableDef>("movie") {
 	val releaseCountry = text("mov_rel_country").notNull()
 
 	companion object {
-		class MovieTableDefAlias(override val alias: String) : MovieTableDef(), TableAlias
+		class MovieTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : MovieTableDef(), AliasTable
 	}
 
 	override fun alias(alias: String): MovieTableDef {
-		return MovieTableDefAlias(alias)
+		return MovieTableDefAlias(this, alias)
 	}
 }
 
@@ -68,11 +69,11 @@ sealed class MovieDirectionTableDef : Table<MovieDirectionTableDef>("movie_direc
 	val movieId = integer("mov_id").foreignKey(Movie.id)
 
 	companion object {
-		class MovieDirectionTableDefTableDefAlias(override val alias: String) : MovieDirectionTableDef(), TableAlias
+		class MovieDirectionTableDefTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : MovieDirectionTableDef(), AliasTable
 	}
 
 	override fun alias(alias: String): MovieDirectionTableDef {
-		return MovieDirectionTableDefTableDefAlias(alias)
+		return MovieDirectionTableDefTableDefAlias(this, alias)
 	}
 }
 
@@ -85,11 +86,11 @@ sealed class DirectorTableDef : Table<DirectorTableDef>("director") {
 	val lName = text("dir_lname").notNull()
 
 	companion object {
-		class DirectorTableDefTableDefAlias(override val alias: String) : DirectorTableDef(), TableAlias
+		class DirectorTableDefTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : DirectorTableDef(), AliasTable
 	}
 
 	override fun alias(alias: String): DirectorTableDef {
-		return DirectorTableDefTableDefAlias(alias)
+		return DirectorTableDefTableDefAlias(this, alias)
 	}
 }
 
@@ -101,11 +102,11 @@ sealed class ReviewerTableDef : Table<ReviewerTableDef>("reviewer") {
 	val name = text("rev_name").notNull()
 
 	companion object {
-		class ReviewerTableDefAlias(override val alias: String) : ReviewerTableDef(), TableAlias
+		class ReviewerTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : ReviewerTableDef(), AliasTable
 	}
 
 	override fun alias(alias: String): ReviewerTableDef {
-		return ReviewerTableDefAlias(alias)
+		return ReviewerTableDefAlias(this, alias)
 	}
 }
 
@@ -118,11 +119,11 @@ sealed class RatingTableDef : Table<RatingTableDef>("rating") {
 	val numRatings = integer("num_o_ratings").notNull()
 
 	companion object {
-		class RatingTableDefAlias(override val alias: String) : RatingTableDef(), TableAlias
+		class RatingTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : RatingTableDef(), AliasTable
 	}
 
 	override fun alias(alias: String): RatingTableDef {
-		return RatingTableDefAlias(alias)
+		return RatingTableDefAlias(this, alias)
 	}
 }
 
@@ -134,11 +135,11 @@ sealed class GenreTableDef : Table<GenreTableDef>("genres") {
 	val title = text("gen_title").notNull()
 
 	companion object {
-		class GenreTableDefAlias(override val alias: String) : GenreTableDef(), TableAlias
+		class GenreTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : GenreTableDef(), AliasTable
 	}
 
 	override fun alias(alias: String): GenreTableDef {
-		return GenreTableDefAlias(alias)
+		return GenreTableDefAlias(this, alias)
 	}
 }
 
@@ -149,10 +150,10 @@ sealed class MovieGenreTableDef : Table<MovieGenreTableDef>("movie_genres") {
 	val genreId = integer("gen_id").foreignKey(Genre.id)
 
 	companion object {
-		class MovieGenreTableDefAlias(override val alias: String) : MovieGenreTableDef(), TableAlias
+		class MovieGenreTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : MovieGenreTableDef(), AliasTable
 	}
 
 	override fun alias(alias: String): MovieGenreTableDef {
-		return MovieGenreTableDefAlias(alias)
+		return MovieGenreTableDefAlias(this, alias)
 	}
 }

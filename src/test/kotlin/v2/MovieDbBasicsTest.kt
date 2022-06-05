@@ -50,12 +50,12 @@ class MovieDbBasicsTest {
 
 
 	private fun printQuery(name: String, query: QueryStatement?) {
-		println("QUERY $name:")
+		println("--QUERY $name:")
 		if (query != null) {
 			val str = generator.buildString(query)
-			println(str)
+			println("$str;")
 		} else {
-			println("-")
+			println("--")
 		}
 		println()
 	}

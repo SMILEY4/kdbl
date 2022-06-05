@@ -5,6 +5,8 @@ import de.ruegnerlukas.sqldsl2.generators.OperationExprGenerator
 import de.ruegnerlukas.sqldsl2.grammar.expr.AddOperation
 import de.ruegnerlukas.sqldsl2.grammar.expr.ConcatOperation
 import de.ruegnerlukas.sqldsl2.grammar.expr.ConditionExpr
+import de.ruegnerlukas.sqldsl2.grammar.expr.DivOperation
+import de.ruegnerlukas.sqldsl2.grammar.expr.MulOperation
 import de.ruegnerlukas.sqldsl2.grammar.expr.OperationExpr
 import de.ruegnerlukas.sqldsl2.grammar.expr.SubOperation
 import de.ruegnerlukas.sqldsl2.tokens.GroupToken
@@ -17,6 +19,8 @@ open class GenericOperationExprGenerator(private val genCtx: GeneratorContext) :
 		return when (e) {
 			is AddOperation -> add(e)
 			is SubOperation -> sub(e)
+			is MulOperation -> mul(e)
+			is DivOperation -> div(e)
 			is ConcatOperation -> concat(e)
 			is ConditionExpr -> condition(e)
 			else -> throwUnknownType(e)
@@ -34,6 +38,20 @@ open class GenericOperationExprGenerator(private val genCtx: GeneratorContext) :
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add("-")
+			.add(GroupToken(genCtx.expr().buildToken(e.right)))
+	}
+
+	protected fun mul(e: MulOperation): Token {
+		return ListToken()
+			.add(GroupToken(genCtx.expr().buildToken(e.left)))
+			.add("*")
+			.add(GroupToken(genCtx.expr().buildToken(e.right)))
+	}
+
+	protected fun div(e: DivOperation): Token {
+		return ListToken()
+			.add(GroupToken(genCtx.expr().buildToken(e.left)))
+			.add("/")
 			.add(GroupToken(genCtx.expr().buildToken(e.right)))
 	}
 

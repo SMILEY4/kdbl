@@ -2,7 +2,7 @@ package de.ruegnerlukas.sqldsl2.schema
 
 import de.ruegnerlukas.sqldsl2.grammar.expr.QualifiedColumn
 
-open class Column(val parentTable: Table<*>, val columnName: String): QualifiedColumn {
+open class Column(private val parentTable: Table<*>, private val columnName: String) : QualifiedColumn {
 
 	private val constraints = mutableListOf<ColumnConstraint>()
 
@@ -11,6 +11,10 @@ open class Column(val parentTable: Table<*>, val columnName: String): QualifiedC
 	}
 
 	fun getConstraints() = constraints.toList()
+
+	override fun getColumnName() = columnName
+
+	override fun getParentTable() = parentTable
 
 	inline fun <reified T> hasConstraint(): Boolean {
 		return getConstraints().filterIsInstance<T>().isNotEmpty()
@@ -40,6 +44,7 @@ open class Column(val parentTable: Table<*>, val columnName: String): QualifiedC
 	fun foreignKey(column: Column, onDelete: OnDelete = OnDelete.NO_ACTION, onUpdate: OnUpdate = OnUpdate.NO_ACTION): Column {
 		return this.apply { register(ForeignKeyConstraint(column.parentTable, column, onDelete, onUpdate)) }
 	}
+
 
 }
 

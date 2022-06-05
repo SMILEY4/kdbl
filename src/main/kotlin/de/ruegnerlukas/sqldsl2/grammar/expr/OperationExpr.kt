@@ -6,4 +6,8 @@ class AddOperation(val left: Expr, val right: Expr) : OperationExpr
 
 class SubOperation(val left: Expr, val right: Expr) : OperationExpr
 
+class MulOperation(val left: Expr, val right: Expr) : OperationExpr
+
+class DivOperation(val left: Expr, val right: Expr) : OperationExpr
+
 class ConcatOperation(val left: Expr, val right: Expr) : OperationExpr

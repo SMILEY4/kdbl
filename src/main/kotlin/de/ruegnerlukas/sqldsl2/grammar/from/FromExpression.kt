@@ -7,8 +7,6 @@ interface FromExpression
 
 interface TableFromExpression : FromExpression
 
-interface TableAliasFromExpression : FromExpression
-
 class QueryFromExpression(val query: QueryStatement, val alias: String) : FromExpression
 
 interface JoinFromExpression: FromExpression

@@ -1,10 +1,9 @@
 package de.ruegnerlukas.sqldsl2.schema
 
-import de.ruegnerlukas.sqldsl2.grammar.TableLike
-import de.ruegnerlukas.sqldsl2.grammar.from.TableFromExpression
+import de.ruegnerlukas.sqldsl2.grammar.table.StandardTable
 
 
-abstract class Table<T>(val tableName: String, val create: Create = Create.IF_NOT_EXISTS) : TableFromExpression, TableLike {
+abstract class Table<T>(override val tableName: String, val create: Create = Create.IF_NOT_EXISTS) : StandardTable {
 
 	private val columns = mutableListOf<Column>()
 

@@ -10,3 +10,7 @@ class CountAggFunction(val expression: Expr) : AggregateFunction
 class MaxAggFunction(val expression: Expr) : AggregateFunction
 
 class MinAggFunction(val expression: Expr) : AggregateFunction
+
+class SumAggFunction(val expression: Expr) : AggregateFunction
+
+class AvgAggFunction(val expression: Expr) : AggregateFunction
