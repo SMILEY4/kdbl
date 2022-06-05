@@ -16,7 +16,6 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.MinAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.NotEqualCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.NotInSubQueryCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
-import de.ruegnerlukas.sqldsl2.grammar.expr.SubQueryLiteral
 import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl2.grammar.groupby.GroupByStatement
 import de.ruegnerlukas.sqldsl2.grammar.having.HavingStatement
@@ -635,17 +634,15 @@ class MovieDbSubQueriesTest {
 				listOf(
 					EqualCondition(
 						Rating.stars,
-						SubQueryLiteral(
-							QueryStatement(
-								select = SelectStatement(
-									listOf(
-										MinAggFunction(Rating.stars)
-									)
-								),
-								from = FromStatement(
-									listOf(
-										Rating
-									)
+						QueryStatement(
+							select = SelectStatement(
+								listOf(
+									MinAggFunction(Rating.stars)
+								)
+							),
+							from = FromStatement(
+								listOf(
+									Rating
 								)
 							)
 						)

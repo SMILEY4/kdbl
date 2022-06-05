@@ -2,6 +2,7 @@ package de.ruegnerlukas.sqldsl2.generators.generic
 
 import de.ruegnerlukas.sqldsl2.generators.GeneratorContext
 import de.ruegnerlukas.sqldsl2.generators.SelectExpressionGenerator
+import de.ruegnerlukas.sqldsl2.grammar.expr.AliasColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.ColumnExpr
 import de.ruegnerlukas.sqldsl2.grammar.expr.Expr
 import de.ruegnerlukas.sqldsl2.grammar.select.AliasSelectExpression
@@ -12,20 +13,20 @@ import de.ruegnerlukas.sqldsl2.grammar.select.SelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.table.AliasTable
 import de.ruegnerlukas.sqldsl2.grammar.table.DerivedTable
 import de.ruegnerlukas.sqldsl2.grammar.table.StandardTable
-import de.ruegnerlukas.sqldsl2.schema.Table
 import de.ruegnerlukas.sqldsl2.tokens.GroupToken
 import de.ruegnerlukas.sqldsl2.tokens.ListToken
 import de.ruegnerlukas.sqldsl2.tokens.StringToken
 import de.ruegnerlukas.sqldsl2.tokens.Token
 
-open class GenericSelectExpressionGenerator(val genCtx: GeneratorContext) : SelectExpressionGenerator, GenericGeneratorBase<SelectExpression>() {
+open class GenericSelectExpressionGenerator(val genCtx: GeneratorContext) : SelectExpressionGenerator,
+	GenericGeneratorBase<SelectExpression>() {
 
 	override fun buildToken(e: SelectExpression): Token {
 		return when (e) {
+			is AliasSelectExpression -> alias(e)
 			is ExprSelectExpression -> expression(e)
 			is AllSelectExpression -> all(e)
 			is QualifiedAllSelectExpression -> qualifiedAll(e)
-			is AliasSelectExpression -> alias(e)
 			else -> throwUnknownType(e)
 		}
 	}
@@ -52,10 +53,13 @@ open class GenericSelectExpressionGenerator(val genCtx: GeneratorContext) : Sele
 	}
 
 	protected fun alias(e: AliasSelectExpression): Token {
-		return ListToken()
-			.add(GroupToken(buildToken(e.expr)))
-			.add("AS")
-			.add(e.alias)
+		return when (e) {
+			is AliasColumn -> ListToken()
+				.add(GroupToken(buildToken(e.getContent())))
+				.add("AS")
+				.add(e.getColumnName())
+			else -> throwUnknownType(e)
+		}
 	}
 
 }

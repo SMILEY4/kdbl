@@ -7,6 +7,7 @@ import de.ruegnerlukas.sqldsl2.grammar.from.JoinFromExpression
 import de.ruegnerlukas.sqldsl2.grammar.from.QueryFromExpression
 import de.ruegnerlukas.sqldsl2.grammar.from.TableFromExpression
 import de.ruegnerlukas.sqldsl2.grammar.join.JoinClause
+import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
 import de.ruegnerlukas.sqldsl2.grammar.table.AliasTable
 import de.ruegnerlukas.sqldsl2.grammar.table.DerivedTable
 import de.ruegnerlukas.sqldsl2.grammar.table.StandardTable
@@ -62,10 +63,10 @@ open class GenericFromExpressionGenerator(private val genCtx: GeneratorContext) 
 	}
 
 	protected fun query(e: QueryFromExpression): Token {
-		return ListToken()
-			.add(GroupToken(genCtx.query().buildToken(e.query)))
-			.add("AS")
-			.add(e.alias)
+		return when (e) {
+			is QueryStatement -> ListToken().add(GroupToken(genCtx.query().buildToken(e)))
+			else -> throwUnknownType(e)
+		}
 	}
 
 }

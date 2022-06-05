@@ -51,7 +51,7 @@ class NullLiteral : LiteralValue
 /**
  * a sub-query
  */
-class SubQueryLiteral(val query: QueryStatement) : LiteralValue
+interface SubQueryLiteral : LiteralValue
 
 
 /**

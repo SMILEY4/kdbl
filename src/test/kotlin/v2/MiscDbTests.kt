@@ -2,6 +2,7 @@ package v2
 
 import de.ruegnerlukas.sqldsl2.generators.generic.GenericGeneratorContext
 import de.ruegnerlukas.sqldsl2.generators.generic.GenericQueryGenerator
+import de.ruegnerlukas.sqldsl2.grammar.expr.AliasColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.AvgAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.CountAllAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.DivOperation
@@ -67,7 +68,7 @@ class MiscDbTests {
 			listOf(
 				Orders.orderNumber,
 				Orders.purchaseAmount,
-				AliasSelectExpression(
+				AliasColumn(
 					DivOperation(
 						MulOperation(
 							IntLiteral(100),
@@ -77,7 +78,7 @@ class MiscDbTests {
 					),
 					"archived_perc"
 				),
-				AliasSelectExpression(
+				AliasColumn(
 					DivOperation(
 						MulOperation(
 							IntLiteral(100),
@@ -208,7 +209,7 @@ class MiscDbTests {
 	private fun query5() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				AliasSelectExpression(CountAllAggFunction(), "num_products")
+				AliasColumn(CountAllAggFunction(), "num_products")
 			)
 		),
 		from = FromStatement(
@@ -234,7 +235,7 @@ class MiscDbTests {
 	private fun query6() = QueryStatement(
 		select = SelectStatement(
 			listOf(
-				AliasSelectExpression(AvgAggFunction(Item.price), "avg_price"),
+				AliasColumn(AvgAggFunction(Item.price), "avg_price"),
 				Item.company.alias("company_id")
 			)
 		),

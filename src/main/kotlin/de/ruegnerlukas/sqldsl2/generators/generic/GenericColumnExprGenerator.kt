@@ -1,6 +1,7 @@
 package de.ruegnerlukas.sqldsl2.generators.generic
 
 import de.ruegnerlukas.sqldsl2.generators.ColumnExprGenerator
+import de.ruegnerlukas.sqldsl2.grammar.expr.AliasColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.ColumnExpr
 import de.ruegnerlukas.sqldsl2.grammar.expr.DerivedColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.QualifiedColumn
@@ -16,25 +17,30 @@ open class GenericColumnExprGenerator : ColumnExprGenerator, GenericGeneratorBas
 		return when (e) {
 			is QualifiedColumn -> qualifiedColumn(e)
 			is DerivedColumn -> derivedColumn(e)
+			is AliasColumn -> aliasColumn(e)
 			else -> throwUnknownType(e)
 		}
 	}
 
-	private fun derivedColumn(e: DerivedColumn): Token {
+	protected fun derivedColumn(e: DerivedColumn): Token {
 		return StringToken("${e.getParentTable().tableName}.${e.getColumnName()}")
 	}
 
-	private fun qualifiedColumn(e: QualifiedColumn): Token {
+	protected fun qualifiedColumn(e: QualifiedColumn): Token {
 		return when (e) {
 			is Column -> {
 				when (val qualifier = e.getParentTable()) {
-					is StandardTable -> StringToken("${qualifier.tableName}.${e.getColumnName()}")
 					is AliasTable -> StringToken("${qualifier.aliasName}.${e.getColumnName()}")
+					is StandardTable -> StringToken("${qualifier.tableName}.${e.getColumnName()}")
 					else -> throwUnknownType(qualifier)
 				}
 			}
 			else -> throwUnknownType(e)
 		}
+	}
+
+	protected fun aliasColumn(e: AliasColumn): Token {
+		return StringToken(e.getColumnName())
 	}
 
 }

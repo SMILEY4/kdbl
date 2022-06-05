@@ -11,6 +11,6 @@ class AllSelectExpression : SelectExpression
 
 class QualifiedAllSelectExpression(val qualifier: TableBase) : SelectExpression
 
-class AliasSelectExpression(val expr: SelectExpression, val alias: String) : SelectExpression
+interface AliasSelectExpression : SelectExpression
 
 

@@ -11,6 +11,7 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.MacroLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.NullLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.SubQueryLiteral
+import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
 import de.ruegnerlukas.sqldsl2.tokens.CsvListToken
 import de.ruegnerlukas.sqldsl2.tokens.GroupToken
 import de.ruegnerlukas.sqldsl2.tokens.StringToken
@@ -67,7 +68,10 @@ open class GenericLiteralValueGenerator(private val genCtx: GeneratorContext) : 
 	}
 
 	protected fun subQueryLiteral(e: SubQueryLiteral): Token {
-		return genCtx.query().buildToken(e.query)
+		return when (e) {
+			is QueryStatement -> genCtx.query().buildToken(e)
+			else -> throwUnknownType(e)
+		}
 	}
 
 }

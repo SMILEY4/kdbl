@@ -27,27 +27,27 @@ open class GenericAggregateFunctionGenerator(private val genCtx: GeneratorContex
 		}
 	}
 
-	private fun countAll(e: CountAllAggFunction): Token {
+	protected fun countAll(e: CountAllAggFunction): Token {
 		return StringToken("COUNT(*)")
 	}
 
-	private fun count(e: CountAggFunction): Token {
+	protected fun count(e: CountAggFunction): Token {
 		return NamedGroupToken("COUNT", genCtx.expr().buildToken(e.expression))
 	}
 
-	private fun max(e: MaxAggFunction): Token {
+	protected fun max(e: MaxAggFunction): Token {
 		return NamedGroupToken("MAX", genCtx.expr().buildToken(e.expression))
 	}
 
-	private fun min(e: MinAggFunction): Token {
+	protected fun min(e: MinAggFunction): Token {
 		return NamedGroupToken("MIN", genCtx.expr().buildToken(e.expression))
 	}
 
-	private fun sum(e: SumAggFunction): Token {
+	protected fun sum(e: SumAggFunction): Token {
 		return NamedGroupToken("SUM", genCtx.expr().buildToken(e.expression))
 	}
 
-	private fun avg(e: AvgAggFunction): Token {
+	protected fun avg(e: AvgAggFunction): Token {
 		return NamedGroupToken("AVG", genCtx.expr().buildToken(e.expression))
 	}
 
