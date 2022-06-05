@@ -149,9 +149,9 @@ class MovieDbBasicsTest {
 	/**
 	 * SELECT reviewer.rev_name
 	 * FROM reviewer
-	 * UNION
-	 * (SELECT movie.mov_title
-	 * FROM movie);
+	 * UNION (
+	 * 		SELECT movie.mov_title FROM movie
+	 * );
 	 */
 	private fun query5(): QueryStatement? {
 		// TODO
