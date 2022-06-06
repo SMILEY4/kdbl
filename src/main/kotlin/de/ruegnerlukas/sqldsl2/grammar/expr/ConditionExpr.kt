@@ -2,10 +2,10 @@ package de.ruegnerlukas.sqldsl2.grammar.expr
 
 import de.ruegnerlukas.sqldsl2.grammar.having.ConditionHavingExpression
 import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl2.grammar.update.UpdateCondition
+import de.ruegnerlukas.sqldsl2.grammar.update.UpdateWhereStatement
 import de.ruegnerlukas.sqldsl2.grammar.where.ConditionWhereExpression
 
-interface ConditionExpr : OperationExpr, ConditionWhereExpression, ConditionHavingExpression, UpdateCondition
+interface ConditionExpr : OperationExpr, ConditionWhereExpression, ConditionHavingExpression, UpdateWhereStatement
 
 class AndCondition(val left: ConditionExpr, val right: ConditionExpr) : ConditionExpr
 

@@ -1,7 +1,7 @@
-- INSERT ✅
-- UPDATE ✅
-- DELETE
-- SELECT ✅
+- INSERT ✅❌
+- UPDATE ✅❌
+- DELETE ✅❌
+- SELECT ✅✅
 
 - creating tables
 - ??? simplified wrapper for ...
