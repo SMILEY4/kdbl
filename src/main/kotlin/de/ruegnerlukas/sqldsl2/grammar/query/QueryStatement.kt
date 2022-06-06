@@ -5,6 +5,7 @@ import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl2.grammar.from.QueryFromExpression
 import de.ruegnerlukas.sqldsl2.grammar.groupby.GroupByStatement
 import de.ruegnerlukas.sqldsl2.grammar.having.HavingStatement
+import de.ruegnerlukas.sqldsl2.grammar.insert.InsertQueryExpression
 import de.ruegnerlukas.sqldsl2.grammar.limit.LimitStatement
 import de.ruegnerlukas.sqldsl2.grammar.orderby.OrderByStatement
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
@@ -18,6 +19,6 @@ class QueryStatement(
 	val having: HavingStatement? = null,
 	val orderBy: OrderByStatement? = null,
 	val limit: LimitStatement? = null,
-) : QueryFromExpression, SubQueryLiteral
+) : QueryFromExpression, SubQueryLiteral, InsertQueryExpression
 
 

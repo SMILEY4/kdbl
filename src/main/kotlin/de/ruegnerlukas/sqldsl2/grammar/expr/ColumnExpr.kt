@@ -1,16 +1,19 @@
 package de.ruegnerlukas.sqldsl2.grammar.expr
 
+import de.ruegnerlukas.sqldsl2.grammar.insert.InsertColumn
+import de.ruegnerlukas.sqldsl2.grammar.insert.ReturningColumn
 import de.ruegnerlukas.sqldsl2.grammar.select.AliasSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.table.DerivedTable
 import de.ruegnerlukas.sqldsl2.grammar.table.TableBase
+import de.ruegnerlukas.sqldsl2.grammar.update.UpdateColumn
 
 interface ColumnExpr : Expr {
 	fun getColumnName(): String
 	fun getParentTable(): TableBase
 }
 
-interface QualifiedColumn : ColumnExpr {
+interface QualifiedColumn : ColumnExpr, InsertColumn, UpdateColumn, ReturningColumn {
 	fun alias(alias: String): AliasSelectExpression {
 		return AliasColumn(alias).assign(this)
 	}
@@ -23,7 +26,7 @@ class DerivedColumn(private val parentTable: DerivedTable, private val columnNam
 }
 
 
-class AliasColumn(private val alias: String): ColumnExpr, AliasSelectExpression {
+class AliasColumn(private val alias: String): ColumnExpr, AliasSelectExpression, ReturningColumn {
 
 	constructor(expr: SelectExpression, alias: String): this(alias) {
 		assign(expr)

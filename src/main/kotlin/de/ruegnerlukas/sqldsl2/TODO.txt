@@ -1,0 +1,12 @@
+- INSERT ✅
+- UPDATE ✅
+- DELETE
+- SELECT ✅
+
+- creating tables
+- ??? simplified wrapper for ...
+    - inserting items
+    - updating items
+    - deleting items
+    - finding items
+    -> simple predefined statements ?

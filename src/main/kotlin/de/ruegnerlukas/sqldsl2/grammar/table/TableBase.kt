@@ -4,6 +4,7 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.ColumnExpr
 import de.ruegnerlukas.sqldsl2.grammar.expr.DerivedColumn
 import de.ruegnerlukas.sqldsl2.grammar.from.FromExpression
 import de.ruegnerlukas.sqldsl2.grammar.from.TableFromExpression
+import de.ruegnerlukas.sqldsl2.grammar.target.CommonTarget
 
 
 /**
@@ -15,7 +16,7 @@ interface TableBase: TableFromExpression
 /**
  * A standard table
  */
-interface StandardTable : TableBase {
+interface StandardTable : TableBase, CommonTarget {
 	val tableName: String
 }
 
