@@ -1,6 +1,5 @@
 package de.ruegnerlukas.sqldsl2.grammar.query
 
-import de.ruegnerlukas.sqldsl2.grammar.expr.SubQueryLiteral
 import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl2.grammar.from.QueryFromExpression
 import de.ruegnerlukas.sqldsl2.grammar.groupby.GroupByStatement
@@ -19,6 +18,6 @@ class QueryStatement(
 	val having: HavingStatement? = null,
 	val orderBy: OrderByStatement? = null,
 	val limit: LimitStatement? = null,
-) : QueryFromExpression, SubQueryLiteral, InsertQueryExpression
+) : QueryFromExpression, InsertQueryExpression
 
 

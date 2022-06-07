@@ -12,9 +12,9 @@ import de.ruegnerlukas.sqldsl2.schema.Column
 import de.ruegnerlukas.sqldsl2.tokens.StringToken
 import de.ruegnerlukas.sqldsl2.tokens.Token
 
-open class GenericColumnExprGenerator : ColumnExprGenerator, GenericGeneratorBase<ColumnExpr>() {
+open class GenericColumnExprGenerator : ColumnExprGenerator, GenericGeneratorBase<ColumnExpr<*>>() {
 
-	override fun buildToken(e: ColumnExpr): Token {
+	override fun buildToken(e: ColumnExpr<*>): Token {
 		return when (e) {
 			is QualifiedColumn -> qualifiedColumn(e)
 			is DerivedColumn -> derivedColumn(e)
@@ -23,11 +23,11 @@ open class GenericColumnExprGenerator : ColumnExprGenerator, GenericGeneratorBas
 		}
 	}
 
-	protected fun derivedColumn(e: DerivedColumn): Token {
+	protected fun derivedColumn(e: DerivedColumn<*>): Token {
 		return StringToken("${e.getParentTable().tableName}.${e.getColumnName()}")
 	}
 
-	protected fun qualifiedColumn(e: QualifiedColumn): Token {
+	protected fun qualifiedColumn(e: QualifiedColumn<*>): Token {
 		return when (e) {
 			is Column -> {
 				when (val qualifier = e.getParentTable()) {
@@ -40,7 +40,7 @@ open class GenericColumnExprGenerator : ColumnExprGenerator, GenericGeneratorBas
 		}
 	}
 
-	protected fun aliasColumn(e: AliasColumn): Token {
+	protected fun aliasColumn(e: AliasColumn<*>): Token {
 		return StringToken(e.getColumnName())
 	}
 

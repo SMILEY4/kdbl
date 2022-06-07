@@ -5,9 +5,9 @@ import de.ruegnerlukas.sqldsl2.grammar.table.StandardTable
 
 abstract class Table<T>(override val tableName: String, val create: Create = Create.IF_NOT_EXISTS) : StandardTable {
 
-	private val columns = mutableListOf<Column>()
+	private val columns = mutableListOf<Column<*>>()
 
-	fun register(column: Column) {
+	fun register(column: Column<*>) {
 		columns.add(column)
 	}
 

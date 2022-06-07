@@ -18,10 +18,9 @@ import de.ruegnerlukas.sqldsl2.tokens.ListToken
 import de.ruegnerlukas.sqldsl2.tokens.StringToken
 import de.ruegnerlukas.sqldsl2.tokens.Token
 
-open class GenericSelectExpressionGenerator(val genCtx: GeneratorContext) : SelectExpressionGenerator,
-	GenericGeneratorBase<SelectExpression>() {
+open class GenericSelectExpressionGenerator(val genCtx: GeneratorContext) : SelectExpressionGenerator, GenericGeneratorBase<SelectExpression<*>>() {
 
-	override fun buildToken(e: SelectExpression): Token {
+	override fun buildToken(e: SelectExpression<*>): Token {
 		return when (e) {
 			is AliasSelectExpression -> alias(e)
 			is ExprSelectExpression -> expression(e)
@@ -31,10 +30,10 @@ open class GenericSelectExpressionGenerator(val genCtx: GeneratorContext) : Sele
 		}
 	}
 
-	protected fun expression(e: ExprSelectExpression): Token {
+	protected fun expression(e: ExprSelectExpression<*>): Token {
 		return when (e) {
-			is ColumnExpr -> genCtx.columnExpr().buildToken(e)
-			is Expr -> genCtx.expr().buildToken(e)
+			is ColumnExpr<*> -> genCtx.columnExpr().buildToken(e)
+			is Expr<*> -> genCtx.expr().buildToken(e)
 			else -> throwUnknownType(e)
 		}
 	}
@@ -52,7 +51,7 @@ open class GenericSelectExpressionGenerator(val genCtx: GeneratorContext) : Sele
 		}
 	}
 
-	protected fun alias(e: AliasSelectExpression): Token {
+	protected fun alias(e: AliasSelectExpression<*>): Token {
 		return when (e) {
 			is AliasColumn -> ListToken()
 				.add(GroupToken(buildToken(e.getContent())))

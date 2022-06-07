@@ -10,7 +10,7 @@ open class GenericGroupByExpressionGenerator(private val genCtx: GeneratorContex
 
 	override fun buildToken(e: GroupByExpression): Token {
 		return when (e) {
-			is Expr -> genCtx.expr().buildToken(e)
+			is Expr<*> -> genCtx.expr().buildToken(e)
 			else -> throwUnknownType(e)
 		}
 	}

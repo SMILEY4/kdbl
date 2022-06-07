@@ -17,9 +17,9 @@ import de.ruegnerlukas.sqldsl2.tokens.GroupToken
 import de.ruegnerlukas.sqldsl2.tokens.StringToken
 import de.ruegnerlukas.sqldsl2.tokens.Token
 
-open class GenericLiteralValueGenerator(private val genCtx: GeneratorContext) : LiteralGenerator, GenericGeneratorBase<LiteralValue>() {
+open class GenericLiteralValueGenerator(private val genCtx: GeneratorContext) : LiteralGenerator, GenericGeneratorBase<LiteralValue<*>>() {
 
-	override fun buildToken(e: LiteralValue): Token {
+	override fun buildToken(e: LiteralValue<*>): Token {
 		return when (e) {
 			is IntLiteral -> intLiteral(e)
 			is FloatLiteral -> floatLiteral(e)
@@ -49,7 +49,7 @@ open class GenericLiteralValueGenerator(private val genCtx: GeneratorContext) : 
 		return StringToken(if (e.value) "TRUE" else "FALSE")
 	}
 
-	protected fun listLiteral(e: ListLiteral): Token {
+	protected fun listLiteral(e: ListLiteral<*>): Token {
 		return GroupToken(
 			CsvListToken(
 				e.values.map { buildToken(it) }
@@ -67,11 +67,8 @@ open class GenericLiteralValueGenerator(private val genCtx: GeneratorContext) : 
 		}
 	}
 
-	protected fun subQueryLiteral(e: SubQueryLiteral): Token {
-		return when (e) {
-			is QueryStatement -> genCtx.query().buildToken(e)
-			else -> throwUnknownType(e)
-		}
+	protected fun subQueryLiteral(e: SubQueryLiteral<*>): Token {
+		return genCtx.query().buildToken(e.query)
 	}
 
 }

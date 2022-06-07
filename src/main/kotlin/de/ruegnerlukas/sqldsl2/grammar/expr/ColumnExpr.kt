@@ -15,8 +15,8 @@ interface ColumnExpr<T: AnyValueType> : Expr<T> {
 }
 
 interface QualifiedColumn<T: AnyValueType> : ColumnExpr<T>, InsertColumnExpression, UpdateColumn, ReturningColumn {
-	fun alias(alias: String): AliasSelectExpression {
-		return AliasColumn(alias).assign(this)
+	fun alias(alias: String): AliasSelectExpression<T> {
+		return AliasColumn<T>(alias).assign(this)
 	}
 }
 
@@ -27,20 +27,20 @@ class DerivedColumn<T: AnyValueType>(private val parentTable: DerivedTable, priv
 }
 
 
-class AliasColumn(private val alias: String) : ColumnExpr<AnyValueType>, AliasSelectExpression, ReturningColumn {
+class AliasColumn<T: AnyValueType>(private val alias: String) : ColumnExpr<T>, AliasSelectExpression<T>, ReturningColumn {
 
-	constructor(expr: SelectExpression, alias: String) : this(alias) {
+	constructor(expr: SelectExpression<T>, alias: String) : this(alias) {
 		assign(expr)
 	}
 
-	private var content: SelectExpression? = null
+	private var content: SelectExpression<T>? = null
 
-	fun assign(expr: SelectExpression): AliasColumn {
+	fun assign(expr: SelectExpression<T>): AliasColumn<T> {
 		content = expr
 		return this
 	}
 
-	fun getContent(): SelectExpression {
+	fun getContent(): SelectExpression<T> {
 		return this.content ?: throw IllegalStateException("No content assigned to alias-column '$alias'")
 	}
 

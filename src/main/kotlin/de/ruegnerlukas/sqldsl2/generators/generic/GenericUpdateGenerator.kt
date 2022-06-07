@@ -53,7 +53,7 @@ open class GenericUpdateGenerator(private val genCtx: GeneratorContext) : Update
 					ListToken()
 						.add(
 							when (it.column) {
-								is QualifiedColumn -> genCtx.columnExpr().buildToken(it.column)
+								is QualifiedColumn<*> -> genCtx.columnExpr().buildToken(it.column)
 								else -> throwUnknownType(it)
 							}
 						)
@@ -85,8 +85,8 @@ open class GenericUpdateGenerator(private val genCtx: GeneratorContext) : Update
 					is ReturnAllColumnsStatement -> StringToken("*")
 					is ReturnColumnsStatement -> CsvListToken(e.columns.map {
 						when (it) {
-							is QualifiedColumn -> genCtx.columnExpr().buildToken(it)
-							is AliasColumn -> ListToken().add(genCtx.select().buildToken(it.getContent())).add("AS").add(it.getColumnName())
+							is QualifiedColumn<*> -> genCtx.columnExpr().buildToken(it)
+							is AliasColumn<*> -> ListToken().add(genCtx.select().buildToken(it.getContent())).add("AS").add(it.getColumnName())
 							else -> throwUnknownType(it)
 						}
 					})

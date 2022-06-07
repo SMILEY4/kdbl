@@ -1,5 +1,6 @@
 package de.ruegnerlukas.sqldsl2.grammar.expr
 
+import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
 import de.ruegnerlukas.sqldsl2.schema.AnyValueType
 import de.ruegnerlukas.sqldsl2.schema.BooleanValueType
 import de.ruegnerlukas.sqldsl2.schema.FloatValueType
@@ -57,7 +58,7 @@ class NullLiteral : LiteralValue<NoValueType>
 /**
  * a sub-query
  */
-interface SubQueryLiteral : LiteralValue<AnyValueType>
+class SubQueryLiteral<T: AnyValueType>(val query: QueryStatement): LiteralValue<T>
 
 
 /**

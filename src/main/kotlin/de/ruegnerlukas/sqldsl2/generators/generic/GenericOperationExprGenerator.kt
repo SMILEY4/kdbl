@@ -14,10 +14,9 @@ import de.ruegnerlukas.sqldsl2.tokens.GroupToken
 import de.ruegnerlukas.sqldsl2.tokens.ListToken
 import de.ruegnerlukas.sqldsl2.tokens.Token
 
-open class GenericOperationExprGenerator(private val genCtx: GeneratorContext) : OperationExprGenerator,
-	GenericGeneratorBase<OperationExpr>() {
+open class GenericOperationExprGenerator(private val genCtx: GeneratorContext) : OperationExprGenerator, GenericGeneratorBase<OperationExpr<*>>() {
 
-	override fun buildToken(e: OperationExpr): Token {
+	override fun buildToken(e: OperationExpr<*>): Token {
 		return when (e) {
 			is AddOperation -> add(e)
 			is AddAllOperation -> addAll(e)
@@ -30,14 +29,14 @@ open class GenericOperationExprGenerator(private val genCtx: GeneratorContext) :
 		}
 	}
 
-	protected fun add(e: AddOperation): Token {
+	protected fun add(e: AddOperation<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add("+")
 			.add(GroupToken(genCtx.expr().buildToken(e.right)))
 	}
 
-	protected fun addAll(e: AddAllOperation): Token {
+	protected fun addAll(e: AddAllOperation<*>): Token {
 		return ListToken().then {
 			e.expressions.map { GroupToken(genCtx.expr().buildToken(it)) }.forEachIndexed {index, token ->
 				if(index > 0) {
@@ -48,21 +47,21 @@ open class GenericOperationExprGenerator(private val genCtx: GeneratorContext) :
 		}
 	}
 
-	protected fun sub(e: SubOperation): Token {
+	protected fun sub(e: SubOperation<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add("-")
 			.add(GroupToken(genCtx.expr().buildToken(e.right)))
 	}
 
-	protected fun mul(e: MulOperation): Token {
+	protected fun mul(e: MulOperation<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add("*")
 			.add(GroupToken(genCtx.expr().buildToken(e.right)))
 	}
 
-	protected fun div(e: DivOperation): Token {
+	protected fun div(e: DivOperation<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add("/")

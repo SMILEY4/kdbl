@@ -50,8 +50,8 @@ open class GenericDeleteGenerator(private val genCtx: GeneratorContext) : Delete
 					is ReturnAllColumnsStatement -> StringToken("*")
 					is ReturnColumnsStatement -> CsvListToken(e.columns.map {
 						when (it) {
-							is QualifiedColumn -> genCtx.columnExpr().buildToken(it)
-							is AliasColumn -> ListToken().add(genCtx.select().buildToken(it.getContent())).add("AS").add(it.getColumnName())
+							is QualifiedColumn<*> -> genCtx.columnExpr().buildToken(it)
+							is AliasColumn<*> -> ListToken().add(genCtx.select().buildToken(it.getContent())).add("AS").add(it.getColumnName())
 							else -> throwUnknownType(it)
 						}
 					})

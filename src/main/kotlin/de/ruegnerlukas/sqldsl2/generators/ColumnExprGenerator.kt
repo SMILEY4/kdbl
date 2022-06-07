@@ -5,6 +5,6 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.Expr
 import de.ruegnerlukas.sqldsl2.tokens.Token
 
 interface ColumnExprGenerator {
-	fun buildString(e: ColumnExpr): String
-	fun buildToken(e: ColumnExpr): Token
+	fun buildString(e: ColumnExpr<*>): String
+	fun buildToken(e: ColumnExpr<*>): Token
 }

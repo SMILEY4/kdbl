@@ -33,19 +33,19 @@ open class GenericConditionGenerator(private val genCtx: GeneratorContext) : Con
 			is AndChainCondition -> andChain(e)
 			is OrCondition -> or(e)
 			is OrChainCondition -> orChain(e)
-			is EqualCondition -> equal(e)
-			is NotEqualCondition -> notEqual(e)
-			is GreaterThanCondition -> greater(e)
-			is GreaterOrEqualThanCondition -> greaterOrEqual(e)
-			is LessThanCondition -> less(e)
+			is EqualCondition<*> -> equal(e)
+			is NotEqualCondition<*> -> notEqual(e)
+			is GreaterThanCondition<*> -> greater(e)
+			is GreaterOrEqualThanCondition<*> -> greaterOrEqual(e)
+			is LessThanCondition<*> -> less(e)
 			is NotCondition -> not(e)
-			is IsNotNullCondition -> isNotNull(e)
-			is IsNullCondition -> isNull(e)
-			is InListCondition -> inList(e)
-			is NotInListCondition -> notInList(e)
-			is InSubQueryCondition -> inSubQuery(e)
-			is NotInSubQueryCondition -> notInSubQuery(e)
-			is BetweenCondition -> between(e)
+			is IsNotNullCondition<*> -> isNotNull(e)
+			is IsNullCondition<*> -> isNull(e)
+			is InListCondition<*> -> inList(e)
+			is NotInListCondition<*> -> notInList(e)
+			is InSubQueryCondition<*> -> inSubQuery(e)
+			is NotInSubQueryCondition<*> -> notInSubQuery(e)
+			is BetweenCondition<*> -> between(e)
 			is LikeCondition -> like(e)
 			else -> throwUnknownType(e)
 		}
@@ -95,35 +95,35 @@ open class GenericConditionGenerator(private val genCtx: GeneratorContext) : Con
 		}
 	}
 
-	protected fun equal(e: EqualCondition): Token {
+	protected fun equal(e: EqualCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add("=")
 			.add(GroupToken(genCtx.expr().buildToken(e.right)))
 	}
 
-	protected fun notEqual(e: NotEqualCondition): Token {
+	protected fun notEqual(e: NotEqualCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add("!=")
 			.add(GroupToken(genCtx.expr().buildToken(e.right)))
 	}
 
-	protected fun greater(e: GreaterThanCondition): Token {
+	protected fun greater(e: GreaterThanCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add(">")
 			.add(GroupToken(genCtx.expr().buildToken(e.right)))
 	}
 
-	protected fun greaterOrEqual(e: GreaterOrEqualThanCondition): Token {
+	protected fun greaterOrEqual(e: GreaterOrEqualThanCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add(">=")
 			.add(GroupToken(genCtx.expr().buildToken(e.right)))
 	}
 
-	protected fun less(e: LessThanCondition): Token {
+	protected fun less(e: LessThanCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add("<")
@@ -136,47 +136,47 @@ open class GenericConditionGenerator(private val genCtx: GeneratorContext) : Con
 			.add(GroupToken(genCtx.expr().buildToken(e.expression)))
 	}
 
-	protected fun isNotNull(e: IsNotNullCondition): Token {
+	protected fun isNotNull(e: IsNotNullCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.expression)))
 			.add("IS NOT NULL")
 	}
 
-	protected fun isNull(e: IsNullCondition): Token {
+	protected fun isNull(e: IsNullCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.expression)))
 			.add("IS NULL")
 	}
 
-	protected fun inList(e: InListCondition): Token {
+	protected fun inList(e: InListCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.expression)))
 			.add("IN")
 			.add(genCtx.literal().buildToken(e.list))
 	}
 
-	protected fun notInList(e: NotInListCondition): Token {
+	protected fun notInList(e: NotInListCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.expression)))
 			.add("NOT IN")
 			.add(genCtx.literal().buildToken(e.list))
 	}
 
-	protected fun inSubQuery(e: InSubQueryCondition): Token {
+	protected fun inSubQuery(e: InSubQueryCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.expression)))
 			.add("IN")
 			.add(GroupToken(genCtx.query().buildToken(e.query)))
 	}
 
-	protected fun notInSubQuery(e: NotInSubQueryCondition): Token {
+	protected fun notInSubQuery(e: NotInSubQueryCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.expression)))
 			.add("NOT IN")
 			.add(GroupToken(genCtx.query().buildToken(e.query)))
 	}
 
-	protected fun between(e: BetweenCondition): Token {
+	protected fun between(e: BetweenCondition<*>): Token {
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.expression)))
 			.add("BETWEEN")

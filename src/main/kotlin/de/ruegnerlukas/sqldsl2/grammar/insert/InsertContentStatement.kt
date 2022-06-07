@@ -6,4 +6,4 @@ interface InsertContentStatement
 
 interface InsertQueryExpression: InsertContentStatement
 
-class InsertValuesExpression(val items: List<Map<InsertColumnExpression,LiteralValue>>): InsertContentStatement
+class InsertValuesExpression(val items: List<Map<InsertColumnExpression,LiteralValue<*>>>): InsertContentStatement

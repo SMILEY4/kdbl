@@ -45,29 +45,45 @@ open class Column<T: AnyValueType>(private val parentTable: Table<*>, private va
 		return this.apply { register(ForeignKeyConstraint(column.parentTable, column, onDelete, onUpdate)) }
 	}
 
-
 }
 
 class IntColumn(parentTable: Table<*>, columnName: String) : Column<IntValueType>(parentTable, columnName) {
 	companion object {
 		fun Table<*>.integer(name: String) = IntColumn(this, name).apply { register(this) }
 	}
+
+	fun default(value: Int): IntColumn {
+		return this.apply { register(DefaultIntValueConstraint(value)) }
+	}
+
 }
 
-class FloatColumn(parentTable: Table<*>, columnName: String) : Column<IntValueType>(parentTable, columnName) {
+class FloatColumn(parentTable: Table<*>, columnName: String) : Column<FloatValueType>(parentTable, columnName) {
 	companion object {
 		fun Table<*>.float(name: String) = FloatColumn(this, name).apply { register(this) }
 	}
-}
 
-class TextColumn(parentTable: Table<*>, columnName: String) : Column<IntValueType>(parentTable, columnName) {
-	companion object {
-		fun Table<*>.text(name: String) = TextColumn(this, name).apply { register(this) }
+	fun default(value: Float): FloatColumn {
+		return this.apply { register(DefaultFloatValueConstraint(value)) }
 	}
 }
 
-class BooleanColumn(parentTable: Table<*>, columnName: String) : Column<IntValueType>(parentTable, columnName) {
+class TextColumn(parentTable: Table<*>, columnName: String) : Column<StringValueType>(parentTable, columnName) {
+	companion object {
+		fun Table<*>.text(name: String) = TextColumn(this, name).apply { register(this) }
+	}
+
+	fun default(value: String): TextColumn {
+		return this.apply { register(DefaultStringValueConstraint(value)) }
+	}
+}
+
+class BooleanColumn(parentTable: Table<*>, columnName: String) : Column<BooleanValueType>(parentTable, columnName) {
 	companion object {
 		fun Table<*>.boolean(name: String) = BooleanColumn(this, name).apply { register(this) }
+	}
+
+	fun default(value: Boolean): BooleanColumn {
+		return this.apply { register(DefaultBooleanValueConstraint(value)) }
 	}
 }

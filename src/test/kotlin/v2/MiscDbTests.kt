@@ -7,6 +7,7 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.AvgAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.CountAllAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.DivOperation
 import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
+import de.ruegnerlukas.sqldsl2.grammar.expr.FloatLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterOrEqualThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.IntLiteral
@@ -71,23 +72,23 @@ class MiscDbTests {
 				AliasColumn(
 					DivOperation(
 						MulOperation(
-							IntLiteral(100),
+							FloatLiteral(100F),
 							Orders.purchaseAmount
 						),
-						IntLiteral(6000)
+						FloatLiteral(6000F)
 					),
 					"archived_perc"
 				),
 				AliasColumn(
 					DivOperation(
 						MulOperation(
-							IntLiteral(100),
+							FloatLiteral(100F),
 							SubOperation(
-								IntLiteral(6000),
+								FloatLiteral(6000F),
 								Orders.purchaseAmount
 							)
 						),
-						IntLiteral(6000)
+						FloatLiteral(6000F)
 					),
 					"unarchived_perc"
 				)
@@ -102,12 +103,12 @@ class MiscDbTests {
 			GreaterThanCondition(
 				DivOperation(
 					MulOperation(
-						IntLiteral(100),
+						FloatLiteral(100F),
 						Orders.purchaseAmount
 					),
-					IntLiteral(6000)
+					FloatLiteral(6000F)
 				),
-				IntLiteral(50)
+				FloatLiteral(50F)
 			)
 		)
 	)
@@ -194,7 +195,7 @@ class MiscDbTests {
 		having = HavingStatement(
 			GreaterThanCondition(
 				MaxAggFunction(Orders.purchaseAmount),
-				IntLiteral(2000)
+				FloatLiteral(2000F)
 			)
 		)
 	)
@@ -220,7 +221,7 @@ class MiscDbTests {
 		where = WhereStatement(
 			GreaterOrEqualThanCondition(
 				Item.price,
-				IntLiteral(350)
+				FloatLiteral(350F)
 			)
 		)
 	)

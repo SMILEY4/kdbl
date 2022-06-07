@@ -7,6 +7,7 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.AliasColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.AndCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.CountAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
+import de.ruegnerlukas.sqldsl2.grammar.expr.FloatLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterOrEqualThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.IntLiteral
@@ -14,6 +15,7 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.LessThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.MaxAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.MinAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.SubOperation
+import de.ruegnerlukas.sqldsl2.grammar.expr.SubQueryLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.SumAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl2.grammar.groupby.GroupByStatement
@@ -30,6 +32,9 @@ import de.ruegnerlukas.sqldsl2.grammar.select.SelectDistinctStatement
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl2.grammar.table.DerivedTable
 import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
+import de.ruegnerlukas.sqldsl2.schema.AnyValueType
+import de.ruegnerlukas.sqldsl2.schema.FloatValueType
+import de.ruegnerlukas.sqldsl2.schema.IntValueType
 
 fun main() {
 	ChallengesDbTest().all()
@@ -128,9 +133,11 @@ class ChallengesDbTest {
 			where = WhereStatement(
 				LessThanCondition(
 					Sale.amount,
-					QueryStatement(
-						from = FromStatement(listOf(Sale)),
-						select = SelectStatement(listOf(MaxAggFunction(Sale.amount)))
+					SubQueryLiteral(
+						QueryStatement(
+							select = SelectStatement(listOf(MaxAggFunction(Sale.amount))),
+							from = FromStatement(listOf(Sale))
+						)
 					)
 				)
 			)
@@ -338,9 +345,9 @@ class ChallengesDbTest {
 		return QueryStatement(
 			select = SelectStatement(
 				listOf(
-					AliasColumn(MaxAggFunction(a.columnInt("total_sale")), "max_sale"),
-					AliasColumn(MinAggFunction(a.columnInt("total_sale")), "min_sale"),
-					AliasColumn(
+					AliasColumn<IntValueType>(MaxAggFunction(a.columnInt("total_sale")), "max_sale"),
+					AliasColumn<IntValueType>(MinAggFunction(a.columnInt("total_sale")), "min_sale"),
+					AliasColumn<IntValueType>(
 						SubOperation(
 							MaxAggFunction(a.columnInt("total_sale")),
 							MinAggFunction(a.columnInt("total_sale"))
@@ -391,7 +398,7 @@ class ChallengesDbTest {
 	 * HAVING total_sale_amount>30000 AND COUNT(sales.transaction_id) >=5;
 	 */
 	fun query54(): QueryStatement {
-		val totalSaleAmount = AliasColumn("total_sale_amount")
+		val totalSaleAmount = AliasColumn<FloatValueType>("total_sale_amount")
 		return QueryStatement(
 			select = SelectStatement(
 				listOf(
@@ -426,7 +433,7 @@ class ChallengesDbTest {
 				AndCondition(
 					GreaterThanCondition(
 						totalSaleAmount,
-						IntLiteral(30000)
+						FloatLiteral(30000.0F)
 					),
 					GreaterOrEqualThanCondition(
 						CountAggFunction(Sale3.amount),

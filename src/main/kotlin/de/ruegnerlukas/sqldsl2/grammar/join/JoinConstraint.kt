@@ -7,4 +7,4 @@ interface JoinConstraint
 
 class ConditionJoinConstraint(val condition: ConditionExpr): JoinConstraint
 
-class UsingJoinConstraint(val columns: List<ColumnExpr>): JoinConstraint
+class UsingJoinConstraint(val columns: List<ColumnExpr<*>>): JoinConstraint

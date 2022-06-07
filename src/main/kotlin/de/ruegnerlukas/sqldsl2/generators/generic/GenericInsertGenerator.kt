@@ -59,7 +59,7 @@ open class GenericInsertGenerator(private val genCtx: GeneratorContext) : Insert
 				CsvListToken(
 					e.columns.map {
 						when (it) {
-							is QualifiedColumn -> genCtx.columnExpr().buildToken(it)
+							is QualifiedColumn<*> -> genCtx.columnExpr().buildToken(it)
 							else -> throwUnknownType(e)
 						}
 					}
@@ -118,8 +118,8 @@ open class GenericInsertGenerator(private val genCtx: GeneratorContext) : Insert
 					is ReturnAllColumnsStatement -> StringToken("*")
 					is ReturnColumnsStatement -> CsvListToken(e.columns.map {
 						when (it) {
-							is QualifiedColumn -> genCtx.columnExpr().buildToken(it)
-							is AliasColumn -> ListToken().add(genCtx.select().buildToken(it.getContent())).add("AS").add(it.getColumnName())
+							is QualifiedColumn<*> -> genCtx.columnExpr().buildToken(it)
+							is AliasColumn<*> -> ListToken().add(genCtx.select().buildToken(it.getContent())).add("AS").add(it.getColumnName())
 							else -> throwUnknownType(it)
 						}
 					})

@@ -13,12 +13,12 @@ import de.ruegnerlukas.sqldsl2.tokens.NamedGroupToken
 import de.ruegnerlukas.sqldsl2.tokens.StringToken
 import de.ruegnerlukas.sqldsl2.tokens.Token
 
-open class GenericAggregateFunctionGenerator(private val genCtx: GeneratorContext) : AggregateFunctionGenerator, GenericGeneratorBase<AggregateFunction>() {
+open class GenericAggregateFunctionGenerator(private val genCtx: GeneratorContext) : AggregateFunctionGenerator, GenericGeneratorBase<AggregateFunction<*>>() {
 
-	override fun buildToken(e: AggregateFunction): Token {
+	override fun buildToken(e: AggregateFunction<*>): Token {
 		return when (e) {
 			is CountAllAggFunction -> countAll(e)
-			is CountAggFunction -> count(e)
+			is CountAggFunction<*> -> count(e)
 			is MaxAggFunction -> max(e)
 			is MinAggFunction -> min(e)
 			is SumAggFunction -> sum(e)
@@ -31,23 +31,23 @@ open class GenericAggregateFunctionGenerator(private val genCtx: GeneratorContex
 		return StringToken("COUNT(*)")
 	}
 
-	protected fun count(e: CountAggFunction): Token {
-		return NamedGroupToken("COUNT", genCtx.expr().buildToken(e.expression))
+	protected fun count(e: CountAggFunction<*>): Token {
+		return NamedGroupToken("COUNT", genCtx.expr().buildToken(e.column))
 	}
 
-	protected fun max(e: MaxAggFunction): Token {
+	protected fun max(e: MaxAggFunction<*>): Token {
 		return NamedGroupToken("MAX", genCtx.expr().buildToken(e.expression))
 	}
 
-	protected fun min(e: MinAggFunction): Token {
+	protected fun min(e: MinAggFunction<*>): Token {
 		return NamedGroupToken("MIN", genCtx.expr().buildToken(e.expression))
 	}
 
-	protected fun sum(e: SumAggFunction): Token {
+	protected fun sum(e: SumAggFunction<*>): Token {
 		return NamedGroupToken("SUM", genCtx.expr().buildToken(e.expression))
 	}
 
-	protected fun avg(e: AvgAggFunction): Token {
+	protected fun avg(e: AvgAggFunction<*>): Token {
 		return NamedGroupToken("AVG", genCtx.expr().buildToken(e.expression))
 	}
 

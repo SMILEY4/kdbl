@@ -1,16 +1,18 @@
 package de.ruegnerlukas.sqldsl2.grammar.select
 
 import de.ruegnerlukas.sqldsl2.grammar.table.TableBase
+import de.ruegnerlukas.sqldsl2.schema.AnyValueType
+import de.ruegnerlukas.sqldsl2.schema.NoValueType
 
 
-interface SelectExpression
+interface SelectExpression<T: AnyValueType>
 
-interface ExprSelectExpression : SelectExpression
+interface ExprSelectExpression<T: AnyValueType> : SelectExpression<T>
 
-class AllSelectExpression : SelectExpression
+class AllSelectExpression : SelectExpression<NoValueType>
 
-class QualifiedAllSelectExpression(val qualifier: TableBase) : SelectExpression
+class QualifiedAllSelectExpression(val qualifier: TableBase) : SelectExpression<NoValueType>
 
-interface AliasSelectExpression : SelectExpression
+interface AliasSelectExpression<T: AnyValueType> : SelectExpression<T>
 
 
