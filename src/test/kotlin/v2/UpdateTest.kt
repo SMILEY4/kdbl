@@ -1,5 +1,7 @@
 package v2
 
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericUpdateGenerator
 import de.ruegnerlukas.sqldsl2.grammar.expr.AliasColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.IntLiteral
@@ -17,11 +19,14 @@ import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
 import de.ruegnerlukas.sqldsl2.schema.OnConflict
 
 fun main() {
-	MiscDbTests().all()
+	UpdateTest().all()
 }
 
 
 class UpdateTest {
+
+	private val generator = GenericUpdateGenerator(GenericGeneratorContext())
+
 
 	fun all() {
 		println()
@@ -33,8 +38,8 @@ class UpdateTest {
 	private fun printQuery(name: String, query: UpdateStatement?) {
 		println("--QUERY $name:")
 		if (query != null) {
-//			val str = generator.buildString(query)
-//			println("$str;")
+			val str = generator.buildString(query)
+			println("$str;")
 		} else {
 			println("--")
 		}

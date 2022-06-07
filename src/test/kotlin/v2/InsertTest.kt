@@ -1,8 +1,12 @@
 package v2
 
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericInsertGenerator
+import de.ruegnerlukas.sqldsl2.grammar.expr.IntLiteral
+import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
 import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
-import de.ruegnerlukas.sqldsl2.grammar.insert.InsertAllColumnsExpression
-import de.ruegnerlukas.sqldsl2.grammar.insert.InsertColumnsExpression
+import de.ruegnerlukas.sqldsl2.grammar.insert.InsertAllColumnsStatement
+import de.ruegnerlukas.sqldsl2.grammar.insert.InsertColumnsStatement
 import de.ruegnerlukas.sqldsl2.grammar.insert.InsertStatement
 import de.ruegnerlukas.sqldsl2.grammar.insert.InsertValuesExpression
 import de.ruegnerlukas.sqldsl2.grammar.insert.ReturnColumnsStatement
@@ -12,25 +16,26 @@ import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl2.schema.OnConflict
 
 fun main() {
-	MiscDbTests().all()
+	InsertTest().all()
 }
 
 
 class InsertTest {
 
+	private val generator = GenericInsertGenerator(GenericGeneratorContext())
+
 	fun all() {
 		println()
 		printQuery("1", insert1())
 		printQuery("2", insert2())
-		printQuery("3", insert3())
 	}
 
 
 	private fun printQuery(name: String, query: InsertStatement?) {
 		println("--QUERY $name:")
 		if (query != null) {
-//			val str = generator.buildString(query)
-//			println("$str;")
+			val str = generator.buildString(query)
+			println("$str;")
 		} else {
 			println("--")
 		}
@@ -40,7 +45,7 @@ class InsertTest {
 	private fun insert1() = InsertStatement(
 		onConflict = OnConflict.FAIL,
 		target = Actor,
-		fields = InsertColumnsExpression(
+		fields = InsertColumnsStatement(
 			listOf(
 				Actor.id, Actor.fName, Actor.lName, Actor.gender
 			)
@@ -48,49 +53,25 @@ class InsertTest {
 		content = InsertValuesExpression(
 			listOf(
 				mapOf(
-					Actor.id to 101,
-					Actor.fName to "James",
-					Actor.lName to "Steward",
-					Actor.gender to "M"
+					Actor.id to IntLiteral(101),
+					Actor.fName to StringLiteral("James"),
+					Actor.lName to StringLiteral("Steward"),
+					Actor.gender to StringLiteral("M")
 				),
 				mapOf(
-					Actor.id to 102,
-					Actor.fName to "Deborah",
-					Actor.lName to "Kerr",
-					Actor.gender to "F"
+					Actor.id to IntLiteral(102),
+					Actor.fName to StringLiteral("Deborah"),
+					Actor.lName to StringLiteral("Kerr"),
+					Actor.gender to StringLiteral("F")
 				)
 			)
 		)
 	)
-
 
 	private fun insert2() = InsertStatement(
 		onConflict = OnConflict.IGNORE,
 		target = Actor,
-		fields = InsertAllColumnsExpression(),
-		content = InsertValuesExpression(
-			listOf(
-				mapOf(
-					Actor.id to 101,
-					Actor.fName to "James",
-					Actor.lName to "Steward",
-					Actor.gender to "M"
-				),
-				mapOf(
-					Actor.id to 102,
-					Actor.fName to "Deborah",
-					Actor.lName to "Kerr",
-					Actor.gender to "F"
-				)
-			)
-		)
-	)
-
-
-	private fun insert3() = InsertStatement(
-		onConflict = OnConflict.IGNORE,
-		target = Actor,
-		fields = InsertAllColumnsExpression(),
+		fields = InsertAllColumnsStatement(),
 		content = QueryStatement(
 			select = SelectStatement(
 				listOf(

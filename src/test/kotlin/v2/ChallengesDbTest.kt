@@ -437,6 +437,6 @@ class ChallengesDbTest {
 				)
 			)
 		)
-	}
 
+	}
 }

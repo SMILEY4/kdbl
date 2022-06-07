@@ -1,5 +1,7 @@
 package v2
 
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericDeleteGenerator
+import de.ruegnerlukas.sqldsl2.generators.generic.GenericGeneratorContext
 import de.ruegnerlukas.sqldsl2.grammar.delete.DeleteStatement
 import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.IntLiteral
@@ -7,11 +9,13 @@ import de.ruegnerlukas.sqldsl2.grammar.insert.ReturnAllColumnsStatement
 import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
 
 fun main() {
-	MiscDbTests().all()
+	DeleteTest().all()
 }
 
 
 class DeleteTest {
+
+	private val generator = GenericDeleteGenerator(GenericGeneratorContext())
 
 	fun all() {
 		println()
@@ -22,8 +26,8 @@ class DeleteTest {
 	private fun printQuery(name: String, query: DeleteStatement?) {
 		println("--QUERY $name:")
 		if (query != null) {
-//			val str = generator.buildString(query)
-//			println("$str;")
+			val str = generator.buildString(query)
+			println("$str;")
 		} else {
 			println("--")
 		}

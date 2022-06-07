@@ -14,6 +14,12 @@ class CsvListToken(tokens: List<Token> = listOf()) : Token() {
 		return this
 	}
 
+
+	fun addAll(tokens: Collection<Token>): CsvListToken {
+		this.tokens.addAll(tokens)
+		return this
+	}
+
 	fun addIf(condition: Boolean, token: () -> Token): CsvListToken {
 		if (condition) {
 			tokens.add(token())

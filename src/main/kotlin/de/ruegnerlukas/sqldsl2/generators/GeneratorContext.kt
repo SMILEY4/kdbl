@@ -2,6 +2,10 @@ package de.ruegnerlukas.sqldsl2.generators
 
 interface GeneratorContext {
 	fun query(): QueryGenerator
+	fun insert(): InsertGenerator
+	fun update(): UpdateGenerator
+	fun delete(): DeleteGenerator
+
 	fun select(): SelectExpressionGenerator
 	fun from(): FromExpressionGenerator
 	fun where(): WhereExpressionGenerator

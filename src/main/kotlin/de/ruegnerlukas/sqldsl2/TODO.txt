@@ -1,9 +1,11 @@
-- INSERT ✅❌
-- UPDATE ✅❌
-- DELETE ✅❌
+- INSERT ✅✅
+- UPDATE ✅✅
+- DELETE ✅✅
 - SELECT ✅✅
 
-- creating tables
+- make queries typesafe (columns, literals, expressions, ...) ❌
+
+- creating tables ❓
 - ??? simplified wrapper for ...
     - inserting items
     - updating items

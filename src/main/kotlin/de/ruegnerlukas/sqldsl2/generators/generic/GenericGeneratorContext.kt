@@ -5,6 +5,9 @@ import de.ruegnerlukas.sqldsl2.generators.GeneratorContext
 class GenericGeneratorContext : GeneratorContext {
 
 	private val queryGenerator = GenericQueryGenerator(this)
+	private val insertGenerator = GenericInsertGenerator(this)
+	private val updateGenerator = GenericUpdateGenerator(this)
+	private val deleteGenerator = GenericDeleteGenerator(this)
 	private val selectGenerator = GenericSelectExpressionGenerator(this)
 	private val fromGenerator = GenericFromExpressionGenerator(this)
 	private val whereGenerator = GenericWhereExpressionGenerator(this)
@@ -20,6 +23,12 @@ class GenericGeneratorContext : GeneratorContext {
 	private val joinClauseGenerator = GenericJoinClauseGenerator(this)
 
 	override fun query() = queryGenerator
+
+	override fun insert() = insertGenerator
+
+	override fun update() = updateGenerator
+
+	override fun delete() = deleteGenerator
 
 	override fun select() = selectGenerator
 
