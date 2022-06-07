@@ -31,11 +31,8 @@ import de.ruegnerlukas.sqldsl2.grammar.select.AllSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectDistinctStatement
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
-
-
-fun main() {
-	MovieDbSubQueriesTest().all()
-}
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 
 /**
@@ -45,37 +42,10 @@ class MovieDbSubQueriesTest {
 
 	private val generator = GenericQueryGenerator(GenericGeneratorContext())
 
-	fun all() {
-		println()
-		printQuery("1", query1())
-		printQuery("2", query2())
-		printQuery("3", query3())
-		printQuery("4", query4())
-		printQuery("5", query5())
-		printQuery("6", query6())
-		printQuery("7", query7())
-		printQuery("8", query8())
-		printQuery("9", query9())
-		printQuery("10", query10())
-		printQuery("11", query11())
-		printQuery("12", query12())
-		printQuery("13", query13())
-		printQuery("14", query14())
-		printQuery("15", query15())
-		printQuery("16", query16())
-
-	}
-
-
-	private fun printQuery(name: String, query: QueryStatement?) {
-		println("--QUERY $name:")
-		if (query != null) {
-			val str = generator.buildString(query)
-			println("$str;")
-		} else {
-			println("--")
-		}
-		println()
+	private fun assertQuery(query: QueryStatement, expected: String) {
+		val strQuery = generator.buildString(query)
+		println(strQuery)
+		assertEquals(expected, strQuery)
 	}
 
 
@@ -92,49 +62,52 @@ class MovieDbSubQueriesTest {
 	 * 		)
 	 * );
 	 */
-	private fun query1() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				AllSelectExpression()
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Actor
-			)
-		),
-		where = WhereStatement(
-			InSubQueryCondition(
-				Actor.id,
-				QueryStatement(
-					select = SelectStatement(
-						listOf(
-							MovieCast.actorId
-						)
-					),
-					from = FromStatement(
-						listOf(
-							MovieCast
-						)
-					),
-					where = WhereStatement(
-						InSubQueryCondition(
-							MovieCast.movieId,
-							QueryStatement(
-								select = SelectStatement(
-									listOf(
-										Movie.id
-									)
-								),
-								from = FromStatement(
-									listOf(
-										Movie
-									)
-								),
-								where = WhereStatement(
-									EqualCondition(
-										Movie.title,
-										StringLiteral("Annie Hall")
+	@Test
+	fun query1() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					AllSelectExpression()
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Actor
+				)
+			),
+			where = WhereStatement(
+				InSubQueryCondition(
+					Actor.id,
+					QueryStatement(
+						select = SelectStatement(
+							listOf(
+								MovieCast.actorId
+							)
+						),
+						from = FromStatement(
+							listOf(
+								MovieCast
+							)
+						),
+						where = WhereStatement(
+							InSubQueryCondition(
+								MovieCast.movieId,
+								QueryStatement(
+									select = SelectStatement(
+										listOf(
+											Movie.id
+										)
+									),
+									from = FromStatement(
+										listOf(
+											Movie
+										)
+									),
+									where = WhereStatement(
+										EqualCondition(
+											Movie.title,
+											StringLiteral("Annie Hall")
+										)
 									)
 								)
 							)
@@ -143,32 +116,10 @@ class MovieDbSubQueriesTest {
 				)
 			)
 		)
-	)
-
-
-	/**
-	 * SELECT dir_fname, dir_lname
-	 * FROM  director
-	 * WHERE dir_id in (
-	 * 		SELECT dir_id
-	 * 		FROM movie_direction
-	 * 		WHERE mov_id in(
-	 * 			SELECT mov_id
-	 * 			FROM movie_cast WHERE role = ANY (
-	 * 				SELECT role
-	 * 				FROM movie_cast
-	 * 				WHERE mov_id IN (
-	 * 					SELECT  mov_id
-	 * 					FROM movie
-	 * 					WHERE mov_title='Eyes Wide Shut'
-	 * 				)
-	 * 			)
-	 * 		)
-	 * 	);
-	 */
-	private fun query2(): QueryStatement? {
-		// TODO
-		return null
+		assertQuery(
+			query,
+			"SELECT * FROM actor WHERE (actor.act_id) IN (SELECT movie_cast.act_id FROM movie_cast WHERE (movie_cast.mov_id) IN (SELECT movie.mov_id FROM movie WHERE (movie.mov_title) = ('Annie Hall')))"
+		)
 	}
 
 
@@ -182,28 +133,35 @@ class MovieDbSubQueriesTest {
 	 * FROM movie
 	 * WHERE mov_rel_country<>'UK';
 	 */
-	private fun query3() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				Movie.title,
-				Movie.year,
-				Movie.time,
-				Movie.dateRelease.alias("date_of_release"),
-				Movie.releaseCountry.alias("releasing_country")
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Movie
-			)
-		),
-		where = WhereStatement(
-			NotEqualCondition(
-				Movie.releaseCountry,
-				StringLiteral("UK")
+	@Test
+	fun query3() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					Movie.title,
+					Movie.year,
+					Movie.time,
+					Movie.dateRelease.alias("date_of_release"),
+					Movie.releaseCountry.alias("releasing_country")
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Movie
+				)
+			),
+			where = WhereStatement(
+				NotEqualCondition(
+					Movie.releaseCountry,
+					StringLiteral("UK")
+				)
 			)
 		)
-	)
+		assertQuery(
+			query,
+			"SELECT movie.mov_title, movie.mov_year, movie.mov_time, (movie.mov_dt_rel) AS date_of_release, (movie.mov_rel_country) AS releasing_country FROM movie WHERE (movie.mov_rel_country) != ('UK')"
+		)
+	}
 
 
 	/**
@@ -231,7 +189,8 @@ class MovieDbSubQueriesTest {
 	 *      AND g.act_id = f.act_id
 	 * 	 	AND e.rev_name IS NULL;
 	 */
-	private fun query4(): QueryStatement {
+	@Test
+	fun query4() {
 
 		val a = Movie.alias("a")
 		val b = MovieDirection.alias("b")
@@ -241,7 +200,7 @@ class MovieDbSubQueriesTest {
 		val f = Actor.alias("f")
 		val g = MovieCast.alias("g")
 
-		return QueryStatement(
+		val query = QueryStatement(
 			select = SelectStatement(
 				listOf(
 					a.title,
@@ -290,25 +249,10 @@ class MovieDbSubQueriesTest {
 				)
 			)
 		)
-	}
-
-
-	/**
-	 * SELECT mov_title
-	 * FROM movie
-	 * WHERE mov_id=(
-	 * 		SELECT mov_id
-	 * 		FROM movie_direction
-	 * 		WHERE dir_id=(
-	 * 			SELECT dir_id
-	 * 			FROM director
-	 * 			WHERE dir_fname='Woody' AND dir_lname='Allen'
-	 * 		)
-	 * );
-	 */
-	private fun query5(): QueryStatement? {
-		// TODO
-		return null
+		assertQuery(
+			query,
+			"SELECT a.mov_title, a.mov_year, a.mov_dt_rel, c.dir_fname, c.dir_lname, f.act_fname, f.act_lname FROM movie AS a, movie_direction AS b, director AS c, rating AS d, reviewer AS e, actor AS f, movie_cast AS g WHERE ((a.mov_id) = (b.mov_id)) AND ((b.dir_id) = (c.dir_id)) AND ((a.mov_id) = (d.mov_id)) AND ((d.rev_id) = (e.rev_id)) AND ((a.mov_id) = (g.mov_id)) AND ((g.act_id) = (f.act_id)) AND ((e.rev_name) IS NULL)"
+		)
 	}
 
 
@@ -322,46 +266,52 @@ class MovieDbSubQueriesTest {
 	 * )
 	 * ORDER BY mov_year;
 	 */
-	private fun query6() = QueryStatement(
-		select = SelectDistinctStatement(
-			listOf(
-				Movie.year
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Movie
-			)
-		),
-		where = WhereStatement(
-			InSubQueryCondition(
-				Movie.id,
-				QueryStatement(
-					select = SelectStatement(
-						listOf(
-							Rating.movieId
-						)
-					),
-					from = FromStatement(
-						listOf(
-							Rating
-						)
-					),
-					where = WhereStatement(
-						GreaterThanCondition(
-							Rating.stars,
-							IntLiteral(3)
+	private fun query6() {
+		val query = QueryStatement(
+			select = SelectDistinctStatement(
+				listOf(
+					Movie.year
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Movie
+				)
+			),
+			where = WhereStatement(
+				InSubQueryCondition(
+					Movie.id,
+					QueryStatement(
+						select = SelectStatement(
+							listOf(
+								Rating.movieId
+							)
+						),
+						from = FromStatement(
+							listOf(
+								Rating
+							)
+						),
+						where = WhereStatement(
+							GreaterThanCondition(
+								Rating.stars,
+								IntLiteral(3)
+							)
 						)
 					)
 				)
-			)
-		),
-		orderBy = OrderByStatement(
-			listOf(
-				OrderByExpression(Movie.year, Dir.ASC)
+			),
+			orderBy = OrderByStatement(
+				listOf(
+					OrderByExpression(Movie.year, Dir.ASC)
+				)
 			)
 		)
-	)
+		assertQuery(
+			query,
+			"SELECT DISTINCT movie.mov_year FROM movie WHERE (movie.mov_id) IN (SELECT rating.mov_id FROM rating WHERE (rating.rev_stars) > (3)) ORDER BY (movie.mov_year) ASC"
+		)
+	}
 
 
 	/**
@@ -375,43 +325,46 @@ class MovieDbSubQueriesTest {
 	 * 		)
 	 * );
 	 */
-	private fun query7() = QueryStatement(
-		select = SelectDistinctStatement(
-			listOf(
-				Movie.title
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Movie
-			)
-		),
-		where = WhereStatement(
-			InSubQueryCondition(
-				Movie.id,
-				QueryStatement(
-					select = SelectStatement(
-						listOf(
-							Movie.id
-						)
-					),
-					from = FromStatement(
-						listOf(
-							Movie
-						)
-					),
-					where = WhereStatement(
-						NotInSubQueryCondition(
-							Movie.id,
-							QueryStatement(
-								select = SelectDistinctStatement(
-									listOf(
-										Rating.movieId
-									)
-								),
-								from = FromStatement(
-									listOf(
-										Rating
+	@Test
+	fun query7() {
+		val query = QueryStatement(
+			select = SelectDistinctStatement(
+				listOf(
+					Movie.title
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Movie
+				)
+			),
+			where = WhereStatement(
+				InSubQueryCondition(
+					Movie.id,
+					QueryStatement(
+						select = SelectStatement(
+							listOf(
+								Movie.id
+							)
+						),
+						from = FromStatement(
+							listOf(
+								Movie
+							)
+						),
+						where = WhereStatement(
+							NotInSubQueryCondition(
+								Movie.id,
+								QueryStatement(
+									select = SelectDistinctStatement(
+										listOf(
+											Rating.movieId
+										)
+									),
+									from = FromStatement(
+										listOf(
+											Rating
+										)
 									)
 								)
 							)
@@ -420,42 +373,10 @@ class MovieDbSubQueriesTest {
 				)
 			)
 		)
-	)
-
-
-	/**
-	 * SELECT DISTINCT rev_name
-	 * FROM reviewer
-	 * WHERE rev_id IN (
-	 * 		SELECT rev_id
-	 * 		FROM rating
-	 * 		WHERE rev_stars IS NULL
-	 * );
-	 */
-	private fun query8(): QueryStatement? {
-		// TODO
-		return null
-	}
-
-
-	/**
-	 * SELECT
-	 * 		rev_name,
-	 * 		mov_title,
-	 * 		rev_stars
-	 * FROM
-	 * 		reviewer,
-	 * 		rating,
-	 * 		movie
-	 * WHERE reviewer.rev_id = rating.rev_id
-	 * 		AND movie.mov_id=rating.mov_id
-	 *      AND reviewer.rev_name IS NOT NULL
-	 *      AND rating.rev_stars IS NOT NULL
-	 * ORDER BY rev_name, mov_title, rev_stars;
-	 */
-	private fun query9(): QueryStatement? {
-		// TODO
-		return null
+		assertQuery(
+			query,
+			"SELECT DISTINCT movie.mov_title FROM movie WHERE (movie.mov_id) IN (SELECT movie.mov_id FROM movie WHERE (movie.mov_id) NOT IN (SELECT DISTINCT rating.mov_id FROM rating))"
+		)
 	}
 
 
@@ -474,9 +395,10 @@ class MovieDbSubQueriesTest {
 	 * GROUP BY rev_name, mov_title
 	 * HAVING count(*) > 1;
 	 */
-	private fun query10(): QueryStatement {
+	@Test
+	fun query10() {
 		val r2 = Rating.alias("r2")
-		return QueryStatement(
+		val query = QueryStatement(
 			select = SelectStatement(
 				listOf(
 					Reviewer.name,
@@ -522,6 +444,10 @@ class MovieDbSubQueriesTest {
 				)
 			)
 		)
+		assertQuery(
+			query,
+			"SELECT reviewer.rev_name, movie.mov_title FROM reviewer, movie, rating, rating AS r2 WHERE ((rating.mov_id) = (movie.mov_id)) AND ((reviewer.rev_id) = (rating.rev_id)) AND ((rating.rev_id) = (r2.rev_id)) GROUP BY reviewer.rev_name, movie.mov_title HAVING (COUNT(*)) > (1)"
+		)
 	}
 
 
@@ -533,72 +459,47 @@ class MovieDbSubQueriesTest {
 	 * GROUP BY mov_title
 	 * ORDER BY mov_title;
 	 */
-	private fun query11() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				Movie.title,
-				MaxAggFunction(Rating.stars)
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Movie,
-				Rating
-			)
-		),
-		where = WhereStatement(
-			AndCondition(
-				EqualCondition(
-					Movie.id,
-					Rating.movieId
-				),
-				IsNotNullCondition(
-					Rating.stars
+	@Test
+	fun query11() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					Movie.title,
+					MaxAggFunction(Rating.stars)
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Movie,
+					Rating
+				)
+			),
+			where = WhereStatement(
+				AndCondition(
+					EqualCondition(
+						Movie.id,
+						Rating.movieId
+					),
+					IsNotNullCondition(
+						Rating.stars
+					)
+				)
+			),
+			groupBy = GroupByStatement(
+				listOf(
+					Movie.title
+				)
+			),
+			orderBy = OrderByStatement(
+				listOf(
+					OrderByExpression(Movie.title, Dir.ASC)
 				)
 			)
-		),
-		groupBy = GroupByStatement(
-			listOf(
-				Movie.title
-			)
-		),
-		orderBy = OrderByStatement(
-			listOf(
-				OrderByExpression(Movie.title, Dir.ASC)
-			)
 		)
-	)
-
-
-	/**
-	 * SELECT DISTINCT reviewer.rev_name
-	 * FROM reviewer, rating, movie
-	 * WHERE reviewer.rev_id = rating.rev_id
-	 * 		AND movie.mov_id = rating.mov_id
-	 * 		AND movie.mov_title = 'American Beauty';
-	 */
-	private fun query12(): QueryStatement? {
-		// TODO
-		return null
-	}
-
-
-	/**
-	 * SELECT movie.mov_title
-	 * FROM movie
-	 * WHERE movie.mov_id IN(
-	 * 		SELECT mov_id
-	 * 		FROM rating
-	 * 		WHERE rev_id NOT IN (
-	 * 			SELECT rev_id
-	 * 			FROM reviewer
-	 * 			WHERE rev_name='Paul Monks'
-	 * 		)
-	 * );
-	 */
-	private fun query13(): QueryStatement? {
-		// TODO
-		return null
+		assertQuery(
+			query,
+			"SELECT movie.mov_title, MAX(rating.rev_stars) FROM movie, rating WHERE ((movie.mov_id) = (rating.mov_id)) AND ((rating.rev_stars) IS NOT NULL) GROUP BY movie.mov_title ORDER BY (movie.mov_title) ASC"
+		)
 	}
 
 
@@ -615,53 +516,60 @@ class MovieDbSubQueriesTest {
 	 * 		AND rating.rev_id = reviewer.rev_id
 	 * 		AND rating.mov_id = movie.mov_id;
 	 */
-	private fun query14() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				Reviewer.name,
-				Movie.title,
-				Rating.stars
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Reviewer,
-				Movie,
-				Rating
-			)
-		),
-		where = WhereStatement(
-			AndChainCondition(
+	@Test
+	fun query14() {
+		val query = QueryStatement(
+			select = SelectStatement(
 				listOf(
-					EqualCondition(
-						Rating.stars,
-						SubQueryLiteral(
-							QueryStatement(
-								select = SelectStatement(
-									listOf(
-										MinAggFunction(Rating.stars)
-									)
-								),
-								from = FromStatement(
-									listOf(
-										Rating
+					Reviewer.name,
+					Movie.title,
+					Rating.stars
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Reviewer,
+					Movie,
+					Rating
+				)
+			),
+			where = WhereStatement(
+				AndChainCondition(
+					listOf(
+						EqualCondition(
+							Rating.stars,
+							SubQueryLiteral(
+								QueryStatement(
+									select = SelectStatement(
+										listOf(
+											MinAggFunction(Rating.stars)
+										)
+									),
+									from = FromStatement(
+										listOf(
+											Rating
+										)
 									)
 								)
 							)
+						),
+						EqualCondition(
+							Rating.reviewerId,
+							Reviewer.id
+						),
+						EqualCondition(
+							Rating.movieId,
+							Movie.id
 						)
-					),
-					EqualCondition(
-						Rating.reviewerId,
-						Reviewer.id
-					),
-					EqualCondition(
-						Rating.movieId,
-						Movie.id
 					)
 				)
 			)
 		)
-	)
+		assertQuery(
+			query,
+			"SELECT reviewer.rev_name, movie.mov_title, rating.rev_stars FROM reviewer, movie, rating WHERE ((rating.rev_stars) = (SELECT MIN(rating.rev_stars) FROM rating)) AND ((rating.rev_id) = (reviewer.rev_id)) AND ((rating.mov_id) = (movie.mov_id))"
+		)
+	}
 
 
 	/**
@@ -673,73 +581,56 @@ class MovieDbSubQueriesTest {
 	 *  		ON movie_direction.dir_id = director.dir_id
 	 * WHERE dir_fname = 'James' AND dir_lname='Cameron';
 	 */
-	private fun query15() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				Movie.title
-			)
-		),
-		from = FromStatement(
-			listOf(
-				JoinClause(
-					JoinOp.LEFT,
+	@Test
+	fun query15() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					Movie.title
+				)
+			),
+			from = FromStatement(
+				listOf(
 					JoinClause(
 						JoinOp.LEFT,
-						Movie,
-						MovieDirection,
+						JoinClause(
+							JoinOp.LEFT,
+							Movie,
+							MovieDirection,
+							ConditionJoinConstraint(
+								EqualCondition(
+									Movie.id,
+									MovieDirection.movieId
+								)
+							)
+						),
+						Director,
 						ConditionJoinConstraint(
 							EqualCondition(
-								Movie.id,
-								MovieDirection.movieId
+								MovieDirection.directorId,
+								Director.id
 							)
-						)
-					),
-					Director,
-					ConditionJoinConstraint(
-						EqualCondition(
-							MovieDirection.directorId,
-							Director.id
 						)
 					)
 				)
-			)
-		),
-		where = WhereStatement(
-			AndCondition(
-				EqualCondition(
-					Director.fName,
-					StringLiteral("James")
-				),
-				EqualCondition(
-					Director.lName,
-					StringLiteral("Cameron")
+			),
+			where = WhereStatement(
+				AndCondition(
+					EqualCondition(
+						Director.fName,
+						StringLiteral("James")
+					),
+					EqualCondition(
+						Director.lName,
+						StringLiteral("Cameron")
+					)
 				)
 			)
 		)
-	)
-
-
-	/**
-	 * SELECT mov_title
-	 * FROM movie
-	 * WHERE mov_id IN (
-	 * 		SELECT mov_id
-	 * 		FROM movie_cast
-	 * 		WHERE act_id IN (
-	 * 			SELECT act_id
-	 * 			FROM actor
-	 * 			WHERE act_id IN (
-	 * 				SELECT act_id
-	 * 				FROM movie_cast
-	 * 				GROUP BY act_id
-	 * 				HAVING COUNT(act_id)>1
-	 * 			)
-	 * 		)
-	 * 	);
-	 */
-	private fun query16(): QueryStatement? {
-		// TODO
-		return null
+		assertQuery(
+			query,
+			"SELECT movie.mov_title FROM (movie JOIN movie_direction ON ((movie.mov_id) = (movie_direction.mov_id))) JOIN director ON ((movie_direction.dir_id) = (director.dir_id)) WHERE ((director.dir_fname) = ('James')) AND ((director.dir_lname) = ('Cameron'))"
+		)
 	}
 
 }

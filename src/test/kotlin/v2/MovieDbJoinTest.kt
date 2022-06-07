@@ -15,10 +15,8 @@ import de.ruegnerlukas.sqldsl2.grammar.select.AllSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl2.grammar.table.DerivedTable
 import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
-
-fun main() {
-	MovieDbJoinTest().all()
-}
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 
 /**
@@ -28,23 +26,13 @@ class MovieDbJoinTest {
 
 	private val generator = GenericQueryGenerator(GenericGeneratorContext())
 
-	fun all() {
-		println()
-		printQuery("1", query1())
-		printQuery("test", queryTest())
+
+	private fun assertQuery(query: QueryStatement, expected: String) {
+		val strQuery = generator.buildString(query)
+		println(strQuery)
+		assertEquals(expected, strQuery)
 	}
 
-
-	private fun printQuery(name: String, query: QueryStatement?) {
-		println("--QUERY $name:")
-		if (query != null) {
-			val str = generator.buildString(query)
-			println("$str;")
-		} else {
-			println("--")
-		}
-		println()
-	}
 
 
 	/**
@@ -53,11 +41,10 @@ class MovieDbJoinTest {
 	 * 		INNER JOIN rating USING(rev_id)
 	 * WHERE rev_stars IS NULL;
 	 */
-	private fun query1(): QueryStatement {
-
+	@Test
+	fun query1() {
 		val derived = DerivedTable("result")
-
-		return QueryStatement(
+		val query = QueryStatement(
 			select = SelectStatement(
 				listOf(
 					derived.columnInt(Reviewer.name)
@@ -85,14 +72,14 @@ class MovieDbJoinTest {
 				)
 			)
 		)
+		assertQuery(query, "SELECT result.rev_name FROM (reviewer INNER JOIN rating USING result.rev_id) AS result WHERE (result.rev_stars) IS NULL")
 	}
 
 
-	private fun queryTest(): QueryStatement {
-
+	@Test
+	fun queryTest() {
 		val derived = DerivedTable("result")
-
-		return QueryStatement(
+		val query =  QueryStatement(
 			select = SelectStatement(
 				listOf(
 					AllSelectExpression()
@@ -122,6 +109,7 @@ class MovieDbJoinTest {
 				)
 			)
 		)
+		assertQuery(query, "SELECT * FROM (actor INNER JOIN movie_cast ON ((actor.act_id) = (movie_cast.act_id))) AS result WHERE (result.act_gender) = ('f')")
 	}
 
 

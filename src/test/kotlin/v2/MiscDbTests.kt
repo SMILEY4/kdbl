@@ -10,7 +10,6 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.FloatLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterOrEqualThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterThanCondition
-import de.ruegnerlukas.sqldsl2.grammar.expr.IntLiteral
 import de.ruegnerlukas.sqldsl2.grammar.expr.MaxAggFunction
 import de.ruegnerlukas.sqldsl2.grammar.expr.MulOperation
 import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
@@ -20,39 +19,20 @@ import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl2.grammar.groupby.GroupByStatement
 import de.ruegnerlukas.sqldsl2.grammar.having.HavingStatement
 import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl2.grammar.select.AliasSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
-
-fun main() {
-	MiscDbTests().all()
-}
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 
 class MiscDbTests {
 
 	private val generator = GenericQueryGenerator(GenericGeneratorContext())
 
-	fun all() {
-		println()
-		printQuery("1", query1())
-		printQuery("2", query2())
-		printQuery("3", query3())
-		printQuery("4", query4())
-		printQuery("5", query5())
-		printQuery("6", query6())
-	}
-
-
-	private fun printQuery(name: String, query: QueryStatement?) {
-		println("--QUERY $name:")
-		if (query != null) {
-			val str = generator.buildString(query)
-			println("$str;")
-		} else {
-			println("--")
-		}
-		println()
+	private fun assertQuery(query: QueryStatement, expected: String) {
+		val strQuery = generator.buildString(query)
+		println(strQuery)
+		assertEquals(expected, strQuery)
 	}
 
 
@@ -64,12 +44,45 @@ class MiscDbTests {
 	 * FROM  orders
 	 * WHERE (100*purch_amt)/6000>50;
 	 */
-	private fun query1() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				Orders.orderNumber,
-				Orders.purchaseAmount,
-				AliasColumn(
+	@Test
+	fun query1() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					Orders.orderNumber,
+					Orders.purchaseAmount,
+					AliasColumn(
+						DivOperation(
+							MulOperation(
+								FloatLiteral(100F),
+								Orders.purchaseAmount
+							),
+							FloatLiteral(6000F)
+						),
+						"archived_perc"
+					),
+					AliasColumn(
+						DivOperation(
+							MulOperation(
+								FloatLiteral(100F),
+								SubOperation(
+									FloatLiteral(6000F),
+									Orders.purchaseAmount
+								)
+							),
+							FloatLiteral(6000F)
+						),
+						"unarchived_perc"
+					)
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Orders
+				)
+			),
+			where = WhereStatement(
+				GreaterThanCondition(
 					DivOperation(
 						MulOperation(
 							FloatLiteral(100F),
@@ -77,41 +90,15 @@ class MiscDbTests {
 						),
 						FloatLiteral(6000F)
 					),
-					"archived_perc"
-				),
-				AliasColumn(
-					DivOperation(
-						MulOperation(
-							FloatLiteral(100F),
-							SubOperation(
-								FloatLiteral(6000F),
-								Orders.purchaseAmount
-							)
-						),
-						FloatLiteral(6000F)
-					),
-					"unarchived_perc"
+					FloatLiteral(50F)
 				)
 			)
-		),
-		from = FromStatement(
-			listOf(
-				Orders
-			)
-		),
-		where = WhereStatement(
-			GreaterThanCondition(
-				DivOperation(
-					MulOperation(
-						FloatLiteral(100F),
-						Orders.purchaseAmount
-					),
-					FloatLiteral(6000F)
-				),
-				FloatLiteral(50F)
-			)
 		)
-	)
+		assertQuery(
+			query,
+			"SELECT orders.ord_no, orders.purch_amt, (((100.0) * (orders.purch_amt)) / (6000.0)) AS archived_perc, (((100.0) * ((6000.0) - (orders.purch_amt))) / (6000.0)) AS unarchived_perc FROM orders WHERE (((100.0) * (orders.purch_amt)) / (6000.0)) > (50.0)"
+		)
+	}
 
 
 	/**
@@ -119,18 +106,22 @@ class MiscDbTests {
 	 * SELECT SUM (purch_amt)
 	 * FROM orders;
 	 */
-	private fun query2() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				SumAggFunction(Orders.purchaseAmount)
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Orders
+	@Test
+	fun query2() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					SumAggFunction(Orders.purchaseAmount)
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Orders
+				)
 			)
 		)
-	)
+		assertQuery(query, "SELECT SUM(orders.purch_amt) FROM orders")
+	}
 
 
 	/**
@@ -140,30 +131,36 @@ class MiscDbTests {
 	 * WHERE ord_date = '2012-08-17'
 	 * GROUP BY salesman_id;
 	 */
-	private fun query3() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				Orders.salesmanId,
-				MaxAggFunction(Orders.purchaseAmount)
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Orders
-			)
-		),
-		where = WhereStatement(
-			EqualCondition(
-				Orders.orderDate,
-				StringLiteral("2012-08-17")
-			)
-		),
-		groupBy = GroupByStatement(
-			listOf(
-				Orders.salesmanId
+	@Test
+	fun query3() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					Orders.salesmanId,
+					MaxAggFunction(Orders.purchaseAmount)
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Orders
+				)
+			),
+			where = WhereStatement(
+				EqualCondition(
+					Orders.orderDate,
+					StringLiteral("2012-08-17")
+				)
+			),
+			groupBy = GroupByStatement(
+				listOf(
+					Orders.salesmanId
+				)
 			)
 		)
-	)
+		assertQuery(
+			query, "SELECT orders.salesman_id, MAX(orders.purch_amt) FROM orders WHERE (orders.ord_date) = ('2012-08-17') GROUP BY orders.salesman_id"
+		)
+	}
 
 
 	/**
@@ -173,32 +170,39 @@ class MiscDbTests {
 	 * GROUP BY customer_id,ord_date
 	 * HAVING MAX(purch_amt)>2000.00;
 	 */
-	private fun query4() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				Orders.customerId,
-				Orders.orderDate,
-				MaxAggFunction(Orders.purchaseAmount)
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Orders
-			)
-		),
-		groupBy = GroupByStatement(
-			listOf(
-				Orders.customerId,
-				Orders.orderDate
-			)
-		),
-		having = HavingStatement(
-			GreaterThanCondition(
-				MaxAggFunction(Orders.purchaseAmount),
-				FloatLiteral(2000F)
+	@Test
+	fun query4() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					Orders.customerId,
+					Orders.orderDate,
+					MaxAggFunction(Orders.purchaseAmount)
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Orders
+				)
+			),
+			groupBy = GroupByStatement(
+				listOf(
+					Orders.customerId,
+					Orders.orderDate
+				)
+			),
+			having = HavingStatement(
+				GreaterThanCondition(
+					MaxAggFunction(Orders.purchaseAmount),
+					FloatLiteral(2000F)
+				)
 			)
 		)
-	)
+		assertQuery(
+			query,
+			"SELECT orders.customer_id, orders.ord_date, MAX(orders.purch_amt) FROM orders GROUP BY orders.customer_id, orders.ord_date HAVING (MAX(orders.purch_amt)) > (2000.0)"
+		)
+	}
 
 
 	/**
@@ -207,24 +211,28 @@ class MiscDbTests {
 	 * FROM item_mast
 	 * WHERE pro_price >= 350;
 	 */
-	private fun query5() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				AliasColumn(CountAllAggFunction(), "num_products")
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Item
-			)
-		),
-		where = WhereStatement(
-			GreaterOrEqualThanCondition(
-				Item.price,
-				FloatLiteral(350F)
+	@Test
+	fun query5() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					AliasColumn(CountAllAggFunction(), "num_products")
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Item
+				)
+			),
+			where = WhereStatement(
+				GreaterOrEqualThanCondition(
+					Item.price,
+					FloatLiteral(350F)
+				)
 			)
 		)
-	)
+		assertQuery(query, "SELECT (COUNT(*)) AS num_products FROM item_mast WHERE (item_mast.pro_price) >= (350.0)")
+	}
 
 
 	/**
@@ -233,23 +241,29 @@ class MiscDbTests {
 	 * FROM item_mast
 	 * GROUP BY pro_com;
 	 */
-	private fun query6() = QueryStatement(
-		select = SelectStatement(
-			listOf(
-				AliasColumn(AvgAggFunction(Item.price), "avg_price"),
-				Item.company.alias("company_id")
-			)
-		),
-		from = FromStatement(
-			listOf(
-				Item
-			)
-		),
-		groupBy = GroupByStatement(
-			listOf(
-				Item.company
+	@Test
+	fun query6() {
+		val query = QueryStatement(
+			select = SelectStatement(
+				listOf(
+					AliasColumn(AvgAggFunction(Item.price), "avg_price"),
+					Item.company.alias("company_id")
+				)
+			),
+			from = FromStatement(
+				listOf(
+					Item
+				)
+			),
+			groupBy = GroupByStatement(
+				listOf(
+					Item.company
+				)
 			)
 		)
-	)
-
+		assertQuery(
+			query,
+			"SELECT (AVG(item_mast.pro_price)) AS avg_price, (item_mast.pro_com) AS company_id FROM item_mast GROUP BY item_mast.pro_com"
+		)
+	}
 }
