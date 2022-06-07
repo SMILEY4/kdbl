@@ -5,6 +5,11 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.DerivedColumn
 import de.ruegnerlukas.sqldsl2.grammar.from.FromExpression
 import de.ruegnerlukas.sqldsl2.grammar.from.TableFromExpression
 import de.ruegnerlukas.sqldsl2.grammar.target.CommonTarget
+import de.ruegnerlukas.sqldsl2.schema.AnyValueType
+import de.ruegnerlukas.sqldsl2.schema.BooleanValueType
+import de.ruegnerlukas.sqldsl2.schema.FloatValueType
+import de.ruegnerlukas.sqldsl2.schema.IntValueType
+import de.ruegnerlukas.sqldsl2.schema.StringValueType
 
 
 /**
@@ -46,12 +51,24 @@ class DerivedTable(val tableName: String) : TableBase {
 		return this.content ?: throw IllegalStateException("No content assigned to derived table '$tableName'")
 	}
 
-	fun column(columnName: String): DerivedColumn {
+	fun columnInt(columnName: String): DerivedColumn<IntValueType> {
+		return DerivedColumn(this, columnName)
+	}
+
+	fun columnFloat(columnName: String): DerivedColumn<FloatValueType> {
+		return DerivedColumn(this, columnName)
+	}
+
+	fun columnString(columnName: String): DerivedColumn<StringValueType> {
+		return DerivedColumn(this, columnName)
+	}
+	fun columnBool(columnName: String): DerivedColumn<BooleanValueType> {
 		return DerivedColumn(this, columnName)
 	}
 
 
-	fun column(columnExpr: ColumnExpr): DerivedColumn {
+
+	fun <T: AnyValueType> columnInt(columnExpr: ColumnExpr<T>): DerivedColumn<T> {
 		return DerivedColumn(this, columnExpr.getColumnName())
 	}
 

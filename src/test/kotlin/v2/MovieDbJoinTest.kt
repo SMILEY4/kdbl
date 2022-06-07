@@ -60,7 +60,7 @@ class MovieDbJoinTest {
 		return QueryStatement(
 			select = SelectStatement(
 				listOf(
-					derived.column(Reviewer.name)
+					derived.columnInt(Reviewer.name)
 				)
 			),
 			from = FromStatement(
@@ -72,7 +72,7 @@ class MovieDbJoinTest {
 							Rating,
 							UsingJoinConstraint(
 								listOf(
-									derived.column(Reviewer.id)
+									derived.columnInt(Reviewer.id)
 								)
 							)
 						)
@@ -81,7 +81,7 @@ class MovieDbJoinTest {
 			),
 			where = WhereStatement(
 				IsNullCondition(
-					derived.column(Rating.stars)
+					derived.columnInt(Rating.stars)
 				)
 			)
 		)
@@ -117,7 +117,7 @@ class MovieDbJoinTest {
 			),
 			where = WhereStatement(
 				EqualCondition(
-					derived.column(Actor.gender),
+					derived.columnInt(Actor.gender),
 					StringLiteral("f")
 				)
 			)

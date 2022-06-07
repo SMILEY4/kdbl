@@ -6,7 +6,6 @@ import de.ruegnerlukas.sqldsl2.grammar.expr.AddAllOperation
 import de.ruegnerlukas.sqldsl2.grammar.expr.AliasColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.AndCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.CountAggFunction
-import de.ruegnerlukas.sqldsl2.grammar.expr.DerivedColumn
 import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterOrEqualThanCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.GreaterThanCondition
@@ -27,7 +26,6 @@ import de.ruegnerlukas.sqldsl2.grammar.orderby.Dir
 import de.ruegnerlukas.sqldsl2.grammar.orderby.OrderByExpression
 import de.ruegnerlukas.sqldsl2.grammar.orderby.OrderByStatement
 import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl2.grammar.select.AliasSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectDistinctStatement
 import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl2.grammar.table.DerivedTable
@@ -78,7 +76,7 @@ class ChallengesDbTest {
 		return QueryStatement(
 			select = SelectStatement(
 				listOf(
-					AliasColumn(MaxAggFunction(sales.column(Sale.amount)), "second_highest_sale")
+					AliasColumn(MaxAggFunction(sales.columnInt(Sale.amount)), "second_highest_sale")
 				)
 			),
 			from = FromStatement(
@@ -230,7 +228,7 @@ class ChallengesDbTest {
 		return QueryStatement(
 			select = SelectStatement(
 				listOf(
-					countEmail.column(Employee.email)
+					countEmail.columnInt(Employee.email)
 				)
 			),
 			from = FromStatement(
@@ -240,7 +238,7 @@ class ChallengesDbTest {
 			),
 			where = WhereStatement(
 				GreaterThanCondition(
-					countEmail.column("numOfAppearance"),
+					countEmail.columnInt("numOfAppearance"),
 					IntLiteral(1)
 				)
 			)
@@ -309,8 +307,8 @@ class ChallengesDbTest {
 						s2,
 						ConditionJoinConstraint(
 							AndCondition(
-								EqualCondition(s1.subject, s2.column(Exam.subject)),
-								EqualCondition(s1.year, s2.column("min_year"))
+								EqualCondition(s1.subject, s2.columnInt(Exam.subject)),
+								EqualCondition(s1.year, s2.columnInt("min_year"))
 							)
 						)
 					)
@@ -340,12 +338,12 @@ class ChallengesDbTest {
 		return QueryStatement(
 			select = SelectStatement(
 				listOf(
-					AliasColumn(MaxAggFunction(a.column("total_sale")), "max_sale"),
-					AliasColumn(MinAggFunction(a.column("total_sale")), "min_sale"),
+					AliasColumn(MaxAggFunction(a.columnInt("total_sale")), "max_sale"),
+					AliasColumn(MinAggFunction(a.columnInt("total_sale")), "min_sale"),
 					AliasColumn(
 						SubOperation(
-							MaxAggFunction(a.column("total_sale")),
-							MinAggFunction(a.column("total_sale"))
+							MaxAggFunction(a.columnInt("total_sale")),
+							MinAggFunction(a.columnInt("total_sale"))
 						), "sale_difference"
 					)
 				)

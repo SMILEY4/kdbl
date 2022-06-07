@@ -77,7 +77,7 @@ class UpdateTest {
 			target = Sale,
 			set = UpdateSetStatement(
 				listOf(
-					UpdateExpression(Sale.amount, result.column("sum")),
+					UpdateExpression(Sale.amount, result.columnInt("sum")),
 				)
 			),
 			from = FromStatement(

@@ -7,26 +7,27 @@ import de.ruegnerlukas.sqldsl2.grammar.select.SelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.table.DerivedTable
 import de.ruegnerlukas.sqldsl2.grammar.table.TableBase
 import de.ruegnerlukas.sqldsl2.grammar.update.UpdateColumn
+import de.ruegnerlukas.sqldsl2.schema.AnyValueType
 
-interface ColumnExpr : Expr {
+interface ColumnExpr<T: AnyValueType> : Expr<T> {
 	fun getColumnName(): String
 	fun getParentTable(): TableBase
 }
 
-interface QualifiedColumn : ColumnExpr, InsertColumnExpression, UpdateColumn, ReturningColumn {
+interface QualifiedColumn<T: AnyValueType> : ColumnExpr<T>, InsertColumnExpression, UpdateColumn, ReturningColumn {
 	fun alias(alias: String): AliasSelectExpression {
 		return AliasColumn(alias).assign(this)
 	}
 }
 
 
-class DerivedColumn(private val parentTable: DerivedTable, private val columnName: String) : ColumnExpr {
+class DerivedColumn<T: AnyValueType>(private val parentTable: DerivedTable, private val columnName: String) : ColumnExpr<T> {
 	override fun getColumnName() = columnName
 	override fun getParentTable() = parentTable
 }
 
 
-class AliasColumn(private val alias: String) : ColumnExpr, AliasSelectExpression, ReturningColumn {
+class AliasColumn(private val alias: String) : ColumnExpr<AnyValueType>, AliasSelectExpression, ReturningColumn {
 
 	constructor(expr: SelectExpression, alias: String) : this(alias) {
 		assign(expr)

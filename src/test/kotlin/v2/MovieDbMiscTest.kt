@@ -3,13 +3,11 @@ package v2
 import de.ruegnerlukas.sqldsl2.generators.generic.GenericGeneratorContext
 import de.ruegnerlukas.sqldsl2.generators.generic.GenericQueryGenerator
 import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
-import de.ruegnerlukas.sqldsl2.grammar.expr.IsNullCondition
 import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
 import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl2.grammar.join.ConditionJoinConstraint
 import de.ruegnerlukas.sqldsl2.grammar.join.JoinClause
 import de.ruegnerlukas.sqldsl2.grammar.join.JoinOp
-import de.ruegnerlukas.sqldsl2.grammar.join.UsingJoinConstraint
 import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
 import de.ruegnerlukas.sqldsl2.grammar.select.AllSelectExpression
 import de.ruegnerlukas.sqldsl2.grammar.select.QualifiedAllSelectExpression
@@ -52,7 +50,7 @@ class MovieDbMiscTest {
 			select = SelectStatement(
 				listOf(
 					AllSelectExpression(),
-					derived.column(Actor.gender),
+					derived.columnInt(Actor.gender),
 					QualifiedAllSelectExpression(derived)
 				)
 			),
@@ -88,7 +86,7 @@ class MovieDbMiscTest {
 			),
 			where = WhereStatement(
 				EqualCondition(
-					derived.column(Actor.gender),
+					derived.columnInt(Actor.gender),
 					StringLiteral("f")
 				)
 			)
