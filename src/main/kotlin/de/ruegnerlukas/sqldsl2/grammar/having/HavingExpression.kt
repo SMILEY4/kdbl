@@ -1,5 +1,0 @@
-package de.ruegnerlukas.sqldsl2.grammar.having
-
-interface HavingExpression
-
-interface ConditionHavingExpression: HavingExpression
