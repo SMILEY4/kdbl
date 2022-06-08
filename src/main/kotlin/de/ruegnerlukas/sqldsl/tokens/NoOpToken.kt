@@ -1,4 +1,4 @@
-package de.ruegnerlukas.sqldsl2.tokens
+package de.ruegnerlukas.sqldsl.tokens
 
 class NoOpToken : Token() {
     override fun buildString(): String {

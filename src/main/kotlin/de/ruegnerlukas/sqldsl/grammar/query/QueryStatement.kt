@@ -1,14 +1,14 @@
-package de.ruegnerlukas.sqldsl2.grammar.query
+package de.ruegnerlukas.sqldsl.grammar.query
 
-import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
-import de.ruegnerlukas.sqldsl2.grammar.from.QueryFromExpression
-import de.ruegnerlukas.sqldsl2.grammar.groupby.GroupByStatement
-import de.ruegnerlukas.sqldsl2.grammar.having.HavingStatement
-import de.ruegnerlukas.sqldsl2.grammar.insert.InsertQueryExpression
-import de.ruegnerlukas.sqldsl2.grammar.limit.LimitStatement
-import de.ruegnerlukas.sqldsl2.grammar.orderby.OrderByStatement
-import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
-import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
+import de.ruegnerlukas.sqldsl.grammar.from.FromStatement
+import de.ruegnerlukas.sqldsl.grammar.from.QueryFromExpression
+import de.ruegnerlukas.sqldsl.grammar.groupby.GroupByStatement
+import de.ruegnerlukas.sqldsl.grammar.having.HavingStatement
+import de.ruegnerlukas.sqldsl.grammar.insert.InsertQueryExpression
+import de.ruegnerlukas.sqldsl.grammar.limit.LimitStatement
+import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByStatement
+import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
+import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
 
 class QueryStatement(
 	val select: SelectStatement,

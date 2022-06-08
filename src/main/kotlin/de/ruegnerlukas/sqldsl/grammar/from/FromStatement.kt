@@ -1,3 +1,3 @@
-package de.ruegnerlukas.sqldsl2.grammar.from
+package de.ruegnerlukas.sqldsl.grammar.from
 
 class FromStatement(val expressions: List<FromExpression>)

@@ -18,6 +18,8 @@ class OrCondition(val left: ConditionExpr, val right: ConditionExpr) : Condition
 
 class OrChainCondition(val expressions: List<ConditionExpr>) : ConditionExpr
 
+class NotCondition(val expression: ConditionExpr) : ConditionExpr
+
 class EqualCondition<T : AnyValueType>(val left: Expr<T>, val right: Expr<T>) : ConditionExpr
 
 class NotEqualCondition<T : AnyValueType>(val left: Expr<T>, val right: Expr<T>) : ConditionExpr
@@ -28,7 +30,7 @@ class GreaterOrEqualThanCondition<T : NumericValueType>(val left: Expr<T>, val r
 
 class LessThanCondition<T : NumericValueType>(val left: Expr<T>, val right: Expr<T>) : ConditionExpr
 
-class NotCondition(val expression: ConditionExpr) : ConditionExpr
+class LessOrEqualThanCondition<T : NumericValueType>(val left: Expr<T>, val right: Expr<T>) : ConditionExpr
 
 class IsNotNullCondition<T : AnyValueType>(val expression: Expr<T>) : ConditionExpr
 

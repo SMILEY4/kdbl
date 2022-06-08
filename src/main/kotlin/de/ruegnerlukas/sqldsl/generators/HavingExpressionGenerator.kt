@@ -1,7 +1,7 @@
-package de.ruegnerlukas.sqldsl2.generators
+package de.ruegnerlukas.sqldsl.generators
 
-import de.ruegnerlukas.sqldsl2.grammar.having.HavingExpression
-import de.ruegnerlukas.sqldsl2.tokens.Token
+import de.ruegnerlukas.sqldsl.grammar.having.HavingExpression
+import de.ruegnerlukas.sqldsl.tokens.Token
 
 interface HavingExpressionGenerator {
 	fun buildString(e: HavingExpression): String

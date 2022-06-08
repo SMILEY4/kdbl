@@ -6,7 +6,6 @@ import de.ruegnerlukas.sqldsl.grammar.delete.DeleteStatement
 import de.ruegnerlukas.sqldsl.grammar.expr.EqualCondition
 import de.ruegnerlukas.sqldsl.grammar.expr.IntLiteral
 import de.ruegnerlukas.sqldsl.grammar.insert.ReturnAllColumnsStatement
-import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
 import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals

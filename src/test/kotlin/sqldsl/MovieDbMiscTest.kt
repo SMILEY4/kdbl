@@ -1,19 +1,19 @@
-package v2
+package sqldsl
 
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericGeneratorContext
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericQueryGenerator
-import de.ruegnerlukas.sqldsl2.grammar.expr.EqualCondition
-import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
-import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
-import de.ruegnerlukas.sqldsl2.grammar.join.ConditionJoinConstraint
-import de.ruegnerlukas.sqldsl2.grammar.join.JoinClause
-import de.ruegnerlukas.sqldsl2.grammar.join.JoinOp
-import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl2.grammar.select.AllSelectExpression
-import de.ruegnerlukas.sqldsl2.grammar.select.QualifiedAllSelectExpression
-import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
-import de.ruegnerlukas.sqldsl2.grammar.table.DerivedTable
-import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
+import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.generators.generic.GenericQueryGenerator
+import de.ruegnerlukas.sqldsl.grammar.expr.EqualCondition
+import de.ruegnerlukas.sqldsl.grammar.expr.StringLiteral
+import de.ruegnerlukas.sqldsl.grammar.from.FromStatement
+import de.ruegnerlukas.sqldsl.grammar.join.ConditionJoinConstraint
+import de.ruegnerlukas.sqldsl.grammar.join.JoinClause
+import de.ruegnerlukas.sqldsl.grammar.join.JoinOp
+import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
+import de.ruegnerlukas.sqldsl.grammar.select.AllSelectExpression
+import de.ruegnerlukas.sqldsl.grammar.select.QualifiedAllSelectExpression
+import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
+import de.ruegnerlukas.sqldsl.grammar.table.DerivedTable
+import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

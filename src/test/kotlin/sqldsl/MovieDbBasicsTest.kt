@@ -1,26 +1,18 @@
 package sqldsl
 
+import de.ruegnerlukas.sqldsl.builders.QueryBuilderEndStep
+import de.ruegnerlukas.sqldsl.builders.and
+import de.ruegnerlukas.sqldsl.builders.isEqual
+import de.ruegnerlukas.sqldsl.builders.isGreaterEqualThan
+import de.ruegnerlukas.sqldsl.builders.isIn
+import de.ruegnerlukas.sqldsl.builders.isLike
+import de.ruegnerlukas.sqldsl.builders.isNotIn
+import de.ruegnerlukas.sqldsl.builders.isNotNull
+import de.ruegnerlukas.sqldsl.builders.query
 import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
 import de.ruegnerlukas.sqldsl.generators.generic.GenericQueryGenerator
-import de.ruegnerlukas.sqldsl.grammar.expr.AndCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.EqualCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.GreaterOrEqualThanCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.InListCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.InSubQueryCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.IntLiteral
-import de.ruegnerlukas.sqldsl.grammar.expr.IsNotNullCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.LessThanCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.LikeCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.ListLiteral
-import de.ruegnerlukas.sqldsl.grammar.expr.NotCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.StringLiteral
-import de.ruegnerlukas.sqldsl.grammar.from.FromStatement
 import de.ruegnerlukas.sqldsl.grammar.orderby.Dir
 import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByExpression
-import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByStatement
-import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
-import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -32,8 +24,8 @@ class MovieDbBasicsTest {
 
 	private val generator = GenericQueryGenerator(GenericGeneratorContext())
 
-	private fun assertQuery(query: QueryStatement, expected: String) {
-		val strQuery = generator.buildString(query)
+	private fun assertQuery(query: QueryBuilderEndStep, expected: String) {
+		val strQuery = generator.buildString(query.build())
 		println(strQuery)
 		assertEquals(expected, strQuery)
 	}
@@ -45,19 +37,9 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query1() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Movie.title,
-					Movie.year
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Movie
-				)
-			)
-		)
+		val query = query()
+			.select(Movie.title, Movie.year)
+			.from(Movie)
 		assertQuery(query, "SELECT movie.mov_title, movie.mov_year FROM movie")
 	}
 
@@ -69,21 +51,10 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query2() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Movie.year
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Movie
-				)
-			),
-			where = WhereStatement(
-				EqualCondition(Movie.title, StringLiteral("American Beauty"))
-			)
-		)
+		val query = query()
+			.select(Movie.year)
+			.from(Movie)
+			.where(Movie.title.isEqual("American Beauty"))
 		assertQuery(query, "SELECT movie.mov_year FROM movie WHERE (movie.mov_title) = ('American Beauty')")
 	}
 
@@ -95,48 +66,11 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query3() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Movie.title
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Movie
-				)
-			),
-			where = WhereStatement(
-				EqualCondition(Movie.year, IntLiteral(1999))
-			)
-		)
+		val query = query()
+			.select(Movie.title)
+			.from(Movie)
+			.where(Movie.year.isEqual(1999))
 		assertQuery(query, "SELECT movie.mov_title FROM movie WHERE (movie.mov_year) = (1999)")
-	}
-
-
-	/**
-	 * SELECT mov_title
-	 * FROM movie
-	 * WHERE mov_year<1998;
-	 */
-	@Test
-	fun query4() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Movie.title
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Movie
-				)
-			),
-			where = WhereStatement(
-				LessThanCondition(Movie.year, IntLiteral(1999))
-			)
-		)
-		assertQuery(query, "SELECT movie.mov_title FROM movie WHERE (movie.mov_year) < (1999)")
 	}
 
 
@@ -149,37 +83,18 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query6() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Reviewer.name
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Reviewer,
-					Rating
-				)
-			),
-			where = WhereStatement(
-				AndCondition(
-					EqualCondition(
-						Rating.reviewerId,
-						Reviewer.id
-					),
-					AndCondition(
-						GreaterOrEqualThanCondition(
-							Rating.stars,
-							IntLiteral(7)
-						),
-						IsNotNullCondition(
-							Reviewer.name
-						)
-					)
-				)
+		val query = query()
+			.select(Reviewer.name)
+			.from(Reviewer, Rating)
+			.where(
+				Rating.reviewerId.isEqual(Reviewer.id)
+						and Rating.stars.isGreaterEqualThan(7)
+						and Reviewer.name.isNotNull()
 			)
+		assertQuery(
+			query,
+			"SELECT reviewer.rev_name FROM reviewer, rating WHERE ((rating.rev_id) = (reviewer.rev_id)) AND (((rating.rev_stars) >= (7)) AND ((reviewer.rev_name) IS NOT NULL))"
 		)
-		assertQuery(query, "SELECT reviewer.rev_name FROM reviewer, rating WHERE ((rating.rev_id) = (reviewer.rev_id)) AND (((rating.rev_stars) >= (7)) AND ((reviewer.rev_name) IS NOT NULL))")
 	}
 
 
@@ -190,37 +105,16 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query7() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Movie.title
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Movie
-				)
-			),
-			where = WhereStatement(
-				NotCondition(
-					InSubQueryCondition(
-						Movie.id,
-						QueryStatement(
-							SelectStatement(
-								listOf(
-									Rating.movieId
-								)
-							),
-							FromStatement(
-								listOf(
-									Rating
-								)
-							)
-						)
-					)
+		val query = query()
+			.select(Movie.title)
+			.from(Movie)
+			.where(
+				Movie.id.isNotIn(
+					query()
+						.select(Rating.movieId)
+						.from(Rating)
 				)
 			)
-		)
 		assertQuery(query, "SELECT movie.mov_title FROM movie WHERE NOT ((movie.mov_id) IN (SELECT rating.mov_id FROM rating))")
 	}
 
@@ -232,30 +126,10 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query8() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Movie.title
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Movie
-				)
-			),
-			where = WhereStatement(
-				InListCondition(
-					Movie.id,
-					ListLiteral(
-						listOf(
-							IntLiteral(905),
-							IntLiteral(907),
-							IntLiteral(917)
-						)
-					)
-				)
-			)
-		)
+		val query = query()
+			.select(Movie.title)
+			.from(Movie)
+			.where(Movie.id.isIn(905, 907, 917))
 		assertQuery(query, "SELECT movie.mov_title FROM movie WHERE (movie.mov_id) IN (905, 907, 917)")
 	}
 
@@ -268,32 +142,15 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query9() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Movie.id,
-					Movie.title,
-					Movie.year
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Movie
-				)
-			),
-			where = WhereStatement(
-				LikeCondition(
-					Movie.title,
-					"%Boogie%Nights%"
-				)
-			),
-			orderBy = OrderByStatement(
-				listOf(
-					OrderByExpression(Movie.year, Dir.ASC)
-				)
-			)
+		val query = query()
+			.select(Movie.id, Movie.title, Movie.year)
+			.from(Movie)
+			.where(Movie.title.isLike("%Boogie%Nights%"))
+			.orderBy(OrderByExpression(Movie.year, Dir.ASC))
+		assertQuery(
+			query,
+			"SELECT movie.mov_id, movie.mov_title, movie.mov_year FROM movie WHERE (movie.mov_title) LIKE '%Boogie%Nights%' ORDER BY (movie.mov_year) ASC"
 		)
-		assertQuery(query, "SELECT movie.mov_id, movie.mov_title, movie.mov_year FROM movie WHERE (movie.mov_title) LIKE '%Boogie%Nights%' ORDER BY (movie.mov_year) ASC")
 	}
 
 
@@ -305,50 +162,11 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query10() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Actor.id
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Actor
-				)
-			),
-			where = WhereStatement(
-				AndCondition(
-					EqualCondition(
-						Actor.fName,
-						StringLiteral("Woddy")
-					),
-					EqualCondition(
-						Actor.lName,
-						StringLiteral("Allen")
-					)
-				)
-			),
-		)
+		val query = query()
+			.select(Actor.id)
+			.from(Actor)
+			.where(Actor.fName.isEqual("Woddy") and Actor.lName.isEqual("Allen"))
 		assertQuery(query, "SELECT actor.act_id FROM actor WHERE ((actor.act_fname) = ('Woddy')) AND ((actor.act_lname) = ('Allen'))")
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

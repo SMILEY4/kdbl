@@ -1,7 +1,7 @@
-package de.ruegnerlukas.sqldsl2.grammar.join
+package de.ruegnerlukas.sqldsl.grammar.join
 
-import de.ruegnerlukas.sqldsl2.grammar.expr.ColumnExpr
-import de.ruegnerlukas.sqldsl2.grammar.expr.ConditionExpr
+import de.ruegnerlukas.sqldsl.grammar.expr.ColumnExpr
+import de.ruegnerlukas.sqldsl.grammar.expr.ConditionExpr
 
 interface JoinConstraint
 

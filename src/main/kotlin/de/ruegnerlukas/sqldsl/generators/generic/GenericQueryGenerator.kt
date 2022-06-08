@@ -1,18 +1,18 @@
-package de.ruegnerlukas.sqldsl2.generators.generic
+package de.ruegnerlukas.sqldsl.generators.generic
 
-import de.ruegnerlukas.sqldsl2.generators.GeneratorContext
-import de.ruegnerlukas.sqldsl2.generators.QueryGenerator
-import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
-import de.ruegnerlukas.sqldsl2.grammar.groupby.GroupByStatement
-import de.ruegnerlukas.sqldsl2.grammar.having.HavingStatement
-import de.ruegnerlukas.sqldsl2.grammar.limit.LimitStatement
-import de.ruegnerlukas.sqldsl2.grammar.orderby.OrderByStatement
-import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
-import de.ruegnerlukas.sqldsl2.grammar.where.WhereStatement
-import de.ruegnerlukas.sqldsl2.tokens.CsvListToken
-import de.ruegnerlukas.sqldsl2.tokens.ListToken
-import de.ruegnerlukas.sqldsl2.tokens.Token
+import de.ruegnerlukas.sqldsl.generators.GeneratorContext
+import de.ruegnerlukas.sqldsl.generators.QueryGenerator
+import de.ruegnerlukas.sqldsl.grammar.from.FromStatement
+import de.ruegnerlukas.sqldsl.grammar.groupby.GroupByStatement
+import de.ruegnerlukas.sqldsl.grammar.having.HavingStatement
+import de.ruegnerlukas.sqldsl.grammar.limit.LimitStatement
+import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByStatement
+import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
+import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
+import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
+import de.ruegnerlukas.sqldsl.tokens.CsvListToken
+import de.ruegnerlukas.sqldsl.tokens.ListToken
+import de.ruegnerlukas.sqldsl.tokens.Token
 
 open class GenericQueryGenerator(private val genCtx: GeneratorContext) : QueryGenerator, GenericGeneratorBase<QueryStatement>() {
 

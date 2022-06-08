@@ -1,20 +1,19 @@
-package v2
+package sqldsl
 
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericGeneratorContext
-import de.ruegnerlukas.sqldsl2.generators.generic.GenericInsertGenerator
-import de.ruegnerlukas.sqldsl2.grammar.delete.DeleteStatement
-import de.ruegnerlukas.sqldsl2.grammar.expr.IntLiteral
-import de.ruegnerlukas.sqldsl2.grammar.expr.StringLiteral
-import de.ruegnerlukas.sqldsl2.grammar.from.FromStatement
-import de.ruegnerlukas.sqldsl2.grammar.insert.InsertAllColumnsStatement
-import de.ruegnerlukas.sqldsl2.grammar.insert.InsertColumnsStatement
-import de.ruegnerlukas.sqldsl2.grammar.insert.InsertStatement
-import de.ruegnerlukas.sqldsl2.grammar.insert.InsertValuesExpression
-import de.ruegnerlukas.sqldsl2.grammar.insert.ReturnColumnsStatement
-import de.ruegnerlukas.sqldsl2.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl2.grammar.select.AllSelectExpression
-import de.ruegnerlukas.sqldsl2.grammar.select.SelectStatement
-import de.ruegnerlukas.sqldsl2.schema.OnConflict
+import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.generators.generic.GenericInsertGenerator
+import de.ruegnerlukas.sqldsl.grammar.expr.IntLiteral
+import de.ruegnerlukas.sqldsl.grammar.expr.StringLiteral
+import de.ruegnerlukas.sqldsl.grammar.from.FromStatement
+import de.ruegnerlukas.sqldsl.grammar.insert.InsertAllColumnsStatement
+import de.ruegnerlukas.sqldsl.grammar.insert.InsertColumnsStatement
+import de.ruegnerlukas.sqldsl.grammar.insert.InsertStatement
+import de.ruegnerlukas.sqldsl.grammar.insert.InsertValuesExpression
+import de.ruegnerlukas.sqldsl.grammar.insert.ReturnColumnsStatement
+import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
+import de.ruegnerlukas.sqldsl.grammar.select.AllSelectExpression
+import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
+import de.ruegnerlukas.sqldsl.schema.OnConflict
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

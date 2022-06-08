@@ -1,4 +1,4 @@
-package de.ruegnerlukas.sqldsl2.schema
+package de.ruegnerlukas.sqldsl.schema
 
 enum class Create {
     IF_NOT_EXISTS,

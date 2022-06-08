@@ -6,7 +6,6 @@ import de.ruegnerlukas.sqldsl.grammar.expr.ColumnExpr
 import de.ruegnerlukas.sqldsl.grammar.expr.DerivedColumn
 import de.ruegnerlukas.sqldsl.grammar.expr.QualifiedColumn
 import de.ruegnerlukas.sqldsl.grammar.table.AliasTable
-import de.ruegnerlukas.sqldsl.grammar.table.DerivedTable
 import de.ruegnerlukas.sqldsl.grammar.table.StandardTable
 import de.ruegnerlukas.sqldsl.schema.Column
 import de.ruegnerlukas.sqldsl.tokens.StringToken

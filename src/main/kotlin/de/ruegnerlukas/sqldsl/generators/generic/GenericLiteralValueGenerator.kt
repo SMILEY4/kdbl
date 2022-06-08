@@ -11,7 +11,6 @@ import de.ruegnerlukas.sqldsl.grammar.expr.MacroLiteral
 import de.ruegnerlukas.sqldsl.grammar.expr.NullLiteral
 import de.ruegnerlukas.sqldsl.grammar.expr.StringLiteral
 import de.ruegnerlukas.sqldsl.grammar.expr.SubQueryLiteral
-import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
 import de.ruegnerlukas.sqldsl.tokens.CsvListToken
 import de.ruegnerlukas.sqldsl.tokens.GroupToken
 import de.ruegnerlukas.sqldsl.tokens.StringToken

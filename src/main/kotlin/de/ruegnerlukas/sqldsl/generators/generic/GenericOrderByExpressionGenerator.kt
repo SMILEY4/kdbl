@@ -1,12 +1,12 @@
-package de.ruegnerlukas.sqldsl2.generators.generic
+package de.ruegnerlukas.sqldsl.generators.generic
 
-import de.ruegnerlukas.sqldsl2.generators.GeneratorContext
-import de.ruegnerlukas.sqldsl2.generators.OrderByExpressionGenerator
-import de.ruegnerlukas.sqldsl2.grammar.orderby.Dir
-import de.ruegnerlukas.sqldsl2.grammar.orderby.OrderByExpression
-import de.ruegnerlukas.sqldsl2.tokens.GroupToken
-import de.ruegnerlukas.sqldsl2.tokens.ListToken
-import de.ruegnerlukas.sqldsl2.tokens.Token
+import de.ruegnerlukas.sqldsl.generators.GeneratorContext
+import de.ruegnerlukas.sqldsl.generators.OrderByExpressionGenerator
+import de.ruegnerlukas.sqldsl.grammar.orderby.Dir
+import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByExpression
+import de.ruegnerlukas.sqldsl.tokens.GroupToken
+import de.ruegnerlukas.sqldsl.tokens.ListToken
+import de.ruegnerlukas.sqldsl.tokens.Token
 
 open class GenericOrderByExpressionGenerator(private val genCtx: GeneratorContext) : OrderByExpressionGenerator, GenericGeneratorBase<OrderByExpression>() {
 

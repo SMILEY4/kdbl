@@ -13,6 +13,7 @@ import de.ruegnerlukas.sqldsl.grammar.expr.InListCondition
 import de.ruegnerlukas.sqldsl.grammar.expr.InSubQueryCondition
 import de.ruegnerlukas.sqldsl.grammar.expr.IsNotNullCondition
 import de.ruegnerlukas.sqldsl.grammar.expr.IsNullCondition
+import de.ruegnerlukas.sqldsl.grammar.expr.LessOrEqualThanCondition
 import de.ruegnerlukas.sqldsl.grammar.expr.LessThanCondition
 import de.ruegnerlukas.sqldsl.grammar.expr.LikeCondition
 import de.ruegnerlukas.sqldsl.grammar.expr.NotCondition
@@ -38,6 +39,7 @@ open class GenericConditionGenerator(private val genCtx: GeneratorContext) : Con
 			is GreaterThanCondition<*> -> greater(e)
 			is GreaterOrEqualThanCondition<*> -> greaterOrEqual(e)
 			is LessThanCondition<*> -> less(e)
+			is LessOrEqualThanCondition<*> -> lessOrEqual(e)
 			is NotCondition -> not(e)
 			is IsNotNullCondition<*> -> isNotNull(e)
 			is IsNullCondition<*> -> isNull(e)
@@ -127,6 +129,13 @@ open class GenericConditionGenerator(private val genCtx: GeneratorContext) : Con
 		return ListToken()
 			.add(GroupToken(genCtx.expr().buildToken(e.left)))
 			.add("<")
+			.add(GroupToken(genCtx.expr().buildToken(e.right)))
+	}
+
+	protected fun lessOrEqual(e: LessOrEqualThanCondition<*>): Token {
+		return ListToken()
+			.add(GroupToken(genCtx.expr().buildToken(e.left)))
+			.add("<=")
 			.add(GroupToken(genCtx.expr().buildToken(e.right)))
 	}
 

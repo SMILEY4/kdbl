@@ -1,7 +1,7 @@
-package de.ruegnerlukas.sqldsl2.generators
+package de.ruegnerlukas.sqldsl.generators
 
-import de.ruegnerlukas.sqldsl2.grammar.update.UpdateStatement
-import de.ruegnerlukas.sqldsl2.tokens.Token
+import de.ruegnerlukas.sqldsl.grammar.update.UpdateStatement
+import de.ruegnerlukas.sqldsl.tokens.Token
 
 interface UpdateGenerator {
 	fun buildString(e: UpdateStatement): String
