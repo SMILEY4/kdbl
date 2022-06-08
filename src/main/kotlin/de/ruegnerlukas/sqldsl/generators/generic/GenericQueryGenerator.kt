@@ -14,9 +14,9 @@ import de.ruegnerlukas.sqldsl.tokens.CsvListToken
 import de.ruegnerlukas.sqldsl.tokens.ListToken
 import de.ruegnerlukas.sqldsl.tokens.Token
 
-open class GenericQueryGenerator(private val genCtx: GeneratorContext) : QueryGenerator, GenericGeneratorBase<QueryStatement>() {
+open class GenericQueryGenerator(private val genCtx: GeneratorContext) : QueryGenerator, GenericGeneratorBase<QueryStatement<*>>() {
 
-	override fun buildToken(e: QueryStatement): Token {
+	override fun buildToken(e: QueryStatement<*>): Token {
 		return ListToken()
 			.add(select(e.select))
 			.add(from(e.from))

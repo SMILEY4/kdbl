@@ -1,5 +1,6 @@
 package de.ruegnerlukas.sqldsl.grammar.table
 
+import de.ruegnerlukas.sqldsl.builders.QueryBuilderEndStep
 import de.ruegnerlukas.sqldsl.grammar.expr.ColumnExpr
 import de.ruegnerlukas.sqldsl.grammar.expr.DerivedColumn
 import de.ruegnerlukas.sqldsl.grammar.from.FromExpression
@@ -47,6 +48,11 @@ class DerivedTable(val tableName: String) : TableBase {
 		return this
 	}
 
+	fun assign(content: QueryBuilderEndStep<*>): DerivedTable {
+		this.content = content.build()
+		return this
+	}
+
 	fun getContent(): FromExpression {
 		return this.content ?: throw IllegalStateException("No content assigned to derived table '$tableName'")
 	}
@@ -67,8 +73,7 @@ class DerivedTable(val tableName: String) : TableBase {
 	}
 
 
-
-	fun <T: AnyValueType> columnInt(columnExpr: ColumnExpr<T>): DerivedColumn<T> {
+	fun <T: AnyValueType> column(columnExpr: ColumnExpr<T>): DerivedColumn<T> {
 		return DerivedColumn(this, columnExpr.getColumnName())
 	}
 

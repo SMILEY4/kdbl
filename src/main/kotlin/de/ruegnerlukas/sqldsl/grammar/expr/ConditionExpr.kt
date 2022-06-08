@@ -40,9 +40,9 @@ class InListCondition<T : AnyValueType>(val expression: Expr<T>, val list: ListL
 
 class NotInListCondition<T : AnyValueType>(val expression: Expr<T>, val list: ListLiteral<T>) : ConditionExpr
 
-class InSubQueryCondition<T : AnyValueType>(val expression: Expr<T>, val query: QueryStatement) : ConditionExpr
+class InSubQueryCondition<T : AnyValueType>(val expression: Expr<T>, val query: QueryStatement<*>) : ConditionExpr
 
-class NotInSubQueryCondition<T : AnyValueType>(val expression: Expr<T>, val query: QueryStatement) : ConditionExpr
+class NotInSubQueryCondition<T : AnyValueType>(val expression: Expr<T>, val query: QueryStatement<*>) : ConditionExpr
 
 class BetweenCondition<T : NumericValueType>(val expression: Expr<T>, val lower: Expr<T>, val upper: Expr<T>) : ConditionExpr
 

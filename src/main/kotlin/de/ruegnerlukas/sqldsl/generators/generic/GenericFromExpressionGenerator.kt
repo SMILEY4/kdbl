@@ -64,7 +64,7 @@ open class GenericFromExpressionGenerator(private val genCtx: GeneratorContext) 
 
 	protected fun query(e: QueryFromExpression): Token {
 		return when (e) {
-			is QueryStatement -> ListToken().add(GroupToken(genCtx.query().buildToken(e)))
+			is QueryStatement<*> -> ListToken().add(GroupToken(genCtx.query().buildToken(e)))
 			else -> throwUnknownType(e)
 		}
 	}

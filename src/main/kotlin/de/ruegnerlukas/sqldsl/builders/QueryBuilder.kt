@@ -10,74 +10,83 @@ import de.ruegnerlukas.sqldsl.grammar.limit.LimitStatement
 import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByExpression
 import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByStatement
 import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
+import de.ruegnerlukas.sqldsl.grammar.select.AllSelectExpression
 import de.ruegnerlukas.sqldsl.grammar.select.SelectExpression
 import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl.grammar.where.WhereExpression
 import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
+import de.ruegnerlukas.sqldsl.schema.AnyValueType
 
-fun query() = QueryBuilder()
 
-interface QueryBuilderEndStep {
-	fun build(): QueryStatement
+interface QueryBuilderEndStep<T: AnyValueType> {
+	fun build(): QueryStatement<T>
 }
 
-class QueryBuilder {
+open class QueryBuilder<T: AnyValueType> {
 
-	fun select(expressions: List<SelectExpression<*>>): PostSelectBuilder {
+	fun select(expressions: List<SelectExpression<*>>): PostSelectBuilder<T> {
 		return PostSelectBuilder(SelectStatement(expressions, false))
 	}
 
-	fun select(vararg expressions: SelectExpression<*>): PostSelectBuilder {
+	fun select(vararg expressions: SelectExpression<*>): PostSelectBuilder<T> {
 		return PostSelectBuilder(SelectStatement(expressions.toList(), false))
 	}
 
-	fun selectDistinct(expressions: List<SelectExpression<*>>): PostSelectBuilder {
+	fun selectAll(): PostSelectBuilder<T> {
+		return PostSelectBuilder(SelectStatement(listOf(AllSelectExpression()), false))
+	}
+
+	fun selectDistinct(expressions: List<SelectExpression<*>>): PostSelectBuilder<T> {
 		return PostSelectBuilder(SelectStatement(expressions, true))
 	}
 
-	fun selectDistinct(vararg expressions: SelectExpression<*>): PostSelectBuilder {
+	fun selectDistinct(vararg expressions: SelectExpression<*>): PostSelectBuilder<T> {
 		return PostSelectBuilder(SelectStatement(expressions.toList(), false))
+	}
+
+	fun selectAllDistinct(): PostSelectBuilder<T> {
+		return PostSelectBuilder(SelectStatement(listOf(AllSelectExpression()), true))
 	}
 
 }
 
 
-class PostSelectBuilder(val select: SelectStatement) {
+class PostSelectBuilder<T: AnyValueType>(val select: SelectStatement) {
 
-	fun from(expressions: List<FromExpression>): PostFromBuilder {
+	fun from(expressions: List<FromExpression>): PostFromBuilder<T> {
 		return PostFromBuilder(select, FromStatement(expressions))
 	}
 
-	fun from(vararg expressions: FromExpression): PostFromBuilder {
+	fun from(vararg expressions: FromExpression): PostFromBuilder<T> {
 		return PostFromBuilder(select, FromStatement(expressions.toList()))
 	}
 
 }
 
 
-class PostFromBuilder(val select: SelectStatement, val from: FromStatement) : QueryBuilderEndStep {
+class PostFromBuilder<T: AnyValueType>(val select: SelectStatement, val from: FromStatement) : QueryBuilderEndStep<T> {
 
-	fun where(condition: WhereExpression): PostWhereBuilder {
+	fun where(condition: WhereExpression): PostWhereBuilder<T> {
 		return PostWhereBuilder(select, from, WhereStatement(condition))
 	}
 
-	fun groupBy(expressions: List<GroupByExpression>): PostGroupByBuilder {
+	fun groupBy(expressions: List<GroupByExpression>): PostGroupByBuilder<T> {
 		return PostGroupByBuilder(select, from, null, GroupByStatement(expressions))
 	}
 
-	fun groupBy(vararg expressions: GroupByExpression): PostGroupByBuilder {
+	fun groupBy(vararg expressions: GroupByExpression): PostGroupByBuilder<T> {
 		return PostGroupByBuilder(select, from, null, GroupByStatement(expressions.toList()))
 	}
 
-	fun orderBy(expressions: List<OrderByExpression>): PostOrderByBuilder {
+	fun orderBy(expressions: List<OrderByExpression>): PostOrderByBuilder<T> {
 		return PostOrderByBuilder(select, from, null, null, null, OrderByStatement(expressions))
 	}
 
-	fun orderBy(vararg expressions: OrderByExpression): PostOrderByBuilder {
+	fun orderBy(vararg expressions: OrderByExpression): PostOrderByBuilder<T> {
 		return PostOrderByBuilder(select, from, null, null, null, OrderByStatement(expressions.toList()))
 	}
 
-	override fun build(): QueryStatement {
+	override fun build(): QueryStatement<T> {
 		return QueryStatement(
 			select = select,
 			from = from
@@ -87,25 +96,25 @@ class PostFromBuilder(val select: SelectStatement, val from: FromStatement) : Qu
 }
 
 
-class PostWhereBuilder(val select: SelectStatement, val from: FromStatement, val where: WhereStatement) : QueryBuilderEndStep {
+class PostWhereBuilder<T: AnyValueType>(val select: SelectStatement, val from: FromStatement, val where: WhereStatement) : QueryBuilderEndStep<T> {
 
-	fun groupBy(expressions: List<GroupByExpression>): PostGroupByBuilder {
+	fun groupBy(expressions: List<GroupByExpression>): PostGroupByBuilder<T> {
 		return PostGroupByBuilder(select, from, where, GroupByStatement(expressions))
 	}
 
-	fun groupBy(vararg expressions: GroupByExpression): PostGroupByBuilder {
+	fun groupBy(vararg expressions: GroupByExpression): PostGroupByBuilder<T> {
 		return PostGroupByBuilder(select, from, where, GroupByStatement(expressions.toList()))
 	}
 
-	fun orderBy(expressions: List<OrderByExpression>): PostOrderByBuilder {
+	fun orderBy(expressions: List<OrderByExpression>): PostOrderByBuilder<T> {
 		return PostOrderByBuilder(select, from, where, null, null, OrderByStatement(expressions))
 	}
 
-	fun orderBy(vararg expressions: OrderByExpression): PostOrderByBuilder {
+	fun orderBy(vararg expressions: OrderByExpression): PostOrderByBuilder<T> {
 		return PostOrderByBuilder(select, from, where, null, null, OrderByStatement(expressions.toList()))
 	}
 
-	override fun build(): QueryStatement {
+	override fun build(): QueryStatement<T> {
 		return QueryStatement(
 			select = select,
 			from = from,
@@ -115,22 +124,22 @@ class PostWhereBuilder(val select: SelectStatement, val from: FromStatement, val
 }
 
 
-class PostGroupByBuilder(val select: SelectStatement, val from: FromStatement, val where: WhereStatement?, val groupBy: GroupByStatement?) :
-	QueryBuilderEndStep {
+class PostGroupByBuilder<T: AnyValueType>(val select: SelectStatement, val from: FromStatement, val where: WhereStatement?, val groupBy: GroupByStatement?) :
+	QueryBuilderEndStep<T> {
 
-	fun having(condition: HavingExpression): PostHavingBuilder {
+	fun having(condition: HavingExpression): PostHavingBuilder<T> {
 		return PostHavingBuilder(select, from, where, groupBy, HavingStatement(condition))
 	}
 
-	fun orderBy(expressions: List<OrderByExpression>): PostOrderByBuilder {
+	fun orderBy(expressions: List<OrderByExpression>): PostOrderByBuilder<T> {
 		return PostOrderByBuilder(select, from, where, groupBy, null, OrderByStatement(expressions))
 	}
 
-	fun orderBy(vararg expressions: OrderByExpression): PostOrderByBuilder {
+	fun orderBy(vararg expressions: OrderByExpression): PostOrderByBuilder<T> {
 		return PostOrderByBuilder(select, from, where, groupBy, null, OrderByStatement(expressions.toList()))
 	}
 
-	override fun build(): QueryStatement {
+	override fun build(): QueryStatement<T> {
 		return QueryStatement(
 			select = select,
 			from = from,
@@ -141,23 +150,23 @@ class PostGroupByBuilder(val select: SelectStatement, val from: FromStatement, v
 }
 
 
-class PostHavingBuilder(
+class PostHavingBuilder<T: AnyValueType>(
 	val select: SelectStatement,
 	val from: FromStatement,
 	val where: WhereStatement?,
 	val groupBy: GroupByStatement?,
 	val having: HavingStatement
-) : QueryBuilderEndStep {
+) : QueryBuilderEndStep<T> {
 
-	fun orderBy(expressions: List<OrderByExpression>): PostOrderByBuilder {
+	fun orderBy(expressions: List<OrderByExpression>): PostOrderByBuilder<T> {
 		return PostOrderByBuilder(select, from, where, groupBy, having, OrderByStatement(expressions))
 	}
 
-	fun orderBy(vararg expressions: OrderByExpression): PostOrderByBuilder {
+	fun orderBy(vararg expressions: OrderByExpression): PostOrderByBuilder<T> {
 		return PostOrderByBuilder(select, from, where, groupBy, having, OrderByStatement(expressions.toList()))
 	}
 
-	override fun build(): QueryStatement {
+	override fun build(): QueryStatement<T> {
 		return QueryStatement(
 			select = select,
 			from = from,
@@ -169,24 +178,24 @@ class PostHavingBuilder(
 }
 
 
-class PostOrderByBuilder(
+class PostOrderByBuilder<T: AnyValueType>(
 	val select: SelectStatement,
 	val from: FromStatement,
 	val where: WhereStatement?,
 	val groupBy: GroupByStatement?,
 	val having: HavingStatement?,
 	val orderBy: OrderByStatement
-) : QueryBuilderEndStep {
+) : QueryBuilderEndStep<T> {
 
-	fun limit(limit: Int): PostLimitBuilder {
-		return PostLimitBuilder(select, from, where, groupBy, having, orderBy, LimitStatement(0, null))
+	fun limit(limit: Int): PostLimitBuilder<T> {
+		return PostLimitBuilder(select, from, where, groupBy, having, orderBy, LimitStatement(limit, null))
 	}
 
-	fun limit(limit: Int, offset: Int): PostLimitBuilder {
-		return PostLimitBuilder(select, from, where, groupBy, having, orderBy, LimitStatement(0, offset))
+	fun limit(limit: Int, offset: Int): PostLimitBuilder<T> {
+		return PostLimitBuilder(select, from, where, groupBy, having, orderBy, LimitStatement(limit, offset))
 	}
 
-	override fun build(): QueryStatement {
+	override fun build(): QueryStatement<T> {
 		return QueryStatement(
 			select = select,
 			from = from,
@@ -200,7 +209,7 @@ class PostOrderByBuilder(
 }
 
 
-class PostLimitBuilder(
+class PostLimitBuilder<T: AnyValueType>(
 	val select: SelectStatement,
 	val from: FromStatement,
 	val where: WhereStatement?,
@@ -208,9 +217,9 @@ class PostLimitBuilder(
 	val having: HavingStatement?,
 	val orderBy: OrderByStatement?,
 	val limit: LimitStatement
-) : QueryBuilderEndStep {
+) : QueryBuilderEndStep<T> {
 
-	override fun build(): QueryStatement {
+	override fun build(): QueryStatement<T> {
 		return QueryStatement(
 			select = select,
 			from = from,

@@ -16,6 +16,7 @@ import de.ruegnerlukas.sqldsl.grammar.update.UpdateExpression
 import de.ruegnerlukas.sqldsl.grammar.update.UpdateSetStatement
 import de.ruegnerlukas.sqldsl.grammar.update.UpdateStatement
 import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
+import de.ruegnerlukas.sqldsl.schema.AnyValueType
 import de.ruegnerlukas.sqldsl.schema.OnConflict
 
 fun main() {
@@ -83,7 +84,7 @@ class UpdateTest {
 			from = FromStatement(
 				listOf(
 					result.assign(
-						QueryStatement(
+						QueryStatement<AnyValueType>(
 							select = SelectStatement(
 								listOf(
 									AliasColumn(SumAggFunction(Logs.marks), "sum")

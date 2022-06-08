@@ -1,39 +1,32 @@
 package sqldsl
 
+import de.ruegnerlukas.sqldsl.builders.QueryBuilderEndStep
+import de.ruegnerlukas.sqldsl.builders.SQL
+import de.ruegnerlukas.sqldsl.builders.SQL.select
+import de.ruegnerlukas.sqldsl.builders.addAll
+import de.ruegnerlukas.sqldsl.builders.alias
+import de.ruegnerlukas.sqldsl.builders.and
+import de.ruegnerlukas.sqldsl.builders.asc
+import de.ruegnerlukas.sqldsl.builders.assign
+import de.ruegnerlukas.sqldsl.builders.count
+import de.ruegnerlukas.sqldsl.builders.isEqual
+import de.ruegnerlukas.sqldsl.builders.isGreaterOrEqualThan
+import de.ruegnerlukas.sqldsl.builders.isGreaterThan
+import de.ruegnerlukas.sqldsl.builders.isLessThan
+import de.ruegnerlukas.sqldsl.builders.join
+import de.ruegnerlukas.sqldsl.builders.max
+import de.ruegnerlukas.sqldsl.builders.min
+import de.ruegnerlukas.sqldsl.builders.sub
+import de.ruegnerlukas.sqldsl.builders.sum
 import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
 import de.ruegnerlukas.sqldsl.generators.generic.GenericQueryGenerator
-import de.ruegnerlukas.sqldsl.grammar.expr.AddAllOperation
 import de.ruegnerlukas.sqldsl.grammar.expr.AliasColumn
-import de.ruegnerlukas.sqldsl.grammar.expr.AndCondition
 import de.ruegnerlukas.sqldsl.grammar.expr.CountAggFunction
-import de.ruegnerlukas.sqldsl.grammar.expr.EqualCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.FloatLiteral
-import de.ruegnerlukas.sqldsl.grammar.expr.GreaterOrEqualThanCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.GreaterThanCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.IntLiteral
-import de.ruegnerlukas.sqldsl.grammar.expr.LessThanCondition
 import de.ruegnerlukas.sqldsl.grammar.expr.MaxAggFunction
 import de.ruegnerlukas.sqldsl.grammar.expr.MinAggFunction
-import de.ruegnerlukas.sqldsl.grammar.expr.SubOperation
-import de.ruegnerlukas.sqldsl.grammar.expr.SubQueryLiteral
 import de.ruegnerlukas.sqldsl.grammar.expr.SumAggFunction
-import de.ruegnerlukas.sqldsl.grammar.from.FromStatement
-import de.ruegnerlukas.sqldsl.grammar.groupby.GroupByStatement
-import de.ruegnerlukas.sqldsl.grammar.having.HavingStatement
-import de.ruegnerlukas.sqldsl.grammar.join.ConditionJoinConstraint
-import de.ruegnerlukas.sqldsl.grammar.join.JoinClause
-import de.ruegnerlukas.sqldsl.grammar.join.JoinOp
-import de.ruegnerlukas.sqldsl.grammar.limit.LimitStatement
-import de.ruegnerlukas.sqldsl.grammar.orderby.Dir
-import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByExpression
-import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByStatement
-import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl.grammar.select.SelectDistinctStatement
-import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl.grammar.table.DerivedTable
-import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
 import de.ruegnerlukas.sqldsl.schema.FloatValueType
-import de.ruegnerlukas.sqldsl.schema.IntValueType
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -44,8 +37,8 @@ class ChallengesDbTest {
 
 	private val generator = GenericQueryGenerator(GenericGeneratorContext())
 
-	private fun assertQuery(query: QueryStatement, expected: String) {
-		val strQuery = generator.buildString(query)
+	private fun assertQuery(query: QueryBuilderEndStep<*>, expected: String) {
+		val strQuery = generator.buildString(query.build())
 		println(strQuery)
 		assertEquals(expected, strQuery)
 	}
@@ -59,38 +52,20 @@ class ChallengesDbTest {
 	@Test
 	fun query2_a() {
 		val sales = DerivedTable("sales")
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					AliasColumn(MaxAggFunction(sales.columnInt(Sale.amount)), "second_highest_sale")
-				)
-			),
-			from = FromStatement(
-				listOf(
-					sales.assign(
-						QueryStatement(
-							select = SelectDistinctStatement(
-								listOf(
-									Sale.amount
-								)
-							),
-							from = FromStatement(
-								listOf(
-									Sale
-								)
-							),
-							orderBy = OrderByStatement(
-								listOf(
-									OrderByExpression(Sale.amount, Dir.ASC)
-								)
-							),
-							limit = LimitStatement(2, 1)
-						)
-					)
-				)
+		val query = SQL
+			.select(sales.column(Sale.amount).max().alias("second_highest_sale"))
+			.from(
+				SQL
+					.selectDistinct(Sale.amount)
+					.from(Sale)
+					.orderBy(Sale.amount.asc())
+					.limit(2, 1)
+					.assign(sales)
 			)
+		assertQuery(
+			query,
+			"SELECT (MAX(sales.sale_amt)) AS second_highest_sale FROM ((SELECT DISTINCT sale_mast.sale_amt FROM sale_mast ORDER BY (sale_mast.sale_amt) ASC LIMIT 2 OFFSET 1)) AS sales"
 		)
-		assertQuery(query, "SELECT (MAX(sales.sale_amt)) AS second_highest_sale FROM ((SELECT DISTINCT sale_mast.sale_amt FROM sale_mast ORDER BY (sale_mast.sale_amt) ASC LIMIT 2 OFFSET 1)) AS sales")
 	}
 
 
@@ -102,30 +77,14 @@ class ChallengesDbTest {
 	 */
 	@Test
 	fun query2_b() {
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					AliasColumn(MaxAggFunction(Sale.amount), "second_highest_sale")
-				)
-			),
-			from = FromStatement(
-				listOf(
-					Sale
-				)
-			),
-			where = WhereStatement(
-				LessThanCondition(
-					Sale.amount,
-					SubQueryLiteral(
-						QueryStatement(
-							select = SelectStatement(listOf(MaxAggFunction(Sale.amount))),
-							from = FromStatement(listOf(Sale))
-						)
-					)
-				)
-			)
+		val query = SQL
+			.select(Sale.amount.max().alias("second_highest_sale"))
+			.from(Sale)
+			.where(Sale.amount.isLessThan(SQL.select(Sale.amount.max()).from(Sale)))
+		assertQuery(
+			query,
+			"SELECT (MAX(sale_mast.sale_amt)) AS second_highest_sale FROM sale_mast WHERE (sale_mast.sale_amt) < (SELECT MAX(sale_mast.sale_amt) FROM sale_mast)"
 		)
-		assertQuery(query, "SELECT (MAX(sale_mast.sale_amt)) AS second_highest_sale FROM sale_mast WHERE (sale_mast.sale_amt) < (SELECT MAX(sale_mast.sale_amt) FROM sale_mast)")
 	}
 
 
@@ -140,49 +99,17 @@ class ChallengesDbTest {
 		val l1 = Logs.alias("l1")
 		val l2 = Logs.alias("l2")
 		val l3 = Logs.alias("l3")
-		val query = QueryStatement(
-			select = SelectDistinctStatement(
-				listOf(
-					AliasColumn(l1.marks, "consecutive_nums")
-				)
-			),
-			from = FromStatement(
-				listOf(
-					JoinClause(
-						JoinOp.LEFT,
-						JoinClause(
-							JoinOp.LEFT,
-							l1,
-							l2,
-							ConditionJoinConstraint(
-								AndCondition(
-									EqualCondition(l1.marks, l2.marks),
-									EqualCondition(
-										l1.studentId, SubOperation(
-											l2.studentId,
-											IntLiteral(1)
-										)
-									)
-								)
-							)
-						),
-						l3,
-						ConditionJoinConstraint(
-							AndCondition(
-								EqualCondition(l1.marks, l3.marks),
-								EqualCondition(
-									l2.studentId, SubOperation(
-										l3.studentId,
-										IntLiteral(1)
-									)
-								)
-							)
-						)
-					)
-				)
+		val query = SQL
+			.selectDistinct(l1.marks.alias("consecutive_nums"))
+			.from(
+				l1
+					.join(l2).on(l1.marks.isEqual(l2.marks) and (l1.studentId.isEqual(l2.studentId.sub(1))))
+					.join(l3).on(l1.marks.isEqual(l3.marks) and (l2.studentId.isEqual(l3.studentId.sub(1))))
 			)
+		assertQuery(
+			query,
+			"SELECT DISTINCT (l1.marks) AS consecutive_nums FROM (logs AS l1 JOIN logs AS l2 ON (((l1.marks) = (l2.marks)) AND ((l1.student_id) = ((l2.student_id) - (1))))) JOIN logs AS l3 ON (((l1.marks) = (l3.marks)) AND ((l2.student_id) = ((l3.student_id) - (1))))"
 		)
-		assertQuery(query, "SELECT DISTINCT (l1.marks) AS consecutive_nums FROM (logs AS l1 JOIN logs AS l2 ON (((l1.marks) = (l2.marks)) AND ((l1.student_id) = ((l2.student_id) - (1))))) JOIN logs AS l3 ON (((l1.marks) = (l3.marks)) AND ((l2.student_id) = ((l3.student_id) - (1))))")
 	}
 
 
@@ -200,44 +127,19 @@ class ChallengesDbTest {
 	@Test
 	fun query5() {
 		val countEmail = DerivedTable("count_email").assign(
-			QueryStatement(
-				select = SelectStatement(
-					listOf(
-						Employee.email,
-						AliasColumn(CountAggFunction(Employee.email), "numOfAppearance")
-					)
-				),
-				from = FromStatement(
-					listOf(
-						Employee
-					)
-				),
-				groupBy = GroupByStatement(
-					listOf(
-						Employee.email
-					)
-				)
-			)
+			SQL
+				.select(Employee.email, Employee.email.count().alias("numOfAppearance"))
+				.from(Employee)
+				.groupBy(Employee.email)
 		)
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					countEmail.columnInt(Employee.email)
-				)
-			),
-			from = FromStatement(
-				listOf(
-					countEmail
-				)
-			),
-			where = WhereStatement(
-				GreaterThanCondition(
-					countEmail.columnInt("numOfAppearance"),
-					IntLiteral(1)
-				)
-			)
+		val query = SQL
+			.select(countEmail.column(Employee.email))
+			.from(countEmail)
+			.where(countEmail.columnInt("numOfAppearance").isGreaterThan(1))
+		assertQuery(
+			query,
+			"SELECT count_email.email_id FROM ((SELECT employees.email_id, (COUNT(employees.email_id)) AS numOfAppearance FROM employees GROUP BY employees.email_id)) AS count_email WHERE (count_email.numOfAppearance) > (1)"
 		)
-		assertQuery(query, "SELECT count_email.email_id FROM ((SELECT employees.email_id, (COUNT(employees.email_id)) AS numOfAppearance FROM employees GROUP BY employees.email_id)) AS count_email WHERE (count_email.numOfAppearance) > (1)")
 	}
 
 
@@ -257,61 +159,22 @@ class ChallengesDbTest {
 		val p = Subject.alias("p")
 		val s1 = Exam.alias("s1")
 		val s2 = DerivedTable("s2").assign(
-			QueryStatement(
-				select = SelectStatement(
-					listOf(
-						Exam.subject,
-						AliasColumn(MinAggFunction(Exam.year), "min_year")
-					)
-				),
-				from = FromStatement(
-					listOf(
-						Exam
-					)
-				),
-				groupBy = GroupByStatement(
-					listOf(
-						Exam.subject
-					)
-				)
-			)
+			SQL
+				.select(Exam.subject, Exam.year.min().alias("min_year"))
+				.from(Exam)
+				.groupBy(Exam.subject)
 		)
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					s1.id,
-					p.name,
-					AliasColumn(s1.year, "first_year"),
-					s1.numStudents
-				)
-			),
-			from = FromStatement(
-				listOf(
-					JoinClause(
-						JoinOp.LEFT,
-						JoinClause(
-							JoinOp.LEFT,
-							s1,
-							p,
-							ConditionJoinConstraint(
-								EqualCondition(
-									s1.subject,
-									p.id
-								)
-							)
-						),
-						s2,
-						ConditionJoinConstraint(
-							AndCondition(
-								EqualCondition(s1.subject, s2.columnInt(Exam.subject)),
-								EqualCondition(s1.year, s2.columnInt("min_year"))
-							)
-						)
-					)
-				)
+		val query = SQL
+			.select(s1.id, p.name, s1.year.alias("first_year"), s1.numStudents)
+			.from(
+				s1
+					.join(p).on(s1.subject.isEqual(p.id))
+					.join(s2).on(s1.subject.isEqual(s2.column(Exam.subject)) and s1.year.isEqual(s2.columnInt("min_year")))
 			)
+		assertQuery(
+			query,
+			"SELECT s1.exam_id, p.subject_name, (s1.exam_year) AS first_year, s1.no_of_student FROM (exam_test AS s1 JOIN subject_test AS p ON ((s1.subject_id) = (p.subject_id))) JOIN ((SELECT exam_test.subject_id, (MIN(exam_test.exam_year)) AS min_year FROM exam_test GROUP BY exam_test.subject_id)) AS s2 ON (((s1.subject_id) = (s2.subject_id)) AND ((s1.exam_year) = (s2.min_year)))"
 		)
-		assertQuery(query, "SELECT s1.exam_id, p.subject_name, (s1.exam_year) AS first_year, s1.no_of_student FROM (exam_test AS s1 JOIN subject_test AS p ON ((s1.subject_id) = (p.subject_id))) JOIN ((SELECT exam_test.subject_id, (MIN(exam_test.exam_year)) AS min_year FROM exam_test GROUP BY exam_test.subject_id)) AS s2 ON (((s1.subject_id) = (s2.subject_id)) AND ((s1.exam_year) = (s2.min_year)))")
 	}
 
 
@@ -333,47 +196,22 @@ class ChallengesDbTest {
 	@Test
 	fun query53() {
 		val a = DerivedTable("a")
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					AliasColumn<IntValueType>(MaxAggFunction(a.columnInt("total_sale")), "max_sale"),
-					AliasColumn<IntValueType>(MinAggFunction(a.columnInt("total_sale")), "min_sale"),
-					AliasColumn<IntValueType>(
-						SubOperation(
-							MaxAggFunction(a.columnInt("total_sale")),
-							MinAggFunction(a.columnInt("total_sale"))
-						), "sale_difference"
-					)
-				)
-			),
-			from = FromStatement(
-				listOf(
-					a.assign(
-						QueryStatement(
-							select = SelectStatement(
-								listOf(
-									Sale2.companyId,
-									AliasColumn(
-										SumAggFunction(AddAllOperation(listOf(Sale2.q1Sale, Sale2.q2Sale, Sale2.q3Sale, Sale2.q4Sale))),
-										"total_sale"
-									)
-								)
-							),
-							from = FromStatement(
-								listOf(
-									Sale2
-								)
-							),
-							groupBy = GroupByStatement(
-								listOf(
-									Sale2.companyId
-								)
-							)
-						)
-					)
-				)
+		val query = SQL
+			.select(
+				a.columnInt("total_sale").max().alias("max_sale"),
+				a.columnInt("total_sale").min().alias("min_sale"),
+				a.columnInt("total_sale").max().sub(a.columnInt("total_sale").min()).alias("sale_difference")
 			)
-		)
+			.from(
+				SQL
+					.select(
+						Sale2.companyId,
+						addAll(Sale2.q1Sale, Sale2.q2Sale, Sale2.q3Sale, Sale2.q4Sale).sum().alias("total_sale")
+					)
+					.from(Sale2)
+					.groupBy(Sale2.companyId)
+					.assign(a)
+			)
 		assertQuery(query, "SELECT (MAX(a.total_sale)) AS max_sale, (MIN(a.total_sale)) AS min_sale, ((MAX(a.total_sale)) - (MIN(a.total_sale))) AS sale_difference FROM ((SELECT sales.company_id, (SUM((sales.qtr1_sale) + (sales.qtr2_sale) + (sales.qtr3_sale) + (sales.qtr4_sale))) AS total_sale FROM sales GROUP BY sales.company_id)) AS a")
 	}
 
@@ -392,50 +230,20 @@ class ChallengesDbTest {
 	@Test
 	fun query54() {
 		val totalSaleAmount = AliasColumn<FloatValueType>("total_sale_amount")
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					Salesman.id,
-					AliasColumn(Salesman.name, "name"),
-					AliasColumn(CountAggFunction(Sale3.transactionId), "order_count"),
-					totalSaleAmount.assign(SumAggFunction(Sale3.amount))
-				)
-			),
-			from = FromStatement(
-				listOf(
-					JoinClause(
-						JoinOp.INNER,
-						Sale3,
-						Salesman,
-						ConditionJoinConstraint(
-							EqualCondition(
-								Sale3.salesmanId,
-								Salesman.id
-							)
-						)
-					)
-				)
-			),
-			groupBy = GroupByStatement(
-				listOf(
-					Salesman.id,
-					Salesman.name
-				)
-			),
-			having = HavingStatement(
-				AndCondition(
-					GreaterThanCondition(
-						totalSaleAmount,
-						FloatLiteral(30000.0F)
-					),
-					GreaterOrEqualThanCondition(
-						CountAggFunction(Sale3.amount),
-						IntLiteral(5)
-					)
-				)
+		val query = SQL
+			.select(
+				Salesman.id,
+				Salesman.name.alias("name"),
+				Sale3.transactionId.count().alias("order_count"),
+				Sale3.amount.sum().assign(totalSaleAmount)
 			)
+			.from(Sale3.join(Salesman).on(Sale3.salesmanId.isEqual(Salesman.id)))
+			.groupBy(Salesman.id, Salesman.name)
+			.having(totalSaleAmount.isGreaterThan(30000F) and Sale3.amount.count().isGreaterOrEqualThan(5))
+		assertQuery(
+			query,
+			"SELECT salesman.SALESMAN_ID, (salesman.SALESMAN_NAME) AS name, (COUNT(sales.TRANSACTION_ID)) AS order_count, (SUM(sales.SALE_AMOUNT)) AS total_sale_amount FROM sales JOIN salesman ON ((sales.SALESMAN_ID) = (salesman.SALESMAN_ID)) GROUP BY salesman.SALESMAN_ID, salesman.SALESMAN_NAME HAVING ((total_sale_amount) > (30000.0)) AND ((COUNT(sales.SALE_AMOUNT)) >= (5))"
 		)
-		assertQuery(query, "SELECT salesman.SALESMAN_ID, (salesman.SALESMAN_NAME) AS name, (COUNT(sales.TRANSACTION_ID)) AS order_count, (SUM(sales.SALE_AMOUNT)) AS total_sale_amount FROM sales INNER JOIN salesman ON ((sales.SALESMAN_ID) = (salesman.SALESMAN_ID)) GROUP BY salesman.SALESMAN_ID, salesman.SALESMAN_NAME HAVING ((total_sale_amount) > (30000.0)) AND ((COUNT(sales.SALE_AMOUNT)) >= (5))")
 
 	}
 

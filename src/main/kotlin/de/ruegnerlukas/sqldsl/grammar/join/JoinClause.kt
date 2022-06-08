@@ -4,9 +4,10 @@ import de.ruegnerlukas.sqldsl.grammar.from.FromExpression
 import de.ruegnerlukas.sqldsl.grammar.from.JoinFromExpression
 
 enum class JoinOp {
-	LEFT,
 	INNER,
-	CROSS,
+	LEFT,
+	RIGHT,
+	FULL,
 }
 
 class JoinClause(val op: JoinOp, val left: FromExpression, val right: FromExpression, val constraint: JoinConstraint): JoinFromExpression

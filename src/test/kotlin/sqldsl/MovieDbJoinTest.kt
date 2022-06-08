@@ -1,20 +1,14 @@
 package sqldsl
 
+import de.ruegnerlukas.sqldsl.builders.QueryBuilderEndStep
+import de.ruegnerlukas.sqldsl.builders.SQL
+import de.ruegnerlukas.sqldsl.builders.assign
+import de.ruegnerlukas.sqldsl.builders.isEqual
+import de.ruegnerlukas.sqldsl.builders.isNull
+import de.ruegnerlukas.sqldsl.builders.join
 import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
 import de.ruegnerlukas.sqldsl.generators.generic.GenericQueryGenerator
-import de.ruegnerlukas.sqldsl.grammar.expr.EqualCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.IsNullCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.StringLiteral
-import de.ruegnerlukas.sqldsl.grammar.from.FromStatement
-import de.ruegnerlukas.sqldsl.grammar.join.ConditionJoinConstraint
-import de.ruegnerlukas.sqldsl.grammar.join.JoinClause
-import de.ruegnerlukas.sqldsl.grammar.join.JoinOp
-import de.ruegnerlukas.sqldsl.grammar.join.UsingJoinConstraint
-import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl.grammar.select.AllSelectExpression
-import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl.grammar.table.DerivedTable
-import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -27,12 +21,11 @@ class MovieDbJoinTest {
 	private val generator = GenericQueryGenerator(GenericGeneratorContext())
 
 
-	private fun assertQuery(query: QueryStatement, expected: String) {
-		val strQuery = generator.buildString(query)
+	private fun assertQuery(query: QueryBuilderEndStep<*>, expected: String) {
+		val strQuery = generator.buildString(query.build())
 		println(strQuery)
 		assertEquals(expected, strQuery)
 	}
-
 
 
 	/**
@@ -44,73 +37,31 @@ class MovieDbJoinTest {
 	@Test
 	fun query1() {
 		val derived = DerivedTable("result")
-		val query = QueryStatement(
-			select = SelectStatement(
-				listOf(
-					derived.columnInt(Reviewer.name)
-				)
-			),
-			from = FromStatement(
-				listOf(
-					derived.assign(
-						JoinClause(
-							JoinOp.INNER,
-							Reviewer,
-							Rating,
-							UsingJoinConstraint(
-								listOf(
-									derived.columnInt(Reviewer.id)
-								)
-							)
-						)
-					)
-				)
-			),
-			where = WhereStatement(
-				IsNullCondition(
-					derived.columnInt(Rating.stars)
-				)
+		val query = SQL
+			.select(derived.column(Reviewer.name))
+			.from(
+				Reviewer.join(Rating)
+					.using(derived.column(Reviewer.id))
+					.assign(derived)
 			)
+			.where(derived.column(Rating.stars).isNull())
+		assertQuery(query, "SELECT result.rev_name FROM (reviewer JOIN rating USING result.rev_id) AS result WHERE (result.rev_stars) IS NULL"
 		)
-		assertQuery(query, "SELECT result.rev_name FROM (reviewer INNER JOIN rating USING result.rev_id) AS result WHERE (result.rev_stars) IS NULL")
 	}
 
 
 	@Test
 	fun queryTest() {
 		val derived = DerivedTable("result")
-		val query =  QueryStatement(
-			select = SelectStatement(
-				listOf(
-					AllSelectExpression()
-				)
-			),
-			from = FromStatement(
-				listOf(
-					derived.assign(
-						JoinClause(
-							JoinOp.INNER,
-							Actor,
-							MovieCast,
-							ConditionJoinConstraint(
-								EqualCondition(
-									Actor.id,
-									MovieCast.actorId
-								)
-							)
-						)
-					)
-				)
-			),
-			where = WhereStatement(
-				EqualCondition(
-					derived.columnInt(Actor.gender),
-					StringLiteral("f")
-				)
+		val query = SQL
+			.selectAll()
+			.from(
+				Actor.join(MovieCast)
+					.on(Actor.id.isEqual(MovieCast.actorId))
+					.assign(derived)
 			)
-		)
-		assertQuery(query, "SELECT * FROM (actor INNER JOIN movie_cast ON ((actor.act_id) = (movie_cast.act_id))) AS result WHERE (result.act_gender) = ('f')")
+			.where(derived.column(Actor.gender).isEqual("F"))
+		assertQuery(query, "SELECT * FROM (actor JOIN movie_cast ON ((actor.act_id) = (movie_cast.act_id))) AS result WHERE (result.act_gender) = ('F')")
 	}
-
 
 }

@@ -3,7 +3,9 @@
 - DELETE ✅✅
 - SELECT ✅✅
 
-- make queries typesafe (columns, literals, expressions, ...) ❌
+- make queries typesafe (columns, literals, expressions, ...) ✅
+
+- utility builders for more compact/speaking statements ❌
 
 - creating tables ❓
 - ??? simplified wrapper for ...

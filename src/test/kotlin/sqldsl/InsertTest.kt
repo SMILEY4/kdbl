@@ -13,6 +13,7 @@ import de.ruegnerlukas.sqldsl.grammar.insert.ReturnColumnsStatement
 import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
 import de.ruegnerlukas.sqldsl.grammar.select.AllSelectExpression
 import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
+import de.ruegnerlukas.sqldsl.schema.AnyValueType
 import de.ruegnerlukas.sqldsl.schema.OnConflict
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -65,7 +66,7 @@ class InsertTest {
 			onConflict = OnConflict.IGNORE,
 			target = Actor,
 			fields = InsertAllColumnsStatement(),
-			content = QueryStatement(
+			content = QueryStatement<AnyValueType>(
 				select = SelectStatement(
 					listOf(
 						AllSelectExpression()

@@ -14,6 +14,7 @@ import de.ruegnerlukas.sqldsl.grammar.select.QualifiedAllSelectExpression
 import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
 import de.ruegnerlukas.sqldsl.grammar.table.DerivedTable
 import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
+import de.ruegnerlukas.sqldsl.schema.AnyValueType
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -22,7 +23,7 @@ class MovieDbMiscTest {
 
 	private val generator = GenericQueryGenerator(GenericGeneratorContext())
 
-	private fun assertQuery(query: QueryStatement, expected: String) {
+	private fun assertQuery(query: QueryStatement<*>, expected: String) {
 		val strQuery = generator.buildString(query)
 		println(strQuery)
 		assertEquals(expected, strQuery)
@@ -34,11 +35,11 @@ class MovieDbMiscTest {
 
 		val derived = DerivedTable("result")
 
-		val query = QueryStatement(
+		val query = QueryStatement<AnyValueType>(
 			select = SelectStatement(
 				listOf(
 					AllSelectExpression(),
-					derived.columnInt(Actor.gender),
+					derived.column(Actor.gender),
 					QualifiedAllSelectExpression(derived)
 				)
 			),
@@ -74,13 +75,15 @@ class MovieDbMiscTest {
 			),
 			where = WhereStatement(
 				EqualCondition(
-					derived.columnInt(Actor.gender),
+					derived.column(Actor.gender),
 					StringLiteral("f")
 				)
 			)
 		)
-
-		assertQuery(query, "SELECT *, result.act_gender, result.* FROM movie, movie AS my_movies, actor INNER JOIN movie_cast ON ((actor.act_id) = (movie_cast.act_id)), (actor INNER JOIN movie_cast ON ((actor.act_id) = (movie_cast.act_id))) AS result WHERE (result.act_gender) = ('f')")
+		assertQuery(
+			query,
+			"SELECT *, result.act_gender, result.* FROM movie, movie AS my_movies, actor JOIN movie_cast ON ((actor.act_id) = (movie_cast.act_id)), (actor JOIN movie_cast ON ((actor.act_id) = (movie_cast.act_id))) AS result WHERE (result.act_gender) = ('f')"
+		)
 	}
 
 

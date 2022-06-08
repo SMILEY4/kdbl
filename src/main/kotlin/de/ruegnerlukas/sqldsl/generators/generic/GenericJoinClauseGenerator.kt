@@ -35,9 +35,10 @@ open class GenericJoinClauseGenerator(private val genCtx: GeneratorContext) : Jo
 
 	protected fun mapOp(op: JoinOp): String {
 		return when (op) {
-			JoinOp.LEFT -> "JOIN"
-			JoinOp.INNER -> "INNER JOIN"
-			JoinOp.CROSS -> "CROSS JOIN"
+			JoinOp.INNER -> "JOIN"
+			JoinOp.LEFT -> "LEFT JOIN"
+			JoinOp.RIGHT -> "RIGHT JOIN"
+			JoinOp.FULL -> "FULL JOIN"
 		}
 	}
 

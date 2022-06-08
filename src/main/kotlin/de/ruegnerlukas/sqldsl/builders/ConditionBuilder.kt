@@ -47,30 +47,42 @@ fun or(conditions: List<ConditionExpr>) = OrChainCondition(conditions)
 fun not(condition: ConditionExpr) = NotCondition(condition)
 
 fun <T : AnyValueType> Expr<T>.isEqual(other: Expr<T>) = EqualCondition(this, other)
+fun <T : AnyValueType> Expr<T>.isEqual(other: QueryStatement<T>) = EqualCondition(this, other)
+fun <T : AnyValueType> Expr<T>.isEqual(other: QueryBuilderEndStep<T>) = EqualCondition(this, other.build())
 fun Expr<IntValueType>.isEqual(other: Int) = isEqual(IntLiteral(other))
 fun Expr<FloatValueType>.isEqual(other: Float) = isEqual(FloatLiteral(other))
 fun Expr<StringValueType>.isEqual(other: String) = isEqual(StringLiteral(other))
 fun Expr<BooleanValueType>.isEqual(other: Boolean) = isEqual(BooleanLiteral(other))
 
 fun <T : AnyValueType> Expr<T>.isNotEqual(other: Expr<T>) = NotEqualCondition(this, other)
+fun <T : AnyValueType> Expr<T>.isNotEqual(other: QueryStatement<T>) = NotEqualCondition(this, other)
+fun <T : AnyValueType> Expr<T>.isNotEqual(other: QueryBuilderEndStep<T>) = NotEqualCondition(this, other.build())
 fun Expr<IntValueType>.isNotEqual(other: Int) = isNotEqual(IntLiteral(other))
 fun Expr<FloatValueType>.isNotEqual(other: Float) = isNotEqual(FloatLiteral(other))
 fun Expr<StringValueType>.isNotEqual(other: String) = isNotEqual(StringLiteral(other))
 fun Expr<BooleanValueType>.isNotEqual(other: Boolean) = isNotEqual(BooleanLiteral(other))
 
 fun <T : NumericValueType> Expr<T>.isGreaterThan(other: Expr<T>) = GreaterThanCondition(this, other)
+fun <T : NumericValueType> Expr<T>.isGreaterThan(other: QueryStatement<T>) = GreaterThanCondition(this, other)
+fun <T : NumericValueType> Expr<T>.isGreaterThan(other: QueryBuilderEndStep<T>) = GreaterThanCondition(this, other.build())
 fun Expr<IntValueType>.isGreaterThan(other: Int) = isGreaterThan(IntLiteral(other))
 fun Expr<FloatValueType>.isGreaterThan(other: Float) = isGreaterThan(FloatLiteral(other))
 
 fun <T : NumericValueType> Expr<T>.isGreaterOrEqualThan(other: Expr<T>) = GreaterOrEqualThanCondition(this, other)
-fun Expr<IntValueType>.isGreaterEqualThan(other: Int) = isGreaterOrEqualThan(IntLiteral(other))
-fun Expr<FloatValueType>.isGreaterEqualThan(other: Float) = isGreaterOrEqualThan(FloatLiteral(other))
+fun <T : NumericValueType> Expr<T>.isGreaterOrEqualThan(other: QueryStatement<T>) = GreaterOrEqualThanCondition(this, other)
+fun <T : NumericValueType> Expr<T>.isGreaterOrEqualThan(other: QueryBuilderEndStep<T>) = GreaterOrEqualThanCondition(this, other.build())
+fun Expr<IntValueType>.isGreaterOrEqualThan(other: Int) = isGreaterOrEqualThan(IntLiteral(other))
+fun Expr<FloatValueType>.isGreaterOrEqualThan(other: Float) = isGreaterOrEqualThan(FloatLiteral(other))
 
 fun <T : NumericValueType> Expr<T>.isLessThan(other: Expr<T>) = LessThanCondition(this, other)
+fun <T : NumericValueType> Expr<T>.isLessThan(other: QueryStatement<T>) = LessThanCondition(this, other)
+fun <T : NumericValueType> Expr<T>.isLessThan(other: QueryBuilderEndStep<T>) = LessThanCondition(this, other.build())
 fun Expr<IntValueType>.isLessThan(other: Int) = isLessThan(IntLiteral(other))
 fun Expr<FloatValueType>.isLessThan(other: Float) = isLessThan(FloatLiteral(other))
 
 fun <T : NumericValueType> Expr<T>.isLessOrEqualThan(other: Expr<T>) = LessOrEqualThanCondition(this, other)
+fun <T : NumericValueType> Expr<T>.isLessOrEqualThan(other: QueryStatement<T>) = LessOrEqualThanCondition(this, other)
+fun <T : NumericValueType> Expr<T>.isLessOrEqualThan(other: QueryBuilderEndStep<T>) = LessOrEqualThanCondition(this, other.build())
 fun Expr<IntValueType>.isLessOrEqualThan(other: Int) = isLessOrEqualThan(IntLiteral(other))
 fun Expr<FloatValueType>.isLessOrEqualThan(other: Float) = isLessOrEqualThan(FloatLiteral(other))
 
@@ -78,15 +90,15 @@ fun <T : AnyValueType> Expr<T>.isNull() = IsNullCondition(this)
 
 fun <T : AnyValueType> Expr<T>.isNotNull() = IsNotNullCondition(this)
 
-fun <T : AnyValueType> Expr<T>.isIn(query: QueryStatement) = InSubQueryCondition(this, query)
-fun <T : AnyValueType> Expr<T>.isIn(query: QueryBuilderEndStep) = InSubQueryCondition(this, query.build())
+fun <T : AnyValueType> Expr<T>.isIn(query: QueryStatement<T>) = InSubQueryCondition(this, query)
+fun <T : AnyValueType> Expr<T>.isIn(query: QueryBuilderEndStep<T>) = InSubQueryCondition(this, query.build())
 fun <T : AnyValueType> Expr<T>.isIn(values: ListLiteral<T>) = InListCondition(this, values)
 fun Expr<IntValueType>.isIn(vararg values: Int) = isIn(ListLiteral(values.toList().map { IntLiteral(it) }))
 fun Expr<FloatValueType>.isIn(vararg values: Float) = isIn(ListLiteral(values.toList().map { FloatLiteral(it) }))
 fun Expr<StringValueType>.isIn(vararg values: String) = isIn(ListLiteral(values.toList().map { StringLiteral(it) }))
 
-fun <T : AnyValueType> Expr<T>.isNotIn(query: QueryStatement) = NotInSubQueryCondition(this, query)
-fun <T : AnyValueType> Expr<T>.isNotIn(query: QueryBuilderEndStep) = NotInSubQueryCondition(this, query.build())
+fun <T : AnyValueType> Expr<T>.isNotIn(query: QueryStatement<T>) = NotInSubQueryCondition(this, query)
+fun <T : AnyValueType> Expr<T>.isNotIn(query: QueryBuilderEndStep<T>) = NotInSubQueryCondition(this, query.build())
 fun <T : AnyValueType> Expr<T>.isNotIn(values: ListLiteral<T>) = NotInListCondition(this, values)
 fun Expr<IntValueType>.isNotIn(vararg values: Int) = isNotIn(ListLiteral(values.toList().map { IntLiteral(it) }))
 fun Expr<FloatValueType>.isNotIn(vararg values: Float) = isNotIn(ListLiteral(values.toList().map { FloatLiteral(it) }))
@@ -97,7 +109,3 @@ fun Expr<IntValueType>.isBetween(lower: Int, upper: Int) = isBetween(IntLiteral(
 fun Expr<FloatValueType>.isBetween(lower: Float, upper: Float) = isBetween(FloatLiteral(lower), FloatLiteral(upper))
 
 fun Expr<StringValueType>.isLike(pattern: String) = LikeCondition(this, pattern)
-
-
-
-// TODO between, like

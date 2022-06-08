@@ -104,7 +104,7 @@ open class GenericInsertGenerator(private val genCtx: GeneratorContext) : Insert
 
 	protected fun contentQuery(e: InsertQueryExpression): Token {
 		return when (e) {
-			is QueryStatement -> GroupToken(genCtx.query().buildToken(e))
+			is QueryStatement<*> -> GroupToken(genCtx.query().buildToken(e))
 			else -> throwUnknownType(e)
 		}
 	}
