@@ -162,4 +162,11 @@ class MiscDbTests {
 			"SELECT (AVG(item_mast.pro_price)) AS avg_price, (item_mast.pro_com) AS company_id FROM item_mast GROUP BY item_mast.pro_com"
 		)
 	}
+
+	@Test
+	fun createTable() {
+		SQL.createTable(Movie)
+		TODO()
+	}
+
 }
