@@ -1,31 +1,35 @@
 package de.ruegnerlukas.sqldsl.schema
 
-open class ColumnConstraint
+interface ColumnConstraint
 
-class PrimaryKeyConstraint(val onConflict: OnConflict) : ColumnConstraint()
+class PrimaryKeyConstraint(val onConflict: OnConflict) : ColumnConstraint
 
-class AutoIncrementPseudoConstraint : ColumnConstraint()
+class AutoIncrementPseudoConstraint : ColumnConstraint
 
-class NotNullConstraint(val onConflict: OnConflict) : ColumnConstraint()
+class NotNullConstraint(val onConflict: OnConflict) : ColumnConstraint
 
-class UniqueConstraint(val onConflict: OnConflict) : ColumnConstraint()
+class UniqueConstraint(val onConflict: OnConflict) : ColumnConstraint
 
-class ForeignKeyConstraint(val table: Table<*>, val column: Column<*>?, val onDelete: OnDelete, val onUpdate: OnUpdate) : ColumnConstraint()
+class ForeignKeyConstraint(val table: Table<*>, val column: Column<*>?, val onDelete: OnDelete, val onUpdate: OnUpdate) : ColumnConstraint
 
-class DefaultIntValueConstraint(private val value: Int) : ColumnConstraint() {
-    fun getValueAsString() = value.toString()
+interface DefaultValueConstraint<T> : ColumnConstraint {
+	fun getDefaultValue(): T
 }
 
-class DefaultFloatValueConstraint(private val value: Float) : ColumnConstraint() {
-	fun getValueAsString() = value.toString()
+class DefaultIntValueConstraint(private val value: Int) : DefaultValueConstraint<Int> {
+    override fun getDefaultValue() = value
 }
 
-class DefaultStringValueConstraint(private val value: String) : ColumnConstraint() {
-	fun getValueAsString() = value.toString()
+class DefaultFloatValueConstraint(private val value: Float) : DefaultValueConstraint<Float> {
+	override fun getDefaultValue() = value
 }
 
-class DefaultBooleanValueConstraint(private val value: Boolean) : ColumnConstraint() {
-	fun getValueAsString() = value.toString()
+class DefaultStringValueConstraint(private val value: String) : DefaultValueConstraint<String> {
+	override fun getDefaultValue() = value
+}
+
+class DefaultBooleanValueConstraint(private val value: Boolean) : DefaultValueConstraint<Boolean> {
+	override fun getDefaultValue() = value
 }
 
 

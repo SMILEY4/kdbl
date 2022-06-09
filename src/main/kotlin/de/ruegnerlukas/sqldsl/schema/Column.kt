@@ -2,7 +2,11 @@ package de.ruegnerlukas.sqldsl.schema
 
 import de.ruegnerlukas.sqldsl.grammar.expr.QualifiedColumn
 
-open class Column<T: AnyValueType>(private val parentTable: Table<*>, private val columnName: String) : QualifiedColumn<T> {
+open class Column<T : AnyValueType>(
+	private val parentTable: Table<*>,
+	private val columnName: String,
+	private val columnType: ColumnType
+) : QualifiedColumn<T> {
 
 	private val constraints = mutableListOf<ColumnConstraint>()
 
@@ -12,11 +16,17 @@ open class Column<T: AnyValueType>(private val parentTable: Table<*>, private va
 
 	fun getConstraints() = constraints.toList()
 
+	inline fun <reified T: ColumnConstraint> getConstraint(): T? {
+		return getConstraints().filterIsInstance<T>().firstOrNull()
+	}
+
+	fun getColumnType() = columnType
+
 	override fun getColumnName() = columnName
 
 	override fun getParentTable() = parentTable
 
-	inline fun <reified T> hasConstraint(): Boolean {
+	inline fun <reified T: ColumnConstraint> hasConstraint(): Boolean {
 		return getConstraints().filterIsInstance<T>().isNotEmpty()
 	}
 
@@ -32,11 +42,6 @@ open class Column<T: AnyValueType>(private val parentTable: Table<*>, private va
 		return this.apply { register(UniqueConstraint(onConflict)) }
 	}
 
-	fun autoIncrement(): Column<T> {
-		return this.apply { register(AutoIncrementPseudoConstraint()) }
-	}
-
-
 	fun foreignKey(table: Table<*>, onDelete: OnDelete = OnDelete.NO_ACTION, onUpdate: OnUpdate = OnUpdate.NO_ACTION): Column<T> {
 		return this.apply { register(ForeignKeyConstraint(table, null, onDelete, onUpdate)) }
 	}
@@ -47,43 +52,50 @@ open class Column<T: AnyValueType>(private val parentTable: Table<*>, private va
 
 }
 
-class IntColumn(parentTable: Table<*>, columnName: String) : Column<IntValueType>(parentTable, columnName) {
+
+class IntColumn(parentTable: Table<*>, columnName: String) : Column<IntValueType>(parentTable, columnName, ColumnType.INT) {
 	companion object {
 		fun Table<*>.integer(name: String) = IntColumn(this, name).apply { register(this) }
-	}
 
-	fun default(value: Int): IntColumn {
-		return this.apply { register(DefaultIntValueConstraint(value)) }
-	}
+		fun Column<IntValueType>.default(value: Int): Column<IntValueType> {
+			return this.apply { register(DefaultIntValueConstraint(value)) }
+		}
 
+		fun Column<IntValueType>.autoIncrement(): Column<IntValueType> {
+			return this.apply { register(AutoIncrementPseudoConstraint()) } as IntColumn
+		}
+
+	}
 }
 
-class FloatColumn(parentTable: Table<*>, columnName: String) : Column<FloatValueType>(parentTable, columnName) {
+class FloatColumn(parentTable: Table<*>, columnName: String) : Column<FloatValueType>(parentTable, columnName, ColumnType.INT) {
 	companion object {
 		fun Table<*>.float(name: String) = FloatColumn(this, name).apply { register(this) }
-	}
 
-	fun default(value: Float): FloatColumn {
-		return this.apply { register(DefaultFloatValueConstraint(value)) }
+		fun Column<FloatValueType>.default(value: Float): Column<FloatValueType> {
+			return this.apply { register(DefaultFloatValueConstraint(value)) }
+		}
 	}
 }
 
-class TextColumn(parentTable: Table<*>, columnName: String) : Column<StringValueType>(parentTable, columnName) {
+class TextColumn(parentTable: Table<*>, columnName: String) : Column<StringValueType>(parentTable, columnName, ColumnType.TEXT) {
 	companion object {
 		fun Table<*>.text(name: String) = TextColumn(this, name).apply { register(this) }
+
+		fun Column<StringValueType>.default(value: String): Column<StringValueType> {
+			return this.apply { register(DefaultStringValueConstraint(value)) }
+		}
 	}
 
-	fun default(value: String): TextColumn {
-		return this.apply { register(DefaultStringValueConstraint(value)) }
-	}
 }
 
-class BooleanColumn(parentTable: Table<*>, columnName: String) : Column<BooleanValueType>(parentTable, columnName) {
+class BooleanColumn(parentTable: Table<*>, columnName: String) : Column<BooleanValueType>(parentTable, columnName, ColumnType.BOOLEAN) {
 	companion object {
 		fun Table<*>.boolean(name: String) = BooleanColumn(this, name).apply { register(this) }
+
+		fun Column<BooleanValueType>.default(value: Boolean): Column<BooleanValueType> {
+			return this.apply { register(DefaultBooleanValueConstraint(value)) }
+		}
 	}
 
-	fun default(value: Boolean): BooleanColumn {
-		return this.apply { register(DefaultBooleanValueConstraint(value)) }
-	}
 }

@@ -9,12 +9,14 @@ object SQL {
 
 	private val queryBuilder = QueryBuilder<AnyValueType>()
 	private val insertBuilder = InsertBuilder()
+	private val deleteBuilder = DeleteBuilder()
+	private val createBuilder = CreateBuilder()
 
 	fun select(expressions: List<SelectExpression<*>>) = queryBuilder.select(expressions)
 
 	fun select(vararg expressions: SelectExpression<*>) = queryBuilder.select(expressions.toList())
 
-	fun <T: AnyValueType>select(expression: SelectExpression<T>) = QueryBuilder<T>().select(listOf(expression))
+	fun <T : AnyValueType> select(expression: SelectExpression<T>) = QueryBuilder<T>().select(listOf(expression))
 
 	fun selectAll() = queryBuilder.selectAll()
 
@@ -24,12 +26,12 @@ object SQL {
 
 	fun selectAllDistinct() = queryBuilder.selectAllDistinct()
 
-	fun <T: AnyValueType>selectDistinct(expression: SelectExpression<T>) = QueryBuilder<T>().selectDistinct(listOf(expression))
-
+	fun <T : AnyValueType> selectDistinct(expression: SelectExpression<T>) = QueryBuilder<T>().selectDistinct(listOf(expression))
 
 	fun insertInto(target: CommonTarget) = insertBuilder.insertInto(target)
 
+	fun deleteFrom(target: CommonTarget) = deleteBuilder.deleteFrom(target)
 
-	fun createTable(table: Table<*>): Nothing = TODO()
+	fun createTable(table: Table<*>) = createBuilder.create(table)
 
 }

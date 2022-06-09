@@ -22,12 +22,12 @@ interface InsertBuilderEndStep {
 
 class InsertBuilder {
 
-	fun insertInto(target: CommonTarget) = PostTargetBuilder(target)
+	fun insertInto(target: CommonTarget) = PostTargetInsertBuilder(target)
 
 }
 
 
-class PostTargetBuilder(private val target: CommonTarget) {
+class PostTargetInsertBuilder(private val target: CommonTarget) {
 
 	fun or(onConflict: OnConflict) = PostConflictBuilder(target, onConflict)
 	fun orRollback() = or(OnConflict.ROLLBACK)

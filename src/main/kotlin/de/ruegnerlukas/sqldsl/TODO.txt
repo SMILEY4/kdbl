@@ -5,14 +5,12 @@
 
 - make queries typesafe (columns, literals, expressions, ...) ✅
 
-- utility builders for more compact/speaking statements ❌
+- utility builders for more compact/speaking statements
     - select ✅
     - insert ✅
-    - delete ❌
-    - create table ❌
+    - delete ✅
+    - create table ✅
 
-
-- creating tables ❓
 - ??? simplified wrapper for ...
     - inserting items
     - updating items

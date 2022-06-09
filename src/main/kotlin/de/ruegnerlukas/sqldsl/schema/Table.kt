@@ -3,7 +3,7 @@ package de.ruegnerlukas.sqldsl.schema
 import de.ruegnerlukas.sqldsl.grammar.table.StandardTable
 
 
-abstract class Table<T>(override val tableName: String, val create: Create = Create.IF_NOT_EXISTS) : StandardTable {
+abstract class Table<T>(override val tableName: String) : StandardTable {
 
 	private val columns = mutableListOf<Column<*>>()
 
@@ -18,4 +18,4 @@ abstract class Table<T>(override val tableName: String, val create: Create = Cre
 }
 
 
-abstract class UnknownTable : Table<Nothing>("", Create.ALWAYS)
+abstract class UnknownTable : Table<Nothing>("")

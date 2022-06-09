@@ -5,6 +5,7 @@ interface GeneratorContext {
 	fun insert(): InsertGenerator
 	fun update(): UpdateGenerator
 	fun delete(): DeleteGenerator
+	fun create(): CreateGenerator
 
 	fun select(): SelectExpressionGenerator
 	fun from(): FromExpressionGenerator

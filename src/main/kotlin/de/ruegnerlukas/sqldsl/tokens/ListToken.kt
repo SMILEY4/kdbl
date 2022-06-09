@@ -14,6 +14,11 @@ class ListToken(tokens: List<Token> = listOf()) : Token() {
 		return this
 	}
 
+	fun addAll(tokens: Collection<Token>): ListToken {
+		this.tokens.addAll(tokens)
+		return this
+	}
+
 	fun addIf(condition: Boolean, token: () -> Token): ListToken {
 		if (condition) {
 			tokens.add(token())

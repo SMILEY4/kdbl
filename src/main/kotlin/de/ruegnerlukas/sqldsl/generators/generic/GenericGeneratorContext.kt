@@ -8,6 +8,7 @@ class GenericGeneratorContext : GeneratorContext {
 	private val insertGenerator = GenericInsertGenerator(this)
 	private val updateGenerator = GenericUpdateGenerator(this)
 	private val deleteGenerator = GenericDeleteGenerator(this)
+	private val createGenerator = GenericCreateGenerator(this)
 	private val selectGenerator = GenericSelectExpressionGenerator(this)
 	private val fromGenerator = GenericFromExpressionGenerator(this)
 	private val whereGenerator = GenericWhereExpressionGenerator(this)
@@ -29,6 +30,8 @@ class GenericGeneratorContext : GeneratorContext {
 	override fun update() = updateGenerator
 
 	override fun delete() = deleteGenerator
+
+	override fun create() = createGenerator
 
 	override fun select() = selectGenerator
 
