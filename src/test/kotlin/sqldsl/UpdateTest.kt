@@ -1,23 +1,9 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
-import de.ruegnerlukas.sqldsl.generators.generic.GenericUpdateGenerator
-import de.ruegnerlukas.sqldsl.grammar.expr.AliasColumn
-import de.ruegnerlukas.sqldsl.grammar.expr.EqualCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.IntLiteral
-import de.ruegnerlukas.sqldsl.grammar.expr.StringLiteral
-import de.ruegnerlukas.sqldsl.grammar.expr.SumAggFunction
-import de.ruegnerlukas.sqldsl.grammar.from.FromStatement
-import de.ruegnerlukas.sqldsl.grammar.insert.ReturnColumnsStatement
-import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
-import de.ruegnerlukas.sqldsl.grammar.table.DerivedTable
-import de.ruegnerlukas.sqldsl.grammar.update.UpdateExpression
-import de.ruegnerlukas.sqldsl.grammar.update.UpdateSetStatement
-import de.ruegnerlukas.sqldsl.grammar.update.UpdateStatement
-import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
-import de.ruegnerlukas.sqldsl.schema.AnyValueType
-import de.ruegnerlukas.sqldsl.schema.OnConflict
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericUpdateGenerator
+import de.ruegnerlukas.sqldsl.dsl.grammar.column.AnyValueType
+import de.ruegnerlukas.sqldsl.dsl.grammar.column.OnConflict
 
 fun main() {
 	UpdateTest().all()
@@ -36,7 +22,7 @@ class UpdateTest {
 	}
 
 
-	private fun printQuery(name: String, query: UpdateStatement?) {
+	private fun printQuery(name: String, query: de.ruegnerlukas.sqldsl.dsl.grammar.update.UpdateStatement?) {
 		println("--QUERY $name:")
 		if (query != null) {
 			val str = generator.buildString(query)
@@ -47,22 +33,28 @@ class UpdateTest {
 		println()
 	}
 
-	private fun update1() = UpdateStatement(
+	private fun update1() = de.ruegnerlukas.sqldsl.dsl.grammar.update.UpdateStatement(
 		onConflict = OnConflict.ABORT,
 		target = Movie,
-		set = UpdateSetStatement(
+		set = de.ruegnerlukas.sqldsl.dsl.grammar.update.UpdateSetStatement(
 			listOf(
-				UpdateExpression(Movie.title, StringLiteral("New Title")),
-				UpdateExpression(Movie.releaseCountry, StringLiteral("Somewhere")),
+				de.ruegnerlukas.sqldsl.dsl.grammar.update.UpdateExpression(
+					Movie.title,
+					de.ruegnerlukas.sqldsl.dsl.grammar.expr.StringLiteral("New Title")
+				),
+				de.ruegnerlukas.sqldsl.dsl.grammar.update.UpdateExpression(
+					Movie.releaseCountry,
+					de.ruegnerlukas.sqldsl.dsl.grammar.expr.StringLiteral("Somewhere")
+				),
 			)
 		),
-		where = WhereStatement(
-			EqualCondition(
+		where = de.ruegnerlukas.sqldsl.dsl.grammar.where.WhereStatement(
+			de.ruegnerlukas.sqldsl.dsl.grammar.expr.EqualCondition(
 				Movie.id,
-				IntLiteral(42)
+				de.ruegnerlukas.sqldsl.dsl.grammar.expr.IntLiteral(42)
 			)
 		),
-		returning = ReturnColumnsStatement(
+		returning = de.ruegnerlukas.sqldsl.dsl.grammar.insert.ReturnColumnsStatement(
 			listOf(
 				Movie.title,
 				Movie.releaseCountry
@@ -71,26 +63,30 @@ class UpdateTest {
 	)
 
 
-	private fun update2(): UpdateStatement {
-		val result = DerivedTable("result")
-		return UpdateStatement(
+	private fun update2(): de.ruegnerlukas.sqldsl.dsl.grammar.update.UpdateStatement {
+		val result = de.ruegnerlukas.sqldsl.dsl.grammar.table.DerivedTable("result")
+		return de.ruegnerlukas.sqldsl.dsl.grammar.update.UpdateStatement(
 			onConflict = OnConflict.ABORT,
 			target = Sale,
-			set = UpdateSetStatement(
+			set = de.ruegnerlukas.sqldsl.dsl.grammar.update.UpdateSetStatement(
 				listOf(
-					UpdateExpression(Sale.amount, result.columnInt("sum")),
+					de.ruegnerlukas.sqldsl.dsl.grammar.update.UpdateExpression(Sale.amount, result.columnInt("sum")),
 				)
 			),
-			from = FromStatement(
+			from = de.ruegnerlukas.sqldsl.dsl.grammar.from.FromStatement(
 				listOf(
 					result.assign(
-						QueryStatement<AnyValueType>(
-							select = SelectStatement(
+						de.ruegnerlukas.sqldsl.dsl.grammar.query.QueryStatement<AnyValueType>(
+							select = de.ruegnerlukas.sqldsl.dsl.grammar.select.SelectStatement(
 								listOf(
-									AliasColumn(SumAggFunction(Logs.marks), "sum")
+									de.ruegnerlukas.sqldsl.dsl.grammar.expr.AliasColumn(
+										de.ruegnerlukas.sqldsl.dsl.grammar.expr.SumAggFunction(
+											Logs.marks
+										), "sum"
+									)
 								)
 							),
-							from = FromStatement(
+							from = de.ruegnerlukas.sqldsl.dsl.grammar.from.FromStatement(
 								listOf(
 									Logs
 								)
@@ -99,10 +95,10 @@ class UpdateTest {
 					)
 				)
 			),
-			where = WhereStatement(
-				EqualCondition(
+			where = de.ruegnerlukas.sqldsl.dsl.grammar.where.WhereStatement(
+				de.ruegnerlukas.sqldsl.dsl.grammar.expr.EqualCondition(
 					Sale.id,
-					IntLiteral(32)
+					de.ruegnerlukas.sqldsl.dsl.grammar.expr.IntLiteral(32)
 				)
 			)
 		)

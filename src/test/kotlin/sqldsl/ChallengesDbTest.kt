@@ -1,32 +1,25 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.builders.QueryBuilderEndStep
-import de.ruegnerlukas.sqldsl.builders.SQL
-import de.ruegnerlukas.sqldsl.builders.SQL.select
-import de.ruegnerlukas.sqldsl.builders.addAll
-import de.ruegnerlukas.sqldsl.builders.alias
-import de.ruegnerlukas.sqldsl.builders.and
-import de.ruegnerlukas.sqldsl.builders.asc
-import de.ruegnerlukas.sqldsl.builders.assign
-import de.ruegnerlukas.sqldsl.builders.count
-import de.ruegnerlukas.sqldsl.builders.isEqual
-import de.ruegnerlukas.sqldsl.builders.isGreaterOrEqualThan
-import de.ruegnerlukas.sqldsl.builders.isGreaterThan
-import de.ruegnerlukas.sqldsl.builders.isLessThan
-import de.ruegnerlukas.sqldsl.builders.join
-import de.ruegnerlukas.sqldsl.builders.max
-import de.ruegnerlukas.sqldsl.builders.min
-import de.ruegnerlukas.sqldsl.builders.sub
-import de.ruegnerlukas.sqldsl.builders.sum
-import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
-import de.ruegnerlukas.sqldsl.generators.generic.GenericQueryGenerator
-import de.ruegnerlukas.sqldsl.grammar.expr.AliasColumn
-import de.ruegnerlukas.sqldsl.grammar.expr.CountAggFunction
-import de.ruegnerlukas.sqldsl.grammar.expr.MaxAggFunction
-import de.ruegnerlukas.sqldsl.grammar.expr.MinAggFunction
-import de.ruegnerlukas.sqldsl.grammar.expr.SumAggFunction
-import de.ruegnerlukas.sqldsl.grammar.table.DerivedTable
-import de.ruegnerlukas.sqldsl.schema.FloatValueType
+import de.ruegnerlukas.sqldsl.dsl.builders.QueryBuilderEndStep
+import de.ruegnerlukas.sqldsl.dsl.builders.SQL
+import de.ruegnerlukas.sqldsl.dsl.builders.addAll
+import de.ruegnerlukas.sqldsl.dsl.builders.alias
+import de.ruegnerlukas.sqldsl.dsl.builders.and
+import de.ruegnerlukas.sqldsl.dsl.builders.asc
+import de.ruegnerlukas.sqldsl.dsl.builders.assign
+import de.ruegnerlukas.sqldsl.dsl.builders.count
+import de.ruegnerlukas.sqldsl.dsl.builders.isEqual
+import de.ruegnerlukas.sqldsl.dsl.builders.isGreaterOrEqualThan
+import de.ruegnerlukas.sqldsl.dsl.builders.isGreaterThan
+import de.ruegnerlukas.sqldsl.dsl.builders.isLessThan
+import de.ruegnerlukas.sqldsl.dsl.builders.join
+import de.ruegnerlukas.sqldsl.dsl.builders.max
+import de.ruegnerlukas.sqldsl.dsl.builders.min
+import de.ruegnerlukas.sqldsl.dsl.builders.sub
+import de.ruegnerlukas.sqldsl.dsl.builders.sum
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericQueryGenerator
+import de.ruegnerlukas.sqldsl.dsl.grammar.column.FloatValueType
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -51,7 +44,7 @@ class ChallengesDbTest {
 	 */
 	@Test
 	fun query2_a() {
-		val sales = DerivedTable("sales")
+		val sales = de.ruegnerlukas.sqldsl.dsl.grammar.table.DerivedTable("sales")
 		val query = SQL
 			.select(sales.column(Sale.amount).max().alias("second_highest_sale"))
 			.from(
@@ -126,7 +119,7 @@ class ChallengesDbTest {
 	 */
 	@Test
 	fun query5() {
-		val countEmail = DerivedTable("count_email").assign(
+		val countEmail = de.ruegnerlukas.sqldsl.dsl.grammar.table.DerivedTable("count_email").assign(
 			SQL
 				.select(Employee.email, Employee.email.count().alias("numOfAppearance"))
 				.from(Employee)
@@ -158,7 +151,7 @@ class ChallengesDbTest {
 	fun query31() {
 		val p = Subject.alias("p")
 		val s1 = Exam.alias("s1")
-		val s2 = DerivedTable("s2").assign(
+		val s2 = de.ruegnerlukas.sqldsl.dsl.grammar.table.DerivedTable("s2").assign(
 			SQL
 				.select(Exam.subject, Exam.year.min().alias("min_year"))
 				.from(Exam)
@@ -195,7 +188,7 @@ class ChallengesDbTest {
 	 */
 	@Test
 	fun query53() {
-		val a = DerivedTable("a")
+		val a = de.ruegnerlukas.sqldsl.dsl.grammar.table.DerivedTable("a")
 		val query = SQL
 			.select(
 				a.columnInt("total_sale").max().alias("max_sale"),
@@ -229,7 +222,7 @@ class ChallengesDbTest {
 	 */
 	@Test
 	fun query54() {
-		val totalSaleAmount = AliasColumn<FloatValueType>("total_sale_amount")
+		val totalSaleAmount = de.ruegnerlukas.sqldsl.dsl.grammar.expr.AliasColumn<FloatValueType>("total_sale_amount")
 		val query = SQL
 			.select(
 				Salesman.id,

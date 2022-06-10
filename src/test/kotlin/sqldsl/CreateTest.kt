@@ -1,9 +1,9 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.builders.CreateBuilderEndStep
-import de.ruegnerlukas.sqldsl.builders.SQL
-import de.ruegnerlukas.sqldsl.generators.generic.GenericCreateGenerator
-import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.dsl.builders.CreateBuilderEndStep
+import de.ruegnerlukas.sqldsl.dsl.builders.SQL
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericCreateGenerator
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericGeneratorContext
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

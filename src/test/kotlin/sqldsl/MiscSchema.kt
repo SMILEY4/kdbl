@@ -1,11 +1,9 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.grammar.table.AliasTable
-import de.ruegnerlukas.sqldsl.grammar.table.TableBase
-import de.ruegnerlukas.sqldsl.schema.FloatColumn.Companion.float
-import de.ruegnerlukas.sqldsl.schema.IntColumn.Companion.integer
-import de.ruegnerlukas.sqldsl.schema.Table
-import de.ruegnerlukas.sqldsl.schema.TextColumn.Companion.text
+import de.ruegnerlukas.sqldsl.dsl.grammar.column.FloatColumn.Companion.float
+import de.ruegnerlukas.sqldsl.dsl.grammar.column.IntColumn.Companion.integer
+import de.ruegnerlukas.sqldsl.dsl.schema.Table
+import de.ruegnerlukas.sqldsl.dsl.grammar.column.TextColumn.Companion.text
 
 object Orders : OrdersTableDef()
 
@@ -17,7 +15,8 @@ sealed class OrdersTableDef : Table<OrdersTableDef>("orders") {
 	val salesmanId = integer("salesman_id").notNull()
 
 	companion object {
-		class OrdersTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : OrdersTableDef(), AliasTable
+		class OrdersTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : OrdersTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): OrdersTableDef {
@@ -35,7 +34,8 @@ sealed class ItemTableDef : Table<ItemTableDef>("item_mast") {
 	val company = integer("pro_com")
 
 	companion object {
-		class ItemTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : ItemTableDef(), AliasTable
+		class ItemTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : ItemTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): ItemTableDef {
@@ -53,7 +53,8 @@ sealed class SaleTableDef : Table<SaleTableDef>("sale_mast") {
 	val amount = integer("sale_amt")
 
 	companion object {
-		class SaleTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : SaleTableDef(), AliasTable
+		class SaleTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : SaleTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): SaleTableDef {
@@ -69,7 +70,8 @@ sealed class LogsTableDef : Table<LogsTableDef>("logs") {
 	val marks = integer("marks")
 
 	companion object {
-		class LogsTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : LogsTableDef(), AliasTable
+		class LogsTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : LogsTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): LogsTableDef {
@@ -87,7 +89,8 @@ sealed class EmployeesTableDef : Table<EmployeesTableDef>("employees") {
 	val email = text("email_id")
 
 	companion object {
-		class EmployeesTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : EmployeesTableDef(), AliasTable
+		class EmployeesTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : EmployeesTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): EmployeesTableDef {
@@ -105,7 +108,8 @@ sealed class ExamTableDef : Table<ExamTableDef>("exam_test") {
 	val numStudents = integer("no_of_student")
 
 	companion object {
-		class ExamTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : ExamTableDef(), AliasTable
+		class ExamTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : ExamTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): ExamTableDef {
@@ -121,7 +125,8 @@ sealed class SubjectTableDef : Table<SubjectTableDef>("subject_test") {
 	val name = text("subject_name")
 
 	companion object {
-		class SubjectTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : SubjectTableDef(), AliasTable
+		class SubjectTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : SubjectTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): SubjectTableDef {
@@ -140,7 +145,8 @@ sealed class Sale2TableDef : Table<Sale2TableDef>("sales") {
 	val q4Sale = integer("qtr4_sale")
 
 	companion object {
-		class Sale2TableDefAlias(override val baseTable: TableBase, override val aliasName: String) : Sale2TableDef(), AliasTable
+		class Sale2TableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : Sale2TableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): Sale2TableDef {
@@ -157,7 +163,8 @@ sealed class Sale3TableDef : Table<Sale3TableDef>("sales") {
 	val amount = float("SALE_AMOUNT")
 
 	companion object {
-		class Sale3TableDefAlias(override val baseTable: TableBase, override val aliasName: String) : Sale3TableDef(), AliasTable
+		class Sale3TableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : Sale3TableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): Sale3TableDef {
@@ -172,7 +179,8 @@ sealed class SalesmanTableDef : Table<SalesmanTableDef>("salesman") {
 	val name = text("SALESMAN_NAME")
 
 	companion object {
-		class SalesmanTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : SalesmanTableDef(), AliasTable
+		class SalesmanTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : SalesmanTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): SalesmanTableDef {

@@ -1,10 +1,8 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.grammar.table.AliasTable
-import de.ruegnerlukas.sqldsl.grammar.table.TableBase
-import de.ruegnerlukas.sqldsl.schema.IntColumn.Companion.integer
-import de.ruegnerlukas.sqldsl.schema.Table
-import de.ruegnerlukas.sqldsl.schema.TextColumn.Companion.text
+import de.ruegnerlukas.sqldsl.dsl.grammar.column.IntColumn.Companion.integer
+import de.ruegnerlukas.sqldsl.dsl.schema.Table
+import de.ruegnerlukas.sqldsl.dsl.grammar.column.TextColumn.Companion.text
 
 object Actor : ActorTableDef()
 
@@ -15,7 +13,8 @@ sealed class ActorTableDef : Table<ActorTableDef>("actor") {
 	val gender = text("act_gender").notNull()
 
 	companion object {
-		class ActorTableDefAlias(override val baseTable: TableBase, override val aliasName: String): ActorTableDef(), AliasTable
+		class ActorTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String): ActorTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): ActorTableDefAlias {
@@ -32,7 +31,8 @@ sealed class MovieCastTableDef : Table<MovieCastTableDef>("movie_cast") {
 	val role = text("role").notNull()
 
 	companion object {
-		class MovieCastTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : MovieCastTableDef(), AliasTable
+		class MovieCastTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : MovieCastTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): MovieCastTableDef {
@@ -53,7 +53,8 @@ sealed class MovieTableDef : Table<MovieTableDef>("movie") {
 	val releaseCountry = text("mov_rel_country").notNull()
 
 	companion object {
-		class MovieTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : MovieTableDef(), AliasTable
+		class MovieTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : MovieTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): MovieTableDef {
@@ -69,7 +70,8 @@ sealed class MovieDirectionTableDef : Table<MovieDirectionTableDef>("movie_direc
 	val movieId = integer("mov_id").foreignKey(Movie.id)
 
 	companion object {
-		class MovieDirectionTableDefTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : MovieDirectionTableDef(), AliasTable
+		class MovieDirectionTableDefTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : MovieDirectionTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): MovieDirectionTableDef {
@@ -86,7 +88,8 @@ sealed class DirectorTableDef : Table<DirectorTableDef>("director") {
 	val lName = text("dir_lname").notNull()
 
 	companion object {
-		class DirectorTableDefTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : DirectorTableDef(), AliasTable
+		class DirectorTableDefTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : DirectorTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): DirectorTableDef {
@@ -102,7 +105,8 @@ sealed class ReviewerTableDef : Table<ReviewerTableDef>("reviewer") {
 	val name = text("rev_name").notNull()
 
 	companion object {
-		class ReviewerTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : ReviewerTableDef(), AliasTable
+		class ReviewerTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : ReviewerTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): ReviewerTableDef {
@@ -119,7 +123,8 @@ sealed class RatingTableDef : Table<RatingTableDef>("rating") {
 	val numRatings = integer("num_o_ratings").notNull()
 
 	companion object {
-		class RatingTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : RatingTableDef(), AliasTable
+		class RatingTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : RatingTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): RatingTableDef {
@@ -135,7 +140,8 @@ sealed class GenreTableDef : Table<GenreTableDef>("genres") {
 	val title = text("gen_title").notNull()
 
 	companion object {
-		class GenreTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : GenreTableDef(), AliasTable
+		class GenreTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : GenreTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): GenreTableDef {
@@ -150,7 +156,8 @@ sealed class MovieGenreTableDef : Table<MovieGenreTableDef>("movie_genres") {
 	val genreId = integer("gen_id").foreignKey(Genre.id)
 
 	companion object {
-		class MovieGenreTableDefAlias(override val baseTable: TableBase, override val aliasName: String) : MovieGenreTableDef(), AliasTable
+		class MovieGenreTableDefAlias(override val baseTable: de.ruegnerlukas.sqldsl.dsl.grammar.table.TableBase, override val aliasName: String) : MovieGenreTableDef(),
+			de.ruegnerlukas.sqldsl.dsl.grammar.table.AliasTable
 	}
 
 	override fun alias(alias: String): MovieGenreTableDef {

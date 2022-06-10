@@ -1,18 +1,16 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.builders.QueryBuilderEndStep
-import de.ruegnerlukas.sqldsl.builders.SQL
-import de.ruegnerlukas.sqldsl.builders.and
-import de.ruegnerlukas.sqldsl.builders.isEqual
-import de.ruegnerlukas.sqldsl.builders.isGreaterOrEqualThan
-import de.ruegnerlukas.sqldsl.builders.isIn
-import de.ruegnerlukas.sqldsl.builders.isLike
-import de.ruegnerlukas.sqldsl.builders.isNotIn
-import de.ruegnerlukas.sqldsl.builders.isNotNull
-import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
-import de.ruegnerlukas.sqldsl.generators.generic.GenericQueryGenerator
-import de.ruegnerlukas.sqldsl.grammar.orderby.Dir
-import de.ruegnerlukas.sqldsl.grammar.orderby.OrderByExpression
+import de.ruegnerlukas.sqldsl.dsl.builders.QueryBuilderEndStep
+import de.ruegnerlukas.sqldsl.dsl.builders.SQL
+import de.ruegnerlukas.sqldsl.dsl.builders.and
+import de.ruegnerlukas.sqldsl.dsl.builders.isEqual
+import de.ruegnerlukas.sqldsl.dsl.builders.isGreaterOrEqualThan
+import de.ruegnerlukas.sqldsl.dsl.builders.isIn
+import de.ruegnerlukas.sqldsl.dsl.builders.isLike
+import de.ruegnerlukas.sqldsl.dsl.builders.isNotIn
+import de.ruegnerlukas.sqldsl.dsl.builders.isNotNull
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericQueryGenerator
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -140,7 +138,12 @@ class MovieDbBasicsTest {
 			.select(Movie.id, Movie.title, Movie.year)
 			.from(Movie)
 			.where(Movie.title.isLike("%Boogie%Nights%"))
-			.orderBy(OrderByExpression(Movie.year, Dir.ASC))
+			.orderBy(
+				de.ruegnerlukas.sqldsl.dsl.grammar.orderby.OrderByExpression(
+					Movie.year,
+					de.ruegnerlukas.sqldsl.dsl.grammar.orderby.Dir.ASC
+				)
+			)
 		assertQuery(
 			query,
 			"SELECT movie.mov_id, movie.mov_title, movie.mov_year FROM movie WHERE (movie.mov_title) LIKE '%Boogie%Nights%' ORDER BY (movie.mov_year) ASC"

@@ -1,11 +1,9 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.builders.InsertBuilderEndStep
-import de.ruegnerlukas.sqldsl.builders.SQL
-import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
-import de.ruegnerlukas.sqldsl.generators.generic.GenericInsertGenerator
-import de.ruegnerlukas.sqldsl.grammar.expr.IntLiteral
-import de.ruegnerlukas.sqldsl.grammar.expr.StringLiteral
+import de.ruegnerlukas.sqldsl.dsl.builders.InsertBuilderEndStep
+import de.ruegnerlukas.sqldsl.dsl.builders.SQL
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericInsertGenerator
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -29,18 +27,18 @@ class InsertTest {
 			.fields(Actor.id, Actor.fName, Actor.lName, Actor.gender)
 			.item(
 				mapOf(
-					Actor.id to IntLiteral(101),
-					Actor.fName to StringLiteral("James"),
-					Actor.lName to StringLiteral("Steward"),
-					Actor.gender to StringLiteral("M")
+					Actor.id to de.ruegnerlukas.sqldsl.dsl.grammar.expr.IntLiteral(101),
+					Actor.fName to de.ruegnerlukas.sqldsl.dsl.grammar.expr.StringLiteral("James"),
+					Actor.lName to de.ruegnerlukas.sqldsl.dsl.grammar.expr.StringLiteral("Steward"),
+					Actor.gender to de.ruegnerlukas.sqldsl.dsl.grammar.expr.StringLiteral("M")
 				)
 			)
 			.item(
 				mapOf(
-					Actor.id to IntLiteral(102),
-					Actor.fName to StringLiteral("Deborah"),
-					Actor.lName to StringLiteral("Kerr"),
-					Actor.gender to StringLiteral("F")
+					Actor.id to de.ruegnerlukas.sqldsl.dsl.grammar.expr.IntLiteral(102),
+					Actor.fName to de.ruegnerlukas.sqldsl.dsl.grammar.expr.StringLiteral("Deborah"),
+					Actor.lName to de.ruegnerlukas.sqldsl.dsl.grammar.expr.StringLiteral("Kerr"),
+					Actor.gender to de.ruegnerlukas.sqldsl.dsl.grammar.expr.StringLiteral("F")
 				)
 			)
 		assertQuery(

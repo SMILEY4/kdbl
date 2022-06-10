@@ -1,20 +1,8 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
-import de.ruegnerlukas.sqldsl.generators.generic.GenericQueryGenerator
-import de.ruegnerlukas.sqldsl.grammar.expr.EqualCondition
-import de.ruegnerlukas.sqldsl.grammar.expr.StringLiteral
-import de.ruegnerlukas.sqldsl.grammar.from.FromStatement
-import de.ruegnerlukas.sqldsl.grammar.join.ConditionJoinConstraint
-import de.ruegnerlukas.sqldsl.grammar.join.JoinClause
-import de.ruegnerlukas.sqldsl.grammar.join.JoinOp
-import de.ruegnerlukas.sqldsl.grammar.query.QueryStatement
-import de.ruegnerlukas.sqldsl.grammar.select.AllSelectExpression
-import de.ruegnerlukas.sqldsl.grammar.select.QualifiedAllSelectExpression
-import de.ruegnerlukas.sqldsl.grammar.select.SelectStatement
-import de.ruegnerlukas.sqldsl.grammar.table.DerivedTable
-import de.ruegnerlukas.sqldsl.grammar.where.WhereStatement
-import de.ruegnerlukas.sqldsl.schema.AnyValueType
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericQueryGenerator
+import de.ruegnerlukas.sqldsl.dsl.grammar.column.AnyValueType
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -23,7 +11,7 @@ class MovieDbMiscTest {
 
 	private val generator = GenericQueryGenerator(GenericGeneratorContext())
 
-	private fun assertQuery(query: QueryStatement<*>, expected: String) {
+	private fun assertQuery(query: de.ruegnerlukas.sqldsl.dsl.grammar.query.QueryStatement<*>, expected: String) {
 		val strQuery = generator.buildString(query)
 		println(strQuery)
 		assertEquals(expected, strQuery)
@@ -33,38 +21,38 @@ class MovieDbMiscTest {
 	@Test
 	fun query1() {
 
-		val derived = DerivedTable("result")
+		val derived = de.ruegnerlukas.sqldsl.dsl.grammar.table.DerivedTable("result")
 
-		val query = QueryStatement<AnyValueType>(
-			select = SelectStatement(
+		val query = de.ruegnerlukas.sqldsl.dsl.grammar.query.QueryStatement<AnyValueType>(
+			select = de.ruegnerlukas.sqldsl.dsl.grammar.select.SelectStatement(
 				listOf(
-					AllSelectExpression(),
+					de.ruegnerlukas.sqldsl.dsl.grammar.select.AllSelectExpression(),
 					derived.column(Actor.gender),
-					QualifiedAllSelectExpression(derived)
+					de.ruegnerlukas.sqldsl.dsl.grammar.select.QualifiedAllSelectExpression(derived)
 				)
 			),
-			from = FromStatement(
+			from = de.ruegnerlukas.sqldsl.dsl.grammar.from.FromStatement(
 				listOf(
 					Movie,
 					Movie.alias("my_movies"),
-					JoinClause(
-						JoinOp.INNER,
+					de.ruegnerlukas.sqldsl.dsl.grammar.join.JoinClause(
+						de.ruegnerlukas.sqldsl.dsl.grammar.join.JoinOp.INNER,
 						Actor,
 						MovieCast,
-						ConditionJoinConstraint(
-							EqualCondition(
+						de.ruegnerlukas.sqldsl.dsl.grammar.join.ConditionJoinConstraint(
+							de.ruegnerlukas.sqldsl.dsl.grammar.expr.EqualCondition(
 								Actor.id,
 								MovieCast.actorId
 							)
 						)
 					),
 					derived.assign(
-						JoinClause(
-							JoinOp.INNER,
+						de.ruegnerlukas.sqldsl.dsl.grammar.join.JoinClause(
+							de.ruegnerlukas.sqldsl.dsl.grammar.join.JoinOp.INNER,
 							Actor,
 							MovieCast,
-							ConditionJoinConstraint(
-								EqualCondition(
+							de.ruegnerlukas.sqldsl.dsl.grammar.join.ConditionJoinConstraint(
+								de.ruegnerlukas.sqldsl.dsl.grammar.expr.EqualCondition(
 									Actor.id,
 									MovieCast.actorId
 								)
@@ -73,10 +61,10 @@ class MovieDbMiscTest {
 					)
 				)
 			),
-			where = WhereStatement(
-				EqualCondition(
+			where = de.ruegnerlukas.sqldsl.dsl.grammar.where.WhereStatement(
+				de.ruegnerlukas.sqldsl.dsl.grammar.expr.EqualCondition(
 					derived.column(Actor.gender),
-					StringLiteral("f")
+					de.ruegnerlukas.sqldsl.dsl.grammar.expr.StringLiteral("f")
 				)
 			)
 		)

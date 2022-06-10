@@ -1,10 +1,10 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.builders.DeleteBuilderEndStep
-import de.ruegnerlukas.sqldsl.builders.SQL
-import de.ruegnerlukas.sqldsl.builders.isEqual
-import de.ruegnerlukas.sqldsl.generators.generic.GenericDeleteGenerator
-import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.dsl.builders.DeleteBuilderEndStep
+import de.ruegnerlukas.sqldsl.dsl.builders.SQL
+import de.ruegnerlukas.sqldsl.dsl.builders.isEqual
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericDeleteGenerator
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericGeneratorContext
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

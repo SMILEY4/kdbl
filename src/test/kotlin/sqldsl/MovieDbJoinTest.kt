@@ -1,14 +1,13 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.builders.QueryBuilderEndStep
-import de.ruegnerlukas.sqldsl.builders.SQL
-import de.ruegnerlukas.sqldsl.builders.assign
-import de.ruegnerlukas.sqldsl.builders.isEqual
-import de.ruegnerlukas.sqldsl.builders.isNull
-import de.ruegnerlukas.sqldsl.builders.join
-import de.ruegnerlukas.sqldsl.generators.generic.GenericGeneratorContext
-import de.ruegnerlukas.sqldsl.generators.generic.GenericQueryGenerator
-import de.ruegnerlukas.sqldsl.grammar.table.DerivedTable
+import de.ruegnerlukas.sqldsl.dsl.builders.QueryBuilderEndStep
+import de.ruegnerlukas.sqldsl.dsl.builders.SQL
+import de.ruegnerlukas.sqldsl.dsl.builders.assign
+import de.ruegnerlukas.sqldsl.dsl.builders.isEqual
+import de.ruegnerlukas.sqldsl.dsl.builders.isNull
+import de.ruegnerlukas.sqldsl.dsl.builders.join
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericGeneratorContext
+import de.ruegnerlukas.sqldsl.codegen.generic.GenericQueryGenerator
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
@@ -36,7 +35,7 @@ class MovieDbJoinTest {
 	 */
 	@Test
 	fun query1() {
-		val derived = DerivedTable("result")
+		val derived = de.ruegnerlukas.sqldsl.dsl.grammar.table.DerivedTable("result")
 		val query = SQL
 			.select(derived.column(Reviewer.name))
 			.from(
@@ -52,7 +51,7 @@ class MovieDbJoinTest {
 
 	@Test
 	fun queryTest() {
-		val derived = DerivedTable("result")
+		val derived = de.ruegnerlukas.sqldsl.dsl.grammar.table.DerivedTable("result")
 		val query = SQL
 			.selectAll()
 			.from(
