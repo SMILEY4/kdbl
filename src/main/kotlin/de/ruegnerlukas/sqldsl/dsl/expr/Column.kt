@@ -1,12 +1,9 @@
 package de.ruegnerlukas.sqldsl.dsl.expr
 
-enum class ColumnType {
-	INT, FLOAT, TEXT, BOOL
-}
 
 class DerivedColumn<T>(val table: DerivedTable, val columnName: String) : Expr<T>
 
-class Column<T>(val table: TableLike, val columnName: String, val type: ColumnType) : Expr<T> {
+class Column<T>(val table: TableLike, val columnName: String, val type: DataType) : Expr<T> {
 
 	internal val properties: MutableList<ColumnProperty> = mutableListOf()
 

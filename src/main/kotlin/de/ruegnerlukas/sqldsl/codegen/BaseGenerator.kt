@@ -17,7 +17,7 @@ import de.ruegnerlukas.sqldsl.dsl.expr.BetweenExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.BooleanLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.Column
 import de.ruegnerlukas.sqldsl.dsl.expr.ColumnProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.ColumnType
+import de.ruegnerlukas.sqldsl.dsl.expr.DataType
 import de.ruegnerlukas.sqldsl.dsl.expr.CountAllDistinctExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.CountAllExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.CountDistinctExpr
@@ -161,7 +161,7 @@ class BaseGenerator {
 			.addIf(delete.returning != null) { returning(delete.returning!!) }
 	}
 
-	fun returning(e: Returning): Token {
+	private fun returning(e: Returning): Token {
 		return ListToken()
 			.add("RETURNING")
 			.add(
@@ -189,12 +189,12 @@ class BaseGenerator {
 			.addAll(column.getProperties().map { columnProperty(it, column, table) })
 	}
 
-	private fun columnType(type: ColumnType): String {
+	private fun columnType(type: DataType): String {
 		return when (type) {
-			ColumnType.INT -> "INT"
-			ColumnType.FLOAT -> "FLOAT"
-			ColumnType.TEXT -> "TEXT"
-			ColumnType.BOOL -> "BOOL"
+			DataType.INT -> "INT"
+			DataType.FLOAT -> "FLOAT"
+			DataType.TEXT -> "TEXT"
+			DataType.BOOL -> "BOOL"
 		}
 	}
 

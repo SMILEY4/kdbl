@@ -15,10 +15,10 @@ abstract class Table(val tableName: String) : TableLike {
 
 	fun getColumns() = columns.toList()
 
-	protected fun integer(name: String) = Column<Int>(this, name, ColumnType.INT).apply { columns.add(this) }
-	protected fun float(name: String) = Column<Float>(this, name, ColumnType.FLOAT).apply { columns.add(this) }
-	protected fun text(name: String) = Column<String>(this, name, ColumnType.TEXT).apply { columns.add(this) }
-	protected fun boolean(name: String) = Column<Boolean>(this, name, ColumnType.BOOL).apply { columns.add(this) }
+	protected fun integer(name: String) = Column<Int>(this, name, DataType.INT).apply { columns.add(this) }
+	protected fun float(name: String) = Column<Float>(this, name, DataType.FLOAT).apply { columns.add(this) }
+	protected fun text(name: String) = Column<String>(this, name, DataType.TEXT).apply { columns.add(this) }
+	protected fun boolean(name: String) = Column<Boolean>(this, name, DataType.BOOL).apply { columns.add(this) }
 
 	abstract fun alias(alias: String): AliasTable
 }
