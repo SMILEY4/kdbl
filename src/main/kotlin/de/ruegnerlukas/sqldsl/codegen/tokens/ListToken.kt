@@ -1,5 +1,7 @@
 package de.ruegnerlukas.sqldsl.codegen.tokens
 
+
+
 class ListToken(tokens: List<Token> = listOf()) : Token() {
 
 	private val tokens = tokens.toMutableList()

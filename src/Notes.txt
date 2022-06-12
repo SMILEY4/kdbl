@@ -1,0 +1,9 @@
+Naming ideas:
+
+- "skql"
+    -> "sql" -> structured query language
+    -> "skql" -> structure kotlin query language
+
+- "kuery"
+    - > query but with kotlin
+

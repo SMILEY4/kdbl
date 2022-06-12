@@ -1,0 +1,71 @@
+package sqldsl.query
+
+import de.ruegnerlukas.sqldsl.builder.SQL
+import de.ruegnerlukas.sqldsl.builder.assign
+import de.ruegnerlukas.sqldsl.builder.isEqual
+import de.ruegnerlukas.sqldsl.builder.isNull
+import de.ruegnerlukas.sqldsl.builder.join
+import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
+import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
+import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
+import org.junit.jupiter.api.Test
+import sqldsl.Actor
+import sqldsl.MovieCast
+import sqldsl.Rating
+import sqldsl.Reviewer
+import kotlin.test.assertEquals
+
+
+/**
+ * https://www.w3resource.com/sql-exercises/movie-database-exercise/joins-exercises-on-movie-database.php
+ */
+class MovieDbJoinTest {
+
+	private fun assertQuery(query: QueryStatement<*>, expected: String) {
+		val strQuery = BaseGenerator().query(query).buildString()
+		println(strQuery)
+		assertEquals(expected, strQuery)
+	}
+
+	/**
+	 * SELECT rev_name
+	 * FROM reviewer
+	 * 		INNER JOIN rating USING(rev_id)
+	 * WHERE rev_stars IS NULL;
+	 */
+	@Test
+	fun query1() {
+		val derived = DerivedTable("result")
+		val query = SQL.query()
+			.select(derived.column(Reviewer.name))
+			.from(
+				Reviewer.join(Rating)
+					.using(derived.column(Reviewer.id))
+					.assign(derived)
+			)
+			.where(derived.column(Rating.stars).isNull())
+			.build<Any>()
+		assertQuery(
+			query, "SELECT result.rev_name FROM (reviewer JOIN rating USING (result.rev_id)) AS result WHERE result.rev_stars IS NULL"
+		)
+	}
+
+	@Test
+	fun queryTest() {
+		val derived = DerivedTable("result")
+		val query = SQL.query()
+			.selectAll()
+			.from(
+				Actor.join(MovieCast)
+					.on(Actor.id.isEqual(MovieCast.actorId))
+					.assign(derived)
+			)
+			.where(derived.column(Actor.gender).isEqual("F"))
+			.build<Any>()
+		assertQuery(
+			query,
+			"SELECT * FROM (actor JOIN movie_cast ON (actor.act_id = movie_cast.act_id)) AS result WHERE result.act_gender = 'F'"
+		)
+	}
+
+}
