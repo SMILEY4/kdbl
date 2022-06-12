@@ -7,7 +7,7 @@ import de.ruegnerlukas.sqldsl.builder.isNull
 import de.ruegnerlukas.sqldsl.builder.join
 import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
 import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
-import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
+import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
 import sqldsl.MovieCast
@@ -21,11 +21,12 @@ import kotlin.test.assertEquals
  */
 class MovieDbJoinTest {
 
-	private fun assertQuery(query: QueryStatement<*>, expected: String) {
-		val strQuery = BaseGenerator().query(query).buildString()
+	private fun assertQuery(query: QueryBuilderEndStep<*>, expected: String) {
+		val strQuery = BaseGenerator().query(query.build<Any>()).buildString()
 		println(strQuery)
 		assertEquals(expected, strQuery)
 	}
+
 
 	/**
 	 * SELECT rev_name
@@ -36,7 +37,7 @@ class MovieDbJoinTest {
 	@Test
 	fun query1() {
 		val derived = DerivedTable("result")
-		val query = SQL.query()
+		val query = SQL
 			.select(derived.column(Reviewer.name))
 			.from(
 				Reviewer.join(Rating)
@@ -44,16 +45,16 @@ class MovieDbJoinTest {
 					.assign(derived)
 			)
 			.where(derived.column(Rating.stars).isNull())
-			.build<Any>()
 		assertQuery(
 			query, "SELECT result.rev_name FROM (reviewer JOIN rating USING (result.rev_id)) AS result WHERE result.rev_stars IS NULL"
 		)
 	}
 
+
 	@Test
 	fun queryTest() {
 		val derived = DerivedTable("result")
-		val query = SQL.query()
+		val query = SQL
 			.selectAll()
 			.from(
 				Actor.join(MovieCast)
@@ -61,7 +62,6 @@ class MovieDbJoinTest {
 					.assign(derived)
 			)
 			.where(derived.column(Actor.gender).isEqual("F"))
-			.build<Any>()
 		assertQuery(
 			query,
 			"SELECT * FROM (actor JOIN movie_cast ON (actor.act_id = movie_cast.act_id)) AS result WHERE result.act_gender = 'F'"

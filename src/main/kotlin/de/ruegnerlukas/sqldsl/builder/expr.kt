@@ -40,6 +40,7 @@ import de.ruegnerlukas.sqldsl.dsl.expr.StringLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.SubExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.SumExpr
 import de.ruegnerlukas.sqldsl.dsl.statements.FromElement
+import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
 import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
 
 fun <T> Expr<T>.isEqual(other: Expr<T>) = EqualExpr(this, other)
@@ -87,6 +88,7 @@ fun Expr<String>.isLike(pattern: String) = LikeExpr(this, pattern)
 fun <T> Expr<T>.isBetween(lower: Expr<T>, upper: Expr<T>) = BetweenExpr(this, lower, upper)
 
 fun <T> Expr<T>.isIn(query: QueryStatement<T>) = InQueryExpr(this, query)
+fun <T> Expr<T>.isIn(query: QueryBuilderEndStep<T>) = InQueryExpr(this, query.build<T>())
 fun <T> Expr<T>.isIn(list: ListLiteralExpr<T>) = InListExpr(this, list)
 fun <T> Expr<T>.isIn(values: List<Expr<T>>) = InListExpr(this, ListLiteralExpr(values))
 fun <T> Expr<T>.isIn(vararg values: Expr<T>) = InListExpr(this, ListLiteralExpr(values.toList()))
@@ -97,6 +99,7 @@ fun Expr<Boolean>.isIn(vararg values: Boolean) = InListExpr(this, ListLiteralExp
 fun Expr<String>.isIn(vararg values: String) = InListExpr(this, ListLiteralExpr(values.toList().map { StringLiteralExpr(it) }))
 
 fun <T> Expr<T>.isNotIn(query: QueryStatement<T>) = NotInQueryExpr(this, query)
+fun <T> Expr<T>.isNotIn(query: QueryBuilderEndStep<T>) = NotInQueryExpr(this, query.build<T>())
 fun <T> Expr<T>.isNotIn(list: ListLiteralExpr<T>) = NotInListExpr(this, list)
 fun <T> Expr<T>.isNotIn(values: List<Expr<T>>) = NotInListExpr(this, ListLiteralExpr(values))
 fun <T> Expr<T>.isNotIn(vararg values: Expr<T>) = NotInListExpr(this, ListLiteralExpr(values.toList()))

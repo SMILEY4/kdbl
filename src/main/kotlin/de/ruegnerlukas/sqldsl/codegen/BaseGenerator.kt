@@ -85,6 +85,7 @@ import de.ruegnerlukas.sqldsl.dsl.statements.LimitStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.OnJoinCondition
 import de.ruegnerlukas.sqldsl.dsl.statements.OrderByElement
 import de.ruegnerlukas.sqldsl.dsl.statements.OrderByStatement
+import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
 import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.SelectAllElement
 import de.ruegnerlukas.sqldsl.dsl.statements.SelectAllFromTableElement
@@ -93,7 +94,6 @@ import de.ruegnerlukas.sqldsl.dsl.statements.SelectStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.UpdateStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.UsingJoinCondition
 import de.ruegnerlukas.sqldsl.dsl.statements.WhereStatement
-import kotlin.math.exp
 
 class BaseGenerator {
 
@@ -131,6 +131,7 @@ class BaseGenerator {
 			.add(
 				when (insert.content) {
 					is QueryStatement<*> -> GroupToken(query(insert.content))
+					is QueryBuilderEndStep<*> -> GroupToken(query(insert.content.build<Any>()))
 					is ItemsInsertContent -> CsvListToken(insert.content.items.map { item ->
 						GroupToken(
 							CsvListToken(
@@ -329,6 +330,7 @@ class BaseGenerator {
 			is Table -> StringToken(tableIdentifier(e))
 			is JoinElement -> join(e)
 			is QueryStatement<*> -> query(e)
+			is QueryBuilderEndStep<*> -> query(e.build<Any>())
 			else -> throwUnknown(e)
 		}
 	}
@@ -522,7 +524,8 @@ class BaseGenerator {
 			is MaxExpr -> ListToken().add("MAX(${expression(e.value).buildString()})")
 			is SumExpr -> ListToken().add("SUM(${expression(e.value).buildString()})")
 			is SubQueryExpr<*> -> when (e) {
-				is QueryStatement<*> -> query(e);
+				is QueryStatement<*> -> query(e)
+				is QueryBuilderEndStep<*> -> query(e.build<Any>())
 				else -> throwUnknown(e)
 			}
 			is AliasExpr<*> -> StringToken(e.alias)

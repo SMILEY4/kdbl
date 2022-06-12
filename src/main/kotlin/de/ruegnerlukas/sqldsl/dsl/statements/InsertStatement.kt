@@ -22,30 +22,39 @@ interface InsertContent
 
 class ItemsInsertContent(val items: List<InsertItem>) : InsertContent
 
-class InsertItem {
+
+interface InsertItem {
+	fun getValue(column: Column<*>): LiteralExpr<*>?
+}
+
+class InsertItemImpl: InsertItem {
 
 	private val values: MutableMap<Column<*>, LiteralExpr<*>> = mutableMapOf()
 
-	fun set(column: Column<Int>, value: Int): InsertItem {
+	fun set(column: Column<Int>, value: Int): InsertItemImpl {
 		values[column] = IntLiteralExpr(value)
 		return this
 	}
 
-	fun set(column: Column<Float>, value: Float): InsertItem {
+	fun set(column: Column<Float>, value: Float): InsertItemImpl {
 		values[column] = FloatLiteralExpr(value)
 		return this
 	}
 
-	fun set(column: Column<String>, value: String): InsertItem {
+	fun set(column: Column<String>, value: String): InsertItemImpl {
 		values[column] = StringLiteralExpr(value)
 		return this
 	}
 
-	fun set(column: Column<Boolean>, value: Boolean): InsertItem {
+	fun set(column: Column<Boolean>, value: Boolean): InsertItemImpl {
 		values[column] = BooleanLiteralExpr(value)
 		return this
 	}
 
-	fun getValue(column: Column<*>) = values[column]
+	override fun getValue(column: Column<*>) = values[column]
 
+}
+
+interface InsertBuilderEndStep {
+	fun build(): InsertStatement
 }

@@ -3,6 +3,7 @@ package sqldsl.insert
 import de.ruegnerlukas.sqldsl.builder.SQL
 import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
 import de.ruegnerlukas.sqldsl.dsl.expr.OnConflict
+import de.ruegnerlukas.sqldsl.dsl.statements.InsertBuilderEndStep
 import de.ruegnerlukas.sqldsl.dsl.statements.InsertStatement
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
@@ -11,8 +12,8 @@ import kotlin.test.assertEquals
 
 class InsertTest {
 
-	private fun assertQuery(stmt: InsertStatement, expected: String) {
-		val strQuery = BaseGenerator().insert(stmt).buildString()
+	private fun assertQuery(stmt: InsertBuilderEndStep, expected: String) {
+		val strQuery = BaseGenerator().insert(stmt.build()).buildString()
 		println(strQuery)
 		assertEquals(expected, strQuery)
 	}
@@ -21,10 +22,11 @@ class InsertTest {
 	@Test
 	fun insert1() {
 
-		val query = SQL.insert()
+		val query = SQL
+			.insert()
 			.into(Actor)
 			.or(OnConflict.FAIL)
-			.fields(Actor.id, Actor.fName, Actor.lName, Actor.gender)
+			.columns(Actor.id, Actor.fName, Actor.lName, Actor.gender)
 			.items(
 				SQL.item()
 					.set(Actor.id, 101)
@@ -37,7 +39,6 @@ class InsertTest {
 					.set(Actor.lName, "Kerr")
 					.set(Actor.gender, "F")
 			)
-			.build()
 		assertQuery(
 			query,
 			"INSERT OR FAIL INTO actor (act_id, act_fname, act_lname, act_gender) VALUES (101, 'James', 'Steward', 'M'), (102, 'Deborah', 'Kerr', 'F')"
@@ -47,18 +48,17 @@ class InsertTest {
 
 	@Test
 	fun insert2() {
-		val query = SQL.insert()
+		val query = SQL
+			.insert()
 			.into(Actor)
 			.or(OnConflict.IGNORE)
-			.allFields()
+			.allColumns()
 			.query(
-				SQL.query()
+				SQL
 					.selectAll()
 					.from(Actor)
-					.build<Any>()
 			)
 			.returning(Actor.id, Actor.fName)
-			.build()
 		assertQuery(query, "INSERT OR IGNORE INTO actor VALUES (SELECT * FROM actor) RETURNING actor.act_id, actor.act_fname")
 	}
 

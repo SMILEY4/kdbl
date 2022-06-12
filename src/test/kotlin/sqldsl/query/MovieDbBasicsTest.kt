@@ -10,6 +10,7 @@ import de.ruegnerlukas.sqldsl.builder.isLike
 import de.ruegnerlukas.sqldsl.builder.isNotIn
 import de.ruegnerlukas.sqldsl.builder.isNotNull
 import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
+import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
 import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
@@ -24,8 +25,8 @@ import kotlin.test.assertEquals
  */
 class MovieDbBasicsTest {
 
-	private fun assertQuery(query: QueryStatement<*>, expected: String) {
-		val strQuery = BaseGenerator().query(query).buildString()
+	private fun assertQuery(query: QueryBuilderEndStep<*>, expected: String) {
+		val strQuery = BaseGenerator().query(query.build<Any>()).buildString()
 		println(strQuery)
 		assertEquals(expected, strQuery)
 	}
@@ -37,10 +38,9 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query1() {
-		val query = SQL.query()
+		val query = SQL
 			.select(Movie.title, Movie.year)
 			.from(Movie)
-			.build<Any>()
 		assertQuery(query, "SELECT movie.mov_title, movie.mov_year FROM movie")
 	}
 
@@ -52,11 +52,10 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query2() {
-		val query = SQL.query()
+		val query = SQL
 			.select(Movie.year)
 			.from(Movie)
 			.where(Movie.title.isEqual("American Beauty"))
-			.build<Any>()
 		assertQuery(query, "SELECT movie.mov_year FROM movie WHERE movie.mov_title = 'American Beauty'")
 	}
 
@@ -68,11 +67,10 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query3() {
-		val query = SQL.query()
+		val query = SQL
 			.select(Movie.title)
 			.from(Movie)
 			.where(Movie.year.isEqual(1999))
-			.build<Any>()
 		assertQuery(query, "SELECT movie.mov_title FROM movie WHERE movie.mov_year = 1999")
 	}
 
@@ -86,7 +84,7 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query6() {
-		val query = SQL.query()
+		val query = SQL
 			.select(Reviewer.name)
 			.from(Reviewer, Rating)
 			.where(
@@ -94,7 +92,6 @@ class MovieDbBasicsTest {
 						and Rating.stars.isGreaterOrEqualThan(7)
 						and Reviewer.name.isNotNull()
 			)
-			.build<Any>()
 		assertQuery(
 			query,
 			"SELECT reviewer.rev_name FROM reviewer, rating WHERE ((rating.rev_id = reviewer.rev_id) AND (rating.rev_stars >= 7)) AND (reviewer.rev_name IS NOT NULL)"
@@ -109,11 +106,10 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query7() {
-		val query = SQL.query()
+		val query = SQL
 			.select(Movie.title)
 			.from(Movie)
-			.where(Movie.id.isNotIn(SQL.query().select(Rating.movieId).from(Rating).build()))
-			.build<Any>()
+			.where(Movie.id.isNotIn(SQL.select(Rating.movieId).from(Rating).build()))
 		assertQuery(query, "SELECT movie.mov_title FROM movie WHERE movie.mov_id NOT IN (SELECT rating.mov_id FROM rating)")
 	}
 
@@ -125,11 +121,10 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query8() {
-		val query = SQL.query()
+		val query = SQL
 			.select(Movie.title)
 			.from(Movie)
 			.where(Movie.id.isIn(905, 907, 917))
-			.build<Any>()
 		assertQuery(query, "SELECT movie.mov_title FROM movie WHERE movie.mov_id IN (905, 907, 917)")
 	}
 
@@ -142,12 +137,11 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query9() {
-		val query = SQL.query()
+		val query = SQL
 			.select(Movie.id, Movie.title, Movie.year)
 			.from(Movie)
 			.where(Movie.title.isLike("%Boogie%Nights%"))
 			.orderBy(Movie.year.asc())
-			.build<Any>()
 		assertQuery(
 			query,
 			"SELECT movie.mov_id, movie.mov_title, movie.mov_year FROM movie WHERE movie.mov_title LIKE '%Boogie%Nights%' ORDER BY movie.mov_year ASC"
@@ -163,11 +157,10 @@ class MovieDbBasicsTest {
 	 */
 	@Test
 	fun query10() {
-		val query = SQL.query()
+		val query = SQL
 			.select(Actor.id)
 			.from(Actor)
 			.where(Actor.fName.isEqual("Woddy") and Actor.lName.isEqual("Allen"))
-			.build<Any>()
 		assertQuery(query, "SELECT actor.act_id FROM actor WHERE (actor.act_fname = 'Woddy') AND (actor.act_lname = 'Allen')")
 	}
 

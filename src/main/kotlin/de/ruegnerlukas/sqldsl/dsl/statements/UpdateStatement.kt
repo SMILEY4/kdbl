@@ -14,10 +14,14 @@ class UpdateStatement(
 	val onConflict: OnConflict,
 	val target: Table,
 	val set: List<UpdateElement<*>>,
-	val where: Expr<Boolean>?,
-	val from: FromStatement?,
-	val returning: Returning?
+	val where: Expr<Boolean>? = null,
+	val from: FromStatement? = null,
+	val returning: Returning? = null,
 )
+
+interface UpdateBuilderEndStep {
+	fun build(): UpdateStatement
+}
 
 class UpdateElement<T>(
 	val column: Column<T>,
