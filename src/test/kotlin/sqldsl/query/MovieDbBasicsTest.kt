@@ -9,28 +9,18 @@ import de.ruegnerlukas.sqldsl.builder.isIn
 import de.ruegnerlukas.sqldsl.builder.isLike
 import de.ruegnerlukas.sqldsl.builder.isNotIn
 import de.ruegnerlukas.sqldsl.builder.isNotNull
-import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
-import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
-import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
 import sqldsl.Movie
 import sqldsl.Rating
 import sqldsl.Reviewer
-import kotlin.test.assertEquals
+import sqldsl.utils.assertQuery
 
 
 /**
  * https://www.w3resource.com/sql-exercises/movie-database-exercise/basic-exercises-on-movie-database.php
  */
 class MovieDbBasicsTest {
-
-	private fun assertQuery(query: QueryBuilderEndStep<*>, expected: String) {
-		val strQuery = BaseGenerator().query(query.build<Any>()).buildString()
-		println(strQuery)
-		assertEquals(expected, strQuery)
-	}
-
 
 	/**
 	 * SELECT mov_title, mov_year

@@ -5,28 +5,19 @@ import de.ruegnerlukas.sqldsl.builder.assign
 import de.ruegnerlukas.sqldsl.builder.isEqual
 import de.ruegnerlukas.sqldsl.builder.isNull
 import de.ruegnerlukas.sqldsl.builder.join
-import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
 import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
-import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
 import sqldsl.MovieCast
 import sqldsl.Rating
 import sqldsl.Reviewer
-import kotlin.test.assertEquals
+import sqldsl.utils.assertQuery
 
 
 /**
  * https://www.w3resource.com/sql-exercises/movie-database-exercise/joins-exercises-on-movie-database.php
  */
 class MovieDbJoinTest {
-
-	private fun assertQuery(query: QueryBuilderEndStep<*>, expected: String) {
-		val strQuery = BaseGenerator().query(query.build<Any>()).buildString()
-		println(strQuery)
-		assertEquals(expected, strQuery)
-	}
-
 
 	/**
 	 * SELECT rev_name

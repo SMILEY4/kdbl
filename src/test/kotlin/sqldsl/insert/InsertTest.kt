@@ -1,27 +1,19 @@
 package sqldsl.insert
 
 import de.ruegnerlukas.sqldsl.builder.SQL
-import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
+import de.ruegnerlukas.sqldsl.codegen.SQLCodeGenerator
 import de.ruegnerlukas.sqldsl.dsl.expr.OnConflict
 import de.ruegnerlukas.sqldsl.dsl.statements.InsertBuilderEndStep
-import de.ruegnerlukas.sqldsl.dsl.statements.InsertStatement
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
+import sqldsl.utils.assertQuery
 import kotlin.test.assertEquals
 
 
 class InsertTest {
 
-	private fun assertQuery(stmt: InsertBuilderEndStep, expected: String) {
-		val strQuery = BaseGenerator().insert(stmt.build()).buildString()
-		println(strQuery)
-		assertEquals(expected, strQuery)
-	}
-
-
 	@Test
 	fun insert1() {
-
 		val query = SQL
 			.insert()
 			.into(Actor)

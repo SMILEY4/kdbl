@@ -2,6 +2,9 @@ package de.ruegnerlukas.sqldsl.dsl.expr
 
 import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.SelectElement
+import de.ruegnerlukas.sqldsl.utils.SqlDate
+import de.ruegnerlukas.sqldsl.utils.SqlTime
+import java.sql.Blob
 
 interface Expr<T> : SelectElement
 
@@ -67,11 +70,15 @@ class AliasExpr<T>(val alias: String) : Expr<T> {
 interface SubQueryExpr<T> : Expr<T>
 
 interface LiteralExpr<T> : Expr<T>
-class IntLiteralExpr(val value: Int) : LiteralExpr<Int>
-class FloatLiteralExpr(val value: Float) : LiteralExpr<Float>
+
 class BooleanLiteralExpr(val value: Boolean) : LiteralExpr<Boolean>
+class ShortLiteralExpr(val value: Short) : LiteralExpr<Short>
+class IntLiteralExpr(val value: Int) : LiteralExpr<Int>
+class LongLiteralExpr(val value: Long) : LiteralExpr<Long>
+class FloatLiteralExpr(val value: Float) : LiteralExpr<Float>
+class DoubleLiteralExpr(val value: Double) : LiteralExpr<Double>
 class StringLiteralExpr(val value: String) : LiteralExpr<String>
+class DateLiteralExpr(val value: SqlDate) : LiteralExpr<SqlDate>
+class TimeLiteralExpr(val value: SqlTime) : LiteralExpr<SqlTime>
+class BlobLiteralExpr(val value: ByteArray) : LiteralExpr<ByteArray>
 class ListLiteralExpr<T>(val values: List<Expr<T>>) : LiteralExpr<T>
-
-
-

@@ -16,11 +16,8 @@ import de.ruegnerlukas.sqldsl.builder.max
 import de.ruegnerlukas.sqldsl.builder.min
 import de.ruegnerlukas.sqldsl.builder.sub
 import de.ruegnerlukas.sqldsl.builder.sum
-import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
 import de.ruegnerlukas.sqldsl.dsl.expr.AliasExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
-import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
-import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
 import org.junit.jupiter.api.Test
 import sqldsl.Employee
 import sqldsl.Exam
@@ -30,19 +27,12 @@ import sqldsl.Sale2
 import sqldsl.Sale3
 import sqldsl.Salesman
 import sqldsl.Subject
-import kotlin.test.assertEquals
+import sqldsl.utils.assertQuery
 
 /**
  * https://www.w3resource.com/sql-exercises/challenges-1/index.php
  */
 class ChallengesDbTest {
-
-	private fun assertQuery(query: QueryBuilderEndStep<*>, expected: String) {
-		val strQuery = BaseGenerator().query(query.build<Any>()).buildString()
-		println(strQuery)
-		assertEquals(expected, strQuery)
-	}
-
 
 	/**
 	 * https://www.w3resource.com/sql-exercises/challenges-1/sql-challenges-1-exercise-2.php
@@ -222,6 +212,7 @@ class ChallengesDbTest {
 			"SELECT (MAX(a.total_sale)) AS max_sale, (MIN(a.total_sale)) AS min_sale, ((MAX(a.total_sale)) - (MIN(a.total_sale))) AS sale_difference FROM (SELECT sales.company_id, (SUM(sales.qtr1_sale + sales.qtr2_sale + sales.qtr3_sale + sales.qtr4_sale)) AS total_sale FROM sales GROUP BY sales.company_id) AS a"
 		)
 	}
+
 
 	/**
 	 * https://www.w3resource.com/sql-exercises/challenges-1/sql-challenges-1-exercise-54.php

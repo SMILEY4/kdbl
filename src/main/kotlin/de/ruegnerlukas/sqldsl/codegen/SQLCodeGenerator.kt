@@ -1,5 +1,6 @@
 package de.ruegnerlukas.sqldsl.codegen
 
+import de.ruegnerlukas.sqldsl.codegen.dialects.SQLDialect
 import de.ruegnerlukas.sqldsl.codegen.tokens.CsvListToken
 import de.ruegnerlukas.sqldsl.codegen.tokens.GroupToken
 import de.ruegnerlukas.sqldsl.codegen.tokens.ListToken
@@ -14,21 +15,27 @@ import de.ruegnerlukas.sqldsl.dsl.expr.AndChainExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.AndExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.AutoIncrementProperty
 import de.ruegnerlukas.sqldsl.dsl.expr.BetweenExpr
+import de.ruegnerlukas.sqldsl.dsl.expr.BlobLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.BooleanLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.Column
 import de.ruegnerlukas.sqldsl.dsl.expr.ColumnProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.DataType
 import de.ruegnerlukas.sqldsl.dsl.expr.CountAllDistinctExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.CountAllExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.CountDistinctExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.CountExpr
+import de.ruegnerlukas.sqldsl.dsl.expr.DateLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expr.DefaultBlobValueProperty
 import de.ruegnerlukas.sqldsl.dsl.expr.DefaultBooleanValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expr.DefaultDoubleValueProperty
 import de.ruegnerlukas.sqldsl.dsl.expr.DefaultFloatValueProperty
 import de.ruegnerlukas.sqldsl.dsl.expr.DefaultIntValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expr.DefaultLongValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expr.DefaultShortValueProperty
 import de.ruegnerlukas.sqldsl.dsl.expr.DefaultStringValueProperty
 import de.ruegnerlukas.sqldsl.dsl.expr.DerivedColumn
 import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
 import de.ruegnerlukas.sqldsl.dsl.expr.DivExpr
+import de.ruegnerlukas.sqldsl.dsl.expr.DoubleLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.EqualExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.Expr
 import de.ruegnerlukas.sqldsl.dsl.expr.FloatLiteralExpr
@@ -43,6 +50,7 @@ import de.ruegnerlukas.sqldsl.dsl.expr.LessThanExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.LikeExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.ListLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.LiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expr.LongLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.MaxExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.MinExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.MulExpr
@@ -62,12 +70,14 @@ import de.ruegnerlukas.sqldsl.dsl.expr.PrimaryKeyProperty
 import de.ruegnerlukas.sqldsl.dsl.expr.ReturnAllColumns
 import de.ruegnerlukas.sqldsl.dsl.expr.ReturnColumns
 import de.ruegnerlukas.sqldsl.dsl.expr.Returning
+import de.ruegnerlukas.sqldsl.dsl.expr.ShortLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.StringLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.SubExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.SubQueryExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.SumExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.Table
 import de.ruegnerlukas.sqldsl.dsl.expr.TableLike
+import de.ruegnerlukas.sqldsl.dsl.expr.TimeLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expr.UniqueProperty
 import de.ruegnerlukas.sqldsl.dsl.statements.CreateTableStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.DeleteStatement
@@ -95,7 +105,7 @@ import de.ruegnerlukas.sqldsl.dsl.statements.UpdateStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.UsingJoinCondition
 import de.ruegnerlukas.sqldsl.dsl.statements.WhereStatement
 
-class BaseGenerator {
+class SQLCodeGenerator(private val dialect: SQLDialect) {
 
 	fun update(update: UpdateStatement): Token {
 		return ListToken()
@@ -185,17 +195,8 @@ class BaseGenerator {
 	private fun column(column: Column<*>, table: Table): Token {
 		return ListToken()
 			.add(column.columnName)
-			.add(columnType(column.type))
+			.add(dialect.dataType(column.type))
 			.addAll(column.getProperties().map { columnProperty(it, column, table) })
-	}
-
-	private fun columnType(type: DataType): String {
-		return when (type) {
-			DataType.INT -> "INT"
-			DataType.FLOAT -> "FLOAT"
-			DataType.TEXT -> "TEXT"
-			DataType.BOOL -> "BOOL"
-		}
 	}
 
 	private fun columnProperty(e: ColumnProperty, column: Column<*>, table: Table): Token {
@@ -215,10 +216,15 @@ class BaseGenerator {
 					NoOpToken()
 				}
 			}
-			is DefaultIntValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
-			is DefaultFloatValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
-			is DefaultStringValueProperty -> ListToken().add("DEFAULT").add("'${e.value}'")
 			is DefaultBooleanValueProperty -> ListToken().add("DEFAULT").add(if (e.value) "TRUE" else "FALSE")
+			is DefaultShortValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
+			is DefaultIntValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
+			is DefaultLongValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
+			is DefaultFloatValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
+			is DefaultDoubleValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
+			is DefaultStringValueProperty -> ListToken().add("DEFAULT").add("'${e.value}'")
+			is DefaultBlobValueProperty -> ListToken().add("DEFAULT")
+				.add(StringToken(e.value.joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }))
 			is NotNullProperty -> ListToken()
 				.add("NOT NULL")
 				.addIf(e.onConflict != OnConflict.ABORT, mapOnConflict(e.onConflict))
@@ -538,10 +544,16 @@ class BaseGenerator {
 
 	private fun literal(e: LiteralExpr<*>): Token {
 		return when (e) {
-			is IntLiteralExpr -> StringToken(e.value.toString())
-			is FloatLiteralExpr -> StringToken(e.value.toString())
 			is BooleanLiteralExpr -> StringToken(if (e.value) "TRUE" else "FALSE")
+			is ShortLiteralExpr -> StringToken(e.value.toString())
+			is IntLiteralExpr -> StringToken(e.value.toString())
+			is LongLiteralExpr -> StringToken(e.value.toString())
+			is FloatLiteralExpr -> StringToken(e.value.toString())
+			is DoubleLiteralExpr -> StringToken(e.value.toString())
 			is StringLiteralExpr -> StringToken("'${e.value}'")
+			is DateLiteralExpr -> StringToken("'${e.value.strYear()}-${e.value.strMonth()}-${e.value.strDay()}'")
+			is TimeLiteralExpr -> StringToken("'${e.value.strHour()}:${e.value.strMinute()}:${e.value.strSecond()}'")
+			is BlobLiteralExpr -> StringToken(e.value.joinToString(separator = "") { eachByte -> "%02x".format(eachByte) })
 			is ListLiteralExpr<*> -> GroupToken(CsvListToken(e.values.map { expression(it) }))
 			else -> throwUnknown(e)
 		}

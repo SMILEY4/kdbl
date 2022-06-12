@@ -5,26 +5,17 @@ import de.ruegnerlukas.sqldsl.builder.alias
 import de.ruegnerlukas.sqldsl.builder.assign
 import de.ruegnerlukas.sqldsl.builder.isEqual
 import de.ruegnerlukas.sqldsl.builder.sum
-import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
 import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
 import de.ruegnerlukas.sqldsl.dsl.expr.OnConflict
-import de.ruegnerlukas.sqldsl.dsl.statements.UpdateBuilderEndStep
 import de.ruegnerlukas.sqldsl.dsl.statements.set
 import org.junit.jupiter.api.Test
 import sqldsl.Logs
 import sqldsl.Movie
 import sqldsl.Sale
-import kotlin.test.assertEquals
+import sqldsl.utils.assertQuery
 
 
 class UpdateTest {
-
-	private fun assertQuery(stmt: UpdateBuilderEndStep, expected: String) {
-		val strQuery = BaseGenerator().update(stmt.build()).buildString()
-		println(strQuery)
-		assertEquals(expected, strQuery)
-	}
-
 
 	@Test
 	fun update1() {

@@ -1,8 +1,20 @@
 package sqldsl.query
 
-import de.ruegnerlukas.sqldsl.builder.*
-import de.ruegnerlukas.sqldsl.codegen.BaseGenerator
-import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
+import de.ruegnerlukas.sqldsl.builder.SQL
+import de.ruegnerlukas.sqldsl.builder.alias
+import de.ruegnerlukas.sqldsl.builder.and
+import de.ruegnerlukas.sqldsl.builder.asc
+import de.ruegnerlukas.sqldsl.builder.countAll
+import de.ruegnerlukas.sqldsl.builder.isEqual
+import de.ruegnerlukas.sqldsl.builder.isGreaterThan
+import de.ruegnerlukas.sqldsl.builder.isIn
+import de.ruegnerlukas.sqldsl.builder.isNotEqual
+import de.ruegnerlukas.sqldsl.builder.isNotIn
+import de.ruegnerlukas.sqldsl.builder.isNotNull
+import de.ruegnerlukas.sqldsl.builder.isNull
+import de.ruegnerlukas.sqldsl.builder.join
+import de.ruegnerlukas.sqldsl.builder.max
+import de.ruegnerlukas.sqldsl.builder.min
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
 import sqldsl.Director
@@ -11,19 +23,13 @@ import sqldsl.MovieCast
 import sqldsl.MovieDirection
 import sqldsl.Rating
 import sqldsl.Reviewer
-import kotlin.test.assertEquals
+import sqldsl.utils.assertQuery
 
 
 /**
  * https://www.w3resource.com/sql-exercises/movie-database-exercise/subqueries-exercises-on-movie-database.php
  */
 class MovieDbSubQueriesTest {
-
-	private fun assertQuery(query: QueryBuilderEndStep<*>, expected: String) {
-		val strQuery = BaseGenerator().query(query.build<Any>()).buildString()
-		println(strQuery)
-		assertEquals(expected, strQuery)
-	}
 
 	/**
 	 * SELECT
