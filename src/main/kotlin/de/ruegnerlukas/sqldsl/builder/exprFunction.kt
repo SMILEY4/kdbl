@@ -4,6 +4,7 @@ import de.ruegnerlukas.sqldsl.dsl.expression.Expr
 import de.ruegnerlukas.sqldsl.dsl.expression.FunctionExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.FunctionType
 import de.ruegnerlukas.sqldsl.dsl.expression.IntLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.StringLiteralExpr
 
 
 object Fn {
@@ -14,23 +15,48 @@ object Fn {
 	@JvmName("abs_f") fun abs(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.ABS, x)
 	@JvmName("abs_d") fun abs(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.ABS, x)
 
+	@JvmName("e_abs_s") fun Expr<Short>.abs() = FunctionExpr<Short>(FunctionType.ABS, this)
+	@JvmName("e_abs_i") fun Expr<Int>.abs() = FunctionExpr<Int>(FunctionType.ABS, this)
+	@JvmName("e_abs_l") fun Expr<Long>.abs() = FunctionExpr<Long>(FunctionType.ABS, this)
+	@JvmName("e_abs_f") fun Expr<Float>.abs() = FunctionExpr<Float>(FunctionType.ABS, this)
+	@JvmName("e_abs_d") fun Expr<Double>.abs() = FunctionExpr<Double>(FunctionType.ABS, this)
+
 	@JvmName("ceil_f") fun ceil(x: Expr<Float>) = FunctionExpr<Int>(FunctionType.CEIL, x)
 	@JvmName("ceil_d") fun ceil(x: Expr<Double>) = FunctionExpr<Long>(FunctionType.CEIL, x)
+
+	@JvmName("e_ceil_f") fun Expr<Float>.ceil() = FunctionExpr<Int>(FunctionType.CEIL, this)
+	@JvmName("e_ceil_d") fun Expr<Double>.ceil() = FunctionExpr<Long>(FunctionType.CEIL, this)
 
 	@JvmName("floor_f") fun floor(x: Expr<Float>) = FunctionExpr<Int>(FunctionType.FLOOR, x)
 	@JvmName("floor_d") fun floor(x: Expr<Double>) = FunctionExpr<Long>(FunctionType.FLOOR, x)
 
+	@JvmName("e_floor_f") fun Expr<Float>.floor() = FunctionExpr<Int>(FunctionType.FLOOR, this)
+	@JvmName("e_floor_d") fun Expr<Double>.floor() = FunctionExpr<Long>(FunctionType.FLOOR, this)
+
+
 	@JvmName("round_f") fun round(x: Expr<Float>) = FunctionExpr<Int>(FunctionType.ROUND, x)
 	@JvmName("round_d") fun round(x: Expr<Double>) = FunctionExpr<Long>(FunctionType.ROUND, x)
 
+	@JvmName("e_round_f") fun Expr<Float>.round() = FunctionExpr<Int>(FunctionType.ROUND)
+	@JvmName("e_round_d") fun Expr<Double>.round() = FunctionExpr<Long>(FunctionType.ROUND)
+
 	@JvmName("rad2deg_f") fun toDegrees(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.RAD_TO_DEG, x)
 	@JvmName("rad2deg_d") fun toDegrees(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.RAD_TO_DEG, x)
+
+	@JvmName("e_rad2deg_f") fun Expr<Float>.toDegrees() = FunctionExpr<Float>(FunctionType.RAD_TO_DEG, this)
+	@JvmName("e_rad2deg_d") fun Expr<Double>.toDegrees() = FunctionExpr<Double>(FunctionType.RAD_TO_DEG, this)
 
 	@JvmName("deg2rad_s") fun toRadians(x: Expr<Short>) = FunctionExpr<Float>(FunctionType.DEG_TO_RAD, x)
 	@JvmName("deg2rad_i") fun toRadians(x: Expr<Int>) = FunctionExpr<Float>(FunctionType.DEG_TO_RAD, x)
 	@JvmName("deg2rad_l") fun toRadians(x: Expr<Long>) = FunctionExpr<Double>(FunctionType.DEG_TO_RAD, x)
 	@JvmName("deg2rad_f") fun toRadians(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.DEG_TO_RAD, x)
 	@JvmName("deg2rad_d") fun toRadians(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.DEG_TO_RAD, x)
+
+	@JvmName("e_deg2rad_s") fun Expr<Short>.toRadians() = FunctionExpr<Float>(FunctionType.DEG_TO_RAD, this)
+	@JvmName("e_deg2rad_i") fun Expr<Int>.toRadians() = FunctionExpr<Float>(FunctionType.DEG_TO_RAD, this)
+	@JvmName("e_deg2rad_l") fun Expr<Long>.toRadians() = FunctionExpr<Double>(FunctionType.DEG_TO_RAD, this)
+	@JvmName("e_deg2rad_f") fun Expr<Float>.toRadians() = FunctionExpr<Float>(FunctionType.DEG_TO_RAD, this)
+	@JvmName("e_deg2rad_d") fun Expr<Double>.toRadians() = FunctionExpr<Double>(FunctionType.DEG_TO_RAD, this)
 
 	@JvmName("exp_s") fun exp(x: Expr<Short>) = FunctionExpr<Float>(FunctionType.EXPONENTIAL, x)
 	@JvmName("exp_i") fun exp(x: Expr<Int>) = FunctionExpr<Float>(FunctionType.EXPONENTIAL, x)
@@ -62,11 +88,23 @@ object Fn {
 	@JvmName("mod_f") fun mod(x: Expr<Float>, y: Expr<Float>) = FunctionExpr<Float>(FunctionType.MOD, x, y)
 	@JvmName("mod_d") fun mod(x: Expr<Double>, y: Expr<Double>) = FunctionExpr<Double>(FunctionType.MOD, x, y)
 
+	@JvmName("e_mod_s") fun Expr<Short>.mod(y: Expr<Short>) = FunctionExpr<Short>(FunctionType.MOD, this, y)
+	@JvmName("e_mod_i") fun Expr<Int>.mod(y: Expr<Int>) = FunctionExpr<Int>(FunctionType.MOD, this, y)
+	@JvmName("e_mod_l") fun Expr<Long>.mod(y: Expr<Long>) = FunctionExpr<Long>(FunctionType.MOD, this, y)
+	@JvmName("e_mod_f") fun Expr<Float>.mod(y: Expr<Float>) = FunctionExpr<Float>(FunctionType.MOD, this, y)
+	@JvmName("e_mod_d") fun Expr<Double>.mod(y: Expr<Double>) = FunctionExpr<Double>(FunctionType.MOD, this, y)
+
 	@JvmName("mod_s") fun mod(x: Expr<Short>, y: Int) = FunctionExpr<Short>(FunctionType.MOD, x, IntLiteralExpr(y))
 	@JvmName("mod_i") fun mod(x: Expr<Int>, y: Int) = FunctionExpr<Int>(FunctionType.MOD, x, IntLiteralExpr(y))
 	@JvmName("mod_l") fun mod(x: Expr<Long>, y: Int) = FunctionExpr<Long>(FunctionType.MOD, x, IntLiteralExpr(y))
 	@JvmName("mod_f") fun mod(x: Expr<Float>, y: Int) = FunctionExpr<Float>(FunctionType.MOD, x, IntLiteralExpr(y))
 	@JvmName("mod_d") fun mod(x: Expr<Double>, y: Int) = FunctionExpr<Double>(FunctionType.MOD, x, IntLiteralExpr(y))
+
+	@JvmName("e_mod_s") fun Expr<Short>.mod(y: Int) = FunctionExpr<Short>(FunctionType.MOD, this, IntLiteralExpr(y))
+	@JvmName("e_mod_i") fun Expr<Int>.mod(y: Int) = FunctionExpr<Int>(FunctionType.MOD, this, IntLiteralExpr(y))
+	@JvmName("e_mod_l") fun Expr<Long>.mod(y: Int) = FunctionExpr<Long>(FunctionType.MOD, this, IntLiteralExpr(y))
+	@JvmName("e_mod_f") fun Expr<Float>.mod(y: Int) = FunctionExpr<Float>(FunctionType.MOD, this, IntLiteralExpr(y))
+	@JvmName("e_mod_d") fun Expr<Double>.mod(y: Int) = FunctionExpr<Double>(FunctionType.MOD, this, IntLiteralExpr(y))
 
 	fun pi() = FunctionExpr<Double>(FunctionType.PI)
 
@@ -115,373 +153,155 @@ object Fn {
 	fun random() = FunctionExpr<Long>(FunctionType.RANDOM)
 
 
+	@JvmName("acos_f") fun acos(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.ACOS, x)
+	@JvmName("acos_d") fun acos(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.ACOS, x)
+
+	@JvmName("asin_f") fun asin(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.ASIN, x)
+	@JvmName("asin_d") fun asin(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.ASIN, x)
+
+	@JvmName("atan_f") fun atan(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.ATAN, x)
+	@JvmName("atan_d") fun atan(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.ATAN, x)
+
+	@JvmName("atan2_f") fun atan2(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.ATAN2, x)
+	@JvmName("atan2_d") fun atan2(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.ATAN2, x)
+
+	@JvmName("sin_f") fun sin(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.SIN, x)
+	@JvmName("sin_d") fun sin(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.SIN, x)
+
+	@JvmName("cos_f") fun cos(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.COS, x)
+	@JvmName("cos_d") fun cos(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.COS, x)
+
+	@JvmName("tan_f") fun tan(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.TAN, x)
+	@JvmName("tan_d") fun tan(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.TAN, x)
+
+
+	@JvmName("sinh_f") fun sinh(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.SINH, x)
+	@JvmName("sinh_d") fun sinh(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.SINH, x)
+
+	@JvmName("cosh_f") fun cosh(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.COSH, x)
+	@JvmName("cosh_d") fun cosh(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.COSH, x)
+
+	@JvmName("tanh_f") fun tanh(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.TANH, x)
+	@JvmName("tanh_d") fun tanh(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.TANH, x)
+
+	@JvmName("asinh_f") fun asinh(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.ASINH, x)
+	@JvmName("asinh_d") fun asinh(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.ASINH, x)
+
+	@JvmName("acosh_f") fun acosh(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.ACOSH, x)
+	@JvmName("acosh_d") fun acosh(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.ACOSH, x)
+
+	@JvmName("atanh_f") fun atanh(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.ATANH, x)
+	@JvmName("atanh_d") fun atanh(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.ATANH, x)
+
+
+	fun concat(x: Expr<String>, y: Expr<String>) = FunctionExpr<String>(FunctionType.CONCAT, x, y)
+	fun concat(x: Expr<String>, y: String) = FunctionExpr<String>(FunctionType.CONCAT, x, StringLiteralExpr(y))
+	fun concat(x: String, y: Expr<*>) = FunctionExpr<String>(FunctionType.CONCAT, StringLiteralExpr(x), y)
+
+	@JvmName("e_concat") fun Expr<String>.concat(y: Expr<String>) = FunctionExpr<String>(FunctionType.CONCAT, this, y)
+	@JvmName("e_concat") fun Expr<String>.concat(y: String) = FunctionExpr<String>(FunctionType.CONCAT, this, StringLiteralExpr(y))
+	@JvmName("e_concat") fun String.concat(y: Expr<String>) = FunctionExpr<String>(FunctionType.CONCAT, StringLiteralExpr(this), y)
+
+	fun length(x: Expr<String>) = FunctionExpr<Int>(FunctionType.LENGTH, x)
+	@JvmName("e_length") fun Expr<String>.length() = FunctionExpr<Int>(FunctionType.LENGTH, this)
+
+	fun lower(x: Expr<String>) = FunctionExpr<String>(FunctionType.LOWER, x)
+	@JvmName("e_lower") fun Expr<String>.lower() = FunctionExpr<String>(FunctionType.LOWER, this)
+
+	fun upper(x: Expr<String>) = FunctionExpr<String>(FunctionType.UPPER, x)
+	@JvmName("e_upper") fun Expr<String>.upper() = FunctionExpr<String>(FunctionType.UPPER, this)
+
+	fun substring(x: Expr<String>, start: Expr<Int>, length: Expr<Int>) = FunctionExpr<String>(FunctionType.SUBSTRING, x, start, length)
+	fun substring(x: Expr<String>, start: Int, length: Int) =
+		FunctionExpr<String>(FunctionType.SUBSTRING, x, IntLiteralExpr(start), IntLiteralExpr(length))
+
+	@JvmName("e_substr") fun Expr<String>.substring(start: Expr<Int>, length: Expr<Int>) =
+		FunctionExpr<String>(FunctionType.SUBSTRING, this, start, length)
+
+	@JvmName("e_substr") fun Expr<String>.substring(start: Int, length: Int) =
+		FunctionExpr<String>(FunctionType.SUBSTRING, this, IntLiteralExpr(start), IntLiteralExpr(length))
+
+	fun trim(x: Expr<String>) = FunctionExpr<String>(FunctionType.TRIM, x)
+	@JvmName("e_trim") fun Expr<String>.trim() = FunctionExpr<String>(FunctionType.TRIM, this)
+
+	fun rTrim(x: Expr<String>) = FunctionExpr<String>(FunctionType.RTRIM, x)
+	@JvmName("e_rtrim") fun Expr<String>.rTrim() = FunctionExpr<String>(FunctionType.RTRIM, this)
+
+	fun lTrim(x: Expr<String>) = FunctionExpr<String>(FunctionType.LTRIM, x)
+	@JvmName("e_ltrim") fun Expr<String>.lTrim() = FunctionExpr<String>(FunctionType.LTRIM, this)
+
+	fun replace(x: Expr<String>, oldSubstr: Expr<String>, newSubst: Expr<String>) =
+		FunctionExpr<String>(FunctionType.REPLACE, x, oldSubstr, newSubst)
+
+	fun replace(x: Expr<String>, oldSubstr: String, newSubst: String) =
+		FunctionExpr<String>(FunctionType.REPLACE, x, StringLiteralExpr(oldSubstr), StringLiteralExpr(newSubst))
+
+	@JvmName("e_replace") fun Expr<String>.replace(oldSubstr: Expr<String>, newSubst: Expr<String>) =
+		FunctionExpr<String>(FunctionType.REPLACE, this, oldSubstr, newSubst)
+
+	@JvmName("e_replace") fun Expr<String>.replace(oldSubstr: String, newSubst: String) =
+		FunctionExpr<String>(FunctionType.REPLACE, this, StringLiteralExpr(oldSubstr), StringLiteralExpr(newSubst))
+
+	fun toHex(x: Expr<String>) = FunctionExpr<String>(FunctionType.TO_HEX, x)
+	@JvmName("e_toHex") fun Expr<String>.toHex() = FunctionExpr<String>(FunctionType.TO_HEX, this)
 
 }
 
-//
-///**
-// * A function that returns the absolute value of the argument or "NULL" if the value is "NULL"
-// */
-//@JvmName("abss")
-//fun abs(x: Expr<Short>) = FunctionExpr<Short>(FunctionType.ABS, v)
-//
-//
-///**
-// * A function that returns the absolute value of the argument or "NULL" if the value is "NULL"
-// */
-//@JvmName("absi")
-//fun abs(x: Expr<Int>) = FunctionExpr<Int>(FunctionType.ABS, v)
-//
-//
-///**
-// * A function that returns the absolute value of the argument or "NULL" if the value is "NULL"
-// */
-//@JvmName("absl")
-//fun abs(x: Expr<Long>) = FunctionExpr<Long>(FunctionType.ABS, v)
-//
-//
-///**
-// * A function that returns the absolute value of the argument or "NULL" if the value is "NULL"
-// */
-//@JvmName("absf")
-//fun abs(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.ABS, v)
-//
-//
-///**
-// * A function that returns the absolute value of the argument or "NULL" if the value is "NULL"
-// */
-//@JvmName("absd")
-//fun abs(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.ABS, v)
-//
-//
-///**
-// * A function that returns the first integer greater than or equal to the given value
-// */
-//@JvmName("ceilf")
-//fun ceil(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.CEIL, v)
-//
-//
-///**
-// * A function that returns the first integer greater than or equal to the given value
-// */
-//@JvmName("ceild")
-//fun ceil(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.CEIL, v)
-//
-//
-///**
-// * A function that returns the first integer smaller than or equal to the given value
-// */
-//@JvmName("floorf")
-//fun floor(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.FLOOR, v)
-//
-//
-///**
-// * A function that returns the first integer smaller than or equal to the given value
-// */
-//@JvmName("floord")
-//fun floor(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.FLOOR, v)
-//
-//
-///**
-// * A function that returns the given value from radians to degrees
-// */
-//@JvmName("rad2degf")
-//fun degrees(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.RAD_TO_DEG, v)
-//
-//
-///**
-// * A function that returns the given value from radians to degrees
-// */
-//@JvmName("rad2degd")
-//fun degrees(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.RAD_TO_DEG, v)
-//
-//
-///**
-// * A function that returns the given value from degrees to radians
-// */
-//@JvmName("def2radf")
-//fun radians(x: Expr<Float>) = FunctionExpr<Float>(FunctionType.DEG_TO_RAD, v)
-//
-//
-///**
-// * A function that returns the given value from degrees to radians
-// */
-//@JvmName("deg2radd")
-//fun radians(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.DEG_TO_RAD, v)
-//
-//
-///**
-// * A function that returns e (Euler's number) raised to the power of the given value
-// */
-//@JvmName("exps")
-//fun exp(x: Expr<Short>) = FunctionExpr<Double>(FunctionType.EXPONENTIAL, v)
-//
-//
-///**
-// * A function that returns e (Euler's number) raised to the power of the given value
-// */
-//@JvmName("expi")
-//fun exp(x: Expr<Int>) = FunctionExpr<Double>(FunctionType.EXPONENTIAL, v)
-//
-//
-///**
-// * A function that returns e (Euler's number) raised to the power of the given value
-// */
-//@JvmName("expl")
-//fun exp(x: Expr<Long>) = FunctionExpr<Double>(FunctionType.EXPONENTIAL, v)
-//
-//
-///**
-// * A function that returns e (Euler's number) raised to the power of the given value
-// */
-//@JvmName("expf")
-//fun exp(x: Expr<Float>) = FunctionExpr<Double>(FunctionType.EXPONENTIAL, v)
-//
-//
-///**
-// * A function that returns e (Euler's number) raised to the power of the given value
-// */
-//@JvmName("expd")
-//fun exp(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.EXPONENTIAL, v)
-//
-//
-///**
-// * A function that returns the natural logarithm of the given value
-// */
-//@JvmName("lns")
-//fun ln(x: Expr<Short>) = FunctionExpr<Double>(FunctionType.EXPONENTIAL, v)
-//
-//
-///**
-// * A function that returns the natural logarithm of the given value
-// */
-//@JvmName("lni")
-//fun ln(x: Expr<Int>) = FunctionExpr<Double>(FunctionType.LN, v)
-//
-//
-///**
-// * A function that returns the natural logarithm of the given value
-// */
-//@JvmName("lnl")
-//fun ln(x: Expr<Long>) = FunctionExpr<Double>(FunctionType.LN, v)
-//
-//
-///**
-// * A function that returns the natural logarithm of the given value
-// */
-//@JvmName("lnf")
-//fun ln(x: Expr<Float>) = FunctionExpr<Double>(FunctionType.LN, v)
-//
-//
-///**
-// * A function that returns the natural logarithm of the given value
-// */
-//@JvmName("lnd")
-//fun ln(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.LN, v)
-//
-//
-//
-//
-//
-///**
-// * A function that returns the natural logarithm of the given value for the given base
-// */
-//@JvmName("logs")
-//fun log(x: Expr<Short>) = FunctionExpr<Double>(FunctionType.EXPONENTIAL, v)
-//
-//
-///**
-// * A function that returns the logarithm of the given value for the given base
-// */
-//@JvmName("logi")
-//fun log(x: Expr<Int>) = FunctionExpr<Double>(FunctionType.LOG, v)
-//
-//
-///**
-// * A function that returns the natural logarithm of the given value for the given base
-// */
-//@JvmName("logl")
-//fun log(x: Expr<Long>) = FunctionExpr<Double>(FunctionType.LOG, v)
-//
-//
-///**
-// * A function that returns the natural logarithm of the given value for the given base
-// */
-//@JvmName("logf")
-//fun log(x: Expr<Float>) = FunctionExpr<Double>(FunctionType.LOG, v)
-//
-//
-///**
-// * A function that returns the natural logarithm of the given value for the given base
-// */
-//@JvmName("logd")
-//fun log(x: Expr<Double>) = FunctionExpr<Double>(FunctionType.LOG, v)
-//
-//
-//
-//
-//
-//
-///**
-// * A function that returns a hex-string of the given argument
-// */
-//fun Expr<*>.hex() = FunctionExpr<String>(FunctionType.TO_HEX, this)
-//
-//
-///**
-// * A function that returns the length of the given string
-// */
-//fun Expr<String>.length() = FunctionExpr<Int>(FunctionType.LENGTH, this)
-//
-//
-///**
-// * A function that returns the given string with all characters converted to lower case
-// */
-//fun Expr<String>.lower() = FunctionExpr<String>(FunctionType.LOWER, this)
-//
-//
-///**
-// * A function that returns the given string with all characters converted to upper case
-// */
-//fun Expr<String>.upper() = FunctionExpr<String>(FunctionType.UPPER, this)
-//
-//
-///**
-// * A function that returns the given string with all whitespaces starting from the left side removed
-// */
-//fun Expr<String>.ltrim() = FunctionExpr<String>(FunctionType.LTRIM, this)
-//
-//
-///**
-// * A function that returns the given string with all whitespaces starting from the right side removed
-// */
-//fun Expr<String>.rtrim() = FunctionExpr<String>(FunctionType.RTRIM, this)
-//
-//
-///**
-// * A function that returns the given string with all whitespaces starting from the right and left side removed
-// */
-//fun Expr<String>.trim() = FunctionExpr<String>(FunctionType.TRIM, this)
-//
-//
-///**
-// * A function that returns the maximum value from the given values
-// */
-//fun <T> max(values: List<Expr<T>>) = FunctionExpr<T>(FunctionType.MAX, values)
-//
-//
-///**
-// * A function that returns the maximum value from the given values
-// */
-//fun <T> max(vararg values: Expr<T>) = FunctionExpr<T>(FunctionType.MAX, values.toList())
-//
-//
-///**
-// * A function that returns the minimum value from the given values
-// */
-//fun <T> min(values: List<Expr<T>>) = FunctionExpr<T>(FunctionType.MIN, values)
-//
-//
-///**
-// * A function that returns the minimum value from the given values
-// */
-//fun <T> min(vararg values: Expr<T>) = FunctionExpr<T>(FunctionType.MIN, values.toList())
-//
-//
-///**
-// * A function that returns a random positive or negative integer-value
-// */
-//fun random() = FunctionExpr<Short>(FunctionType.RANDOM)
-//
-//
-///**
-// * A function that returns the string with all occurrences of [oldValue] replaced with [newValue]
-// */
-//fun Expr<String>.replace(oldValue: Expr<String>, newValue: Expr<String>) =
-//	FunctionExpr<String>(FunctionType.REPLACE, this, oldValue, newValue)
-//
-//
-///**
-// * A function that returns the string with all occurrences of [oldValue] replaced with [newValue]
-// */
-//fun Expr<String>.replace(oldValue: String, newValue: String) =
-//	FunctionExpr<Short>(FunctionType.REPLACE, this, StringLiteralExpr(oldValue), StringLiteralExpr(newValue))
-//
-//
-///**
-// * A function that returns the given value rounded to the nearest integer
-// */
-//@JvmName("roundf")
-//fun Expr<Float>.round() = FunctionExpr<Int>(FunctionType.ROUND, this)
-//
-//
-///**
-// * A function that returns the given value rounded to the nearest integer
-// */
-//@JvmName("roundd")
-//fun Expr<Double>.round() = FunctionExpr<Long>(FunctionType.ROUND, this)
-//
-//
-///**
-// * A function that returns the sign of the given number, either "-1", "0" or "+1"
-// */
-//@JvmName("signs")
-//fun Expr<Short>.sign() = FunctionExpr<Int>(FunctionType.SIGN, this)
-//
-//
-///**
-// * A function that returns the sign of the given number, either "-1", "0" or "+1"
-// */
-//@JvmName("signi")
-//fun Expr<Int>.sign() = FunctionExpr<Int>(FunctionType.SIGN, this)
-//
-//
-///**
-// * A function that returns the sign of the given number, either "-1", "0" or "+1"
-// */
-//@JvmName("signl")
-//fun Expr<Long>.sign() = FunctionExpr<Int>(FunctionType.SIGN, this)
-//
-//
-///**
-// * A function that returns the sign of the given number, either "-1", "0" or "+1"
-// */
-//@JvmName("signf")
-//fun Expr<Float>.sign() = FunctionExpr<Int>(FunctionType.SIGN, this)
-//
-//
-///**
-// * A function that returns the sign of the given number, either "-1", "0" or "+1"
-// */
-//@JvmName("signd")
-//fun Expr<Double>.sign() = FunctionExpr<Int>(FunctionType.SIGN, this)
-//
-//
-///**
-// * A function that returns a substring of the given string, starting at the [start]-index and with a given [length].
-// * The first character is (start-)index "1". If the start-index is negative, the substring is found by counting from the right.
-// */
-//fun Expr<String>.substring(start: Expr<Int>, length: Expr<Int>) = FunctionExpr<String>(FunctionType.SUBSTRING, this, start, length)
-//
-//
-///**
-// * A function that returns a substring of the given string, starting at the [start]-index and with a given [length].
-// * The first character is (start-)index "1". If the start-index is negative, the substring is found by counting from the right.
-// */
-//fun Expr<String>.substring(start: Int, length: Int) =
-//	FunctionExpr<String>(FunctionType.SUBSTRING, this, IntLiteralExpr(start), IntLiteralExpr(length))
-//
-//
-//fun countAll() = FunctionExpr<Int>(FunctionType.AGG_COUNT_ALL)
-//
-//fun countAllDistinct() = FunctionExpr<Int>(FunctionType.AGG_COUNT_ALL_DISTINCT)
-//
-//fun <T> Expr<T>.count() = FunctionExpr<Int>(FunctionType.AGG_COUNT, this)
-//
-//fun <T> Expr<T>.countDistinct() = FunctionExpr<Int>(FunctionType.AGG_COUNT_DISTINCT, this)
-//
-//fun <T> Expr<T>.min() = FunctionExpr<T>(FunctionType.AGG_MIN, this)
-//
-//fun <T> Expr<T>.max() = FunctionExpr<T>(FunctionType.AGG_MAX, this)
-//
-//fun <T> Expr<T>.sum() = FunctionExpr<T>(FunctionType.AGG_SUM, this)
+
+object AggFn {
+
+	fun count() = FunctionExpr<Int>(FunctionType.AGG_COUNT_ALL)
+	fun count(e: Expr<*>) = FunctionExpr<Int>(FunctionType.AGG_COUNT, e)
+	@JvmName("e_count") fun Expr<*>.count() = FunctionExpr<Int>(FunctionType.AGG_COUNT, this)
+
+	fun countDistinct() = FunctionExpr<Int>(FunctionType.AGG_COUNT_ALL_DISTINCT)
+	fun countDistinct(e: Expr<*>) = FunctionExpr<Int>(FunctionType.AGG_COUNT_DISTINCT, e)
+	@JvmName("e_countDistinct") fun Expr<*>.countDistinct() = FunctionExpr<Int>(FunctionType.AGG_COUNT_DISTINCT, this)
+
+	fun <T> min(e: Expr<T>) = FunctionExpr<T>(FunctionType.AGG_MIN, e)
+	fun <T> aggMin(e: Expr<T>) = FunctionExpr<T>(FunctionType.AGG_MIN, e)
+
+	@JvmName("e_min") fun <T> Expr<T>.min() = FunctionExpr<T>(FunctionType.AGG_MIN, this)
+	@JvmName("e_aggMin") fun <T> Expr<T>.aggMin() = FunctionExpr<T>(FunctionType.AGG_MIN, this)
+
+	fun <T> max(e: Expr<T>) = FunctionExpr<T>(FunctionType.AGG_MAX, e)
+	fun <T> aggMax(e: Expr<T>) = FunctionExpr<T>(FunctionType.AGG_MAX, e)
+
+	@JvmName("e_max") fun <T> Expr<T>.max() = FunctionExpr<T>(FunctionType.AGG_MAX, this)
+	@JvmName("e_aggMax") fun <T> Expr<T>.aggMax() = FunctionExpr<T>(FunctionType.AGG_MAX, this)
+
+	@JvmName("agg_sum_s") fun sum(e: Expr<Short>) = FunctionExpr<Short>(FunctionType.AGG_SUM, e)
+	@JvmName("agg_sum_i") fun sum(e: Expr<Int>) = FunctionExpr<Int>(FunctionType.AGG_SUM, e)
+	@JvmName("agg_sum_l") fun sum(e: Expr<Long>) = FunctionExpr<Long>(FunctionType.AGG_SUM, e)
+	@JvmName("agg_sum_f") fun sum(e: Expr<Float>) = FunctionExpr<Float>(FunctionType.AGG_SUM, e)
+	@JvmName("agg_sum_d") fun sum(e: Expr<Double>) = FunctionExpr<Double>(FunctionType.AGG_SUM, e)
+
+	@JvmName("e_agg_sum_s") fun Expr<Short>.sum() = FunctionExpr<Short>(FunctionType.AGG_SUM, this)
+	@JvmName("e_agg_sum_i") fun Expr<Int>.sum() = FunctionExpr<Int>(FunctionType.AGG_SUM, this)
+	@JvmName("e_agg_sum_l") fun Expr<Long>.sum() = FunctionExpr<Long>(FunctionType.AGG_SUM, this)
+	@JvmName("e_agg_sum_f") fun Expr<Float>.sum() = FunctionExpr<Float>(FunctionType.AGG_SUM, this)
+	@JvmName("e_agg_sum_d") fun Expr<Double>.sum() = FunctionExpr<Double>(FunctionType.AGG_SUM, this)
+
+	@JvmName("agg_total_s") fun total(e: Expr<Short>) = FunctionExpr<Short>(FunctionType.AGG_TOTAL, e)
+	@JvmName("agg_total_i") fun total(e: Expr<Int>) = FunctionExpr<Int>(FunctionType.AGG_TOTAL, e)
+	@JvmName("agg_total_l") fun total(e: Expr<Long>) = FunctionExpr<Long>(FunctionType.AGG_TOTAL, e)
+	@JvmName("agg_total_f") fun total(e: Expr<Float>) = FunctionExpr<Float>(FunctionType.AGG_TOTAL, e)
+	@JvmName("agg_total_d") fun total(e: Expr<Double>) = FunctionExpr<Double>(FunctionType.AGG_TOTAL, e)
+
+	@JvmName("e_agg_total_s") fun Expr<Short>.total() = FunctionExpr<Short>(FunctionType.AGG_TOTAL, this)
+	@JvmName("e_agg_total_i") fun Expr<Int>.total() = FunctionExpr<Int>(FunctionType.AGG_TOTAL, this)
+	@JvmName("e_agg_total_l") fun Expr<Long>.total() = FunctionExpr<Long>(FunctionType.AGG_TOTAL, this)
+	@JvmName("e_agg_total_f") fun Expr<Float>.total() = FunctionExpr<Float>(FunctionType.AGG_TOTAL, this)
+	@JvmName("e_agg_total_d") fun Expr<Double>.total() = FunctionExpr<Double>(FunctionType.AGG_TOTAL, this)
+
+
+	fun concat(e: Expr<String>) = FunctionExpr<String>(FunctionType.AGG_CONCAT, e)
+	fun groupConcat(e: Expr<String>) = FunctionExpr<String>(FunctionType.AGG_CONCAT, e)
+
+	@JvmName("e_concat") fun Expr<String>.concat(separator: String) =
+		FunctionExpr<String>(FunctionType.AGG_CONCAT, this, StringLiteralExpr(separator))
+
+	@JvmName("e_groupConcat") fun Expr<String>.groupConcat(separator: String) =
+		FunctionExpr<String>(FunctionType.AGG_CONCAT, this, StringLiteralExpr(separator))
+
+}

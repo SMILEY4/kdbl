@@ -1,12 +1,11 @@
 package sqldsl.update
 
+import de.ruegnerlukas.sqldsl.builder.AggFn.sum
 import de.ruegnerlukas.sqldsl.builder.SQL
 import de.ruegnerlukas.sqldsl.builder.alias
 import de.ruegnerlukas.sqldsl.builder.assign
 import de.ruegnerlukas.sqldsl.builder.isEqual
-import de.ruegnerlukas.sqldsl.builder.sum
 import de.ruegnerlukas.sqldsl.dsl.expression.DerivedTable
-import de.ruegnerlukas.sqldsl.dsl.expression.OnConflict
 import de.ruegnerlukas.sqldsl.dsl.statements.set
 import org.junit.jupiter.api.Test
 import sqldsl.Logs
@@ -21,7 +20,6 @@ class UpdateTest {
 	fun update1() {
 		val query = SQL
 			.update(Movie)
-			.or(OnConflict.FAIL)
 			.set(
 				Movie.title.set("New Title"),
 				Movie.releaseCountry.set("Somewhere")
@@ -30,7 +28,7 @@ class UpdateTest {
 			.returning(Movie.title, Movie.releaseCountry)
 		assertQuery(
 			query,
-			"UPDATE OR FAIL movie SET movie.mov_title = 'New Title', movie.mov_rel_country = 'Somewhere' WHERE movie.mov_id = 42 RETURNING movie.mov_title, movie.mov_rel_country"
+			"UPDATE movie SET movie.mov_title = 'New Title', movie.mov_rel_country = 'Somewhere' WHERE movie.mov_id = 42 RETURNING movie.mov_title, movie.mov_rel_country"
 		)
 	}
 

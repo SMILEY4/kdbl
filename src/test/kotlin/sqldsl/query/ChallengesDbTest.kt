@@ -1,21 +1,21 @@
 package sqldsl.query
 
+import de.ruegnerlukas.sqldsl.builder.AggFn.count
+import de.ruegnerlukas.sqldsl.builder.AggFn.max
+import de.ruegnerlukas.sqldsl.builder.AggFn.min
+import de.ruegnerlukas.sqldsl.builder.AggFn.sum
 import de.ruegnerlukas.sqldsl.builder.SQL
 import de.ruegnerlukas.sqldsl.builder.addAll
 import de.ruegnerlukas.sqldsl.builder.alias
 import de.ruegnerlukas.sqldsl.builder.and
 import de.ruegnerlukas.sqldsl.builder.asc
 import de.ruegnerlukas.sqldsl.builder.assign
-import de.ruegnerlukas.sqldsl.builder.count
 import de.ruegnerlukas.sqldsl.builder.isEqual
 import de.ruegnerlukas.sqldsl.builder.isGreaterOrEqualThan
 import de.ruegnerlukas.sqldsl.builder.isGreaterThan
 import de.ruegnerlukas.sqldsl.builder.isLessThan
 import de.ruegnerlukas.sqldsl.builder.join
-import de.ruegnerlukas.sqldsl.builder.max
-import de.ruegnerlukas.sqldsl.builder.min
 import de.ruegnerlukas.sqldsl.builder.sub
-import de.ruegnerlukas.sqldsl.builder.sum
 import de.ruegnerlukas.sqldsl.dsl.expression.AliasExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.DerivedTable
 import org.junit.jupiter.api.Test

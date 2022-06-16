@@ -39,7 +39,6 @@ import de.ruegnerlukas.sqldsl.dsl.expression.Expr
 import de.ruegnerlukas.sqldsl.dsl.expression.FloatLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.ForeignKeyConstraint
 import de.ruegnerlukas.sqldsl.dsl.expression.FunctionExpr
-import de.ruegnerlukas.sqldsl.dsl.expression.FunctionType
 import de.ruegnerlukas.sqldsl.dsl.expression.GreaterEqualThanExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.GreaterThanExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.InListExpr
@@ -395,18 +394,15 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 	}
 
 	private fun functionExpr(e: FunctionExpr<*>): Token {
-		return when (e.type) {
-			FunctionType.AGG_COUNT_ALL -> StringToken("COUNT(*)")
-			FunctionType.AGG_COUNT_ALL_DISTINCT -> StringToken("COUNT( DISTINCT * )")
-			FunctionType.AGG_COUNT -> StringToken("COUNT(${expression(e.arguments[0])})")
-			FunctionType.AGG_COUNT_DISTINCT -> StringToken("COUNT( DISTINCT ${expression(e.arguments[0])} )")
-			else -> {
-				val fnName = dialect.functionName(e.type) ?: throw IllegalStateException("Function '${e.type}' not supported.")
-				if (e.arguments.isEmpty()) {
-					StringToken("$fnName()")
-				} else {
-					NamedGroupToken(fnName, CsvListToken(e.arguments.map { expression(it) }))
-				}
+		val fnOverwrite = dialect.function(e.type, e.arguments) { expression(it) }
+		if (fnOverwrite != null) {
+			return fnOverwrite
+		} else {
+			val fnName = dialect.functionName(e.type) ?: throw IllegalStateException("Function '${e.type}' not supported.")
+			if (e.arguments.isEmpty()) {
+				return StringToken("$fnName()")
+			} else {
+				return NamedGroupToken(fnName, CsvListToken(e.arguments.map { expression(it) }))
 			}
 		}
 	}

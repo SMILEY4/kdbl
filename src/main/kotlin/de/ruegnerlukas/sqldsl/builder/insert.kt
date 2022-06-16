@@ -41,6 +41,10 @@ object InsertBuilder {
 
 		fun columns(columns: List<Column<*>>) = PostFieldsBuilder(target, columns)
 
+		fun columns(vararg columns: Column<*>) = PostFieldsBuilder(target, columns.toList())
+
+		fun allColumns() = PostFieldsBuilder(target, listOf())
+
 	}
 
 	class PostFieldsBuilder(

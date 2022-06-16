@@ -1,13 +1,9 @@
 package sqldsl.insert
 
 import de.ruegnerlukas.sqldsl.builder.SQL
-import de.ruegnerlukas.sqldsl.codegen.SQLCodeGenerator
-import de.ruegnerlukas.sqldsl.dsl.expression.OnConflict
-import de.ruegnerlukas.sqldsl.dsl.statements.InsertBuilderEndStep
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
 import sqldsl.utils.assertQuery
-import kotlin.test.assertEquals
 
 
 class InsertTest {
@@ -17,7 +13,6 @@ class InsertTest {
 		val query = SQL
 			.insert()
 			.into(Actor)
-			.or(OnConflict.FAIL)
 			.columns(Actor.id, Actor.fName, Actor.lName, Actor.gender)
 			.items(
 				SQL.item()
@@ -33,7 +28,7 @@ class InsertTest {
 			)
 		assertQuery(
 			query,
-			"INSERT OR FAIL INTO actor (act_id, act_fname, act_lname, act_gender) VALUES (101, 'James', 'Steward', 'M'), (102, 'Deborah', 'Kerr', 'F')"
+			"INSERT INTO actor (act_id, act_fname, act_lname, act_gender) VALUES (101, 'James', 'Steward', 'M'), (102, 'Deborah', 'Kerr', 'F')"
 		)
 	}
 
@@ -43,7 +38,6 @@ class InsertTest {
 		val query = SQL
 			.insert()
 			.into(Actor)
-			.or(OnConflict.IGNORE)
 			.allColumns()
 			.query(
 				SQL
@@ -51,7 +45,7 @@ class InsertTest {
 					.from(Actor)
 			)
 			.returning(Actor.id, Actor.fName)
-		assertQuery(query, "INSERT OR IGNORE INTO actor VALUES (SELECT * FROM actor) RETURNING actor.act_id, actor.act_fname")
+		assertQuery(query, "INSERT INTO actor VALUES (SELECT * FROM actor) RETURNING actor.act_id, actor.act_fname")
 	}
 
 }

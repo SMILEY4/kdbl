@@ -32,9 +32,8 @@ enum class FunctionType {
 	ASIN,
 	ATAN,
 	ATAN2,
-	COST,
-	COT,
 	SIN,
+	COS,
 	TAN,
 
 	SINH,
@@ -48,13 +47,10 @@ enum class FunctionType {
 	LENGTH,
 	LOWER,
 	UPPER,
-	POSITION,
 	SUBSTRING,
 	TRIM,
 	RTRIM,
 	LTRIM,
-	TO_BASE64,
-	FROM_BASE64,
 	REPLACE,
 	TO_HEX,
 
@@ -64,7 +60,8 @@ enum class FunctionType {
 	AGG_COUNT_DISTINCT,
 	AGG_MIN,
 	AGG_MAX,
-	AGG_SUM,
+	AGG_SUM, // if contains null => result = null
+	AGG_TOTAL, // sum of all non-null-values
 	AGG_CONCAT,
 
 }

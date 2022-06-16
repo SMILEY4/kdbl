@@ -2,6 +2,7 @@ package de.ruegnerlukas.sqldsl.codegen.dialects
 
 import de.ruegnerlukas.sqldsl.codegen.tokens.Token
 import de.ruegnerlukas.sqldsl.dsl.expression.DataType
+import de.ruegnerlukas.sqldsl.dsl.expression.Expr
 import de.ruegnerlukas.sqldsl.dsl.expression.FunctionExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.FunctionType
 import de.ruegnerlukas.sqldsl.dsl.statements.Dir
@@ -75,5 +76,11 @@ interface SQLDialect {
 	 * @return the name of the given function (or null if not supported)
 	 */
 	fun functionName(f: FunctionType): String?
+
+
+	/**
+	 * Return non-null token to overwrite default function builder
+	 */
+	fun function(type: FunctionType, args: List<Expr<*>>, exprBuilder: (e: Expr<*>) -> Token): Token?
 
 }

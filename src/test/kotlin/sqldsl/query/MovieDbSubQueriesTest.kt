@@ -1,10 +1,12 @@
 package sqldsl.query
 
+import de.ruegnerlukas.sqldsl.builder.AggFn.count
+import de.ruegnerlukas.sqldsl.builder.AggFn.max
+import de.ruegnerlukas.sqldsl.builder.AggFn.min
 import de.ruegnerlukas.sqldsl.builder.SQL
 import de.ruegnerlukas.sqldsl.builder.alias
 import de.ruegnerlukas.sqldsl.builder.and
 import de.ruegnerlukas.sqldsl.builder.asc
-import de.ruegnerlukas.sqldsl.builder.countAll
 import de.ruegnerlukas.sqldsl.builder.isEqual
 import de.ruegnerlukas.sqldsl.builder.isGreaterThan
 import de.ruegnerlukas.sqldsl.builder.isIn
@@ -13,8 +15,6 @@ import de.ruegnerlukas.sqldsl.builder.isNotIn
 import de.ruegnerlukas.sqldsl.builder.isNotNull
 import de.ruegnerlukas.sqldsl.builder.isNull
 import de.ruegnerlukas.sqldsl.builder.join
-import de.ruegnerlukas.sqldsl.builder.max
-import de.ruegnerlukas.sqldsl.builder.min
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
 import sqldsl.Director
@@ -251,7 +251,7 @@ class MovieDbSubQueriesTest {
 			.from(Reviewer, Movie, Rating, r2)
 			.where(Rating.movieId.isEqual(Movie.id) and Reviewer.id.isEqual(Rating.reviewerId) and Rating.reviewerId.isEqual(r2.reviewerId))
 			.groupBy(Reviewer.name, Movie.title)
-			.having(countAll().isGreaterThan(1))
+			.having(count().isGreaterThan(1))
 		assertQuery(
 			query,
 			"SELECT reviewer.rev_name, movie.mov_title FROM reviewer, movie, rating, rating AS r2 WHERE ((rating.mov_id = movie.mov_id) AND (reviewer.rev_id = rating.rev_id)) AND (rating.rev_id = r2.rev_id) GROUP BY reviewer.rev_name, movie.mov_title HAVING COUNT(*) > 1"
