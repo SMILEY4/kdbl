@@ -5,8 +5,8 @@ import de.ruegnerlukas.sqldsl.builder.alias
 import de.ruegnerlukas.sqldsl.builder.assign
 import de.ruegnerlukas.sqldsl.builder.isEqual
 import de.ruegnerlukas.sqldsl.builder.sum
-import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
-import de.ruegnerlukas.sqldsl.dsl.expr.OnConflict
+import de.ruegnerlukas.sqldsl.dsl.expression.DerivedTable
+import de.ruegnerlukas.sqldsl.dsl.expression.OnConflict
 import de.ruegnerlukas.sqldsl.dsl.statements.set
 import org.junit.jupiter.api.Test
 import sqldsl.Logs

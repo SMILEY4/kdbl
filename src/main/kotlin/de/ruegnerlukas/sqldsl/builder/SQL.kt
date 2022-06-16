@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.builder
 
-import de.ruegnerlukas.sqldsl.dsl.expr.Table
+import de.ruegnerlukas.sqldsl.dsl.expression.Table
 import de.ruegnerlukas.sqldsl.dsl.statements.SelectElement
 
 object SQL {

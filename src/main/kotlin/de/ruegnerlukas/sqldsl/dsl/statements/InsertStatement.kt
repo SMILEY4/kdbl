@@ -1,25 +1,22 @@
 package de.ruegnerlukas.sqldsl.dsl.statements
 
-import de.ruegnerlukas.sqldsl.dsl.expr.BlobLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.BooleanLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.Column
-import de.ruegnerlukas.sqldsl.dsl.expr.DateLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.DoubleLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.FloatLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.IntLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.LiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.LongLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.OnConflict
-import de.ruegnerlukas.sqldsl.dsl.expr.Returning
-import de.ruegnerlukas.sqldsl.dsl.expr.ShortLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.StringLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.Table
-import de.ruegnerlukas.sqldsl.dsl.expr.TimeLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.BooleanLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Column
+import de.ruegnerlukas.sqldsl.dsl.expression.DateLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.DoubleLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.FloatLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.IntLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.LiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.LongLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Returning
+import de.ruegnerlukas.sqldsl.dsl.expression.ShortLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.StringLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Table
+import de.ruegnerlukas.sqldsl.dsl.expression.TimeLiteralExpr
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
 class InsertStatement(
-	val onConflict: OnConflict,
 	val target: Table,
 	val fields: List<Column<*>>,
 	val content: InsertContent,
@@ -51,7 +48,6 @@ class InsertItemImpl : InsertItem {
 	fun set(column: Column<String>, value: String) = this.apply { values[column] = StringLiteralExpr(value) }
 	fun set(column: Column<SqlDate>, value: SqlDate) = this.apply { values[column] = DateLiteralExpr(value) }
 	fun set(column: Column<SqlTime>, value: SqlTime) = this.apply { values[column] = TimeLiteralExpr(value) }
-	fun set(column: Column<ByteArray>, value: ByteArray) = this.apply { values[column] = BlobLiteralExpr(value) }
 
 	override fun getValue(column: Column<*>) = values[column]
 

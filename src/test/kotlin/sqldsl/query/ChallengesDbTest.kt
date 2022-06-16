@@ -16,8 +16,8 @@ import de.ruegnerlukas.sqldsl.builder.max
 import de.ruegnerlukas.sqldsl.builder.min
 import de.ruegnerlukas.sqldsl.builder.sub
 import de.ruegnerlukas.sqldsl.builder.sum
-import de.ruegnerlukas.sqldsl.dsl.expr.AliasExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
+import de.ruegnerlukas.sqldsl.dsl.expression.AliasExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.DerivedTable
 import org.junit.jupiter.api.Test
 import sqldsl.Employee
 import sqldsl.Exam

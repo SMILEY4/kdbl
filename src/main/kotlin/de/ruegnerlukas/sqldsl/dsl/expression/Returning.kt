@@ -1,4 +1,4 @@
-package de.ruegnerlukas.sqldsl.dsl.expr
+package de.ruegnerlukas.sqldsl.dsl.expression
 
 interface Returning
 

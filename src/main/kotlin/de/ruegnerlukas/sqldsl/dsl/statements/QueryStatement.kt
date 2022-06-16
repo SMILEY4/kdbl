@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.dsl.statements
 
-import de.ruegnerlukas.sqldsl.dsl.expr.SubQueryExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.SubQueryExpr
 
 class QueryStatement<T>(
 	val select: SelectStatement,

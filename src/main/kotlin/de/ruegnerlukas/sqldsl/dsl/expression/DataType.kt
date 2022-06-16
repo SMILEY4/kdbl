@@ -1,4 +1,4 @@
-package de.ruegnerlukas.sqldsl.dsl.expr
+package de.ruegnerlukas.sqldsl.dsl.expression
 
 enum class DataType {
 
@@ -51,10 +51,5 @@ enum class DataType {
 	 * Unix timestamp in milliseconds
 	 */
 	TIMESTAMP,
-
-	/**
-	 * raw binary data
-	 */
-	BLOB
 
 }

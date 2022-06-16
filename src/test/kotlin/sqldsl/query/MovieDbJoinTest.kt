@@ -5,7 +5,7 @@ import de.ruegnerlukas.sqldsl.builder.assign
 import de.ruegnerlukas.sqldsl.builder.isEqual
 import de.ruegnerlukas.sqldsl.builder.isNull
 import de.ruegnerlukas.sqldsl.builder.join
-import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
+import de.ruegnerlukas.sqldsl.dsl.expression.DerivedTable
 import org.junit.jupiter.api.Test
 import sqldsl.Actor
 import sqldsl.MovieCast

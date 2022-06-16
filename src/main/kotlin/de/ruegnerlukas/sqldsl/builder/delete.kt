@@ -1,11 +1,11 @@
 package de.ruegnerlukas.sqldsl.builder
 
-import de.ruegnerlukas.sqldsl.dsl.expr.Column
-import de.ruegnerlukas.sqldsl.dsl.expr.Expr
-import de.ruegnerlukas.sqldsl.dsl.expr.ReturnAllColumns
-import de.ruegnerlukas.sqldsl.dsl.expr.ReturnColumns
-import de.ruegnerlukas.sqldsl.dsl.expr.Returning
-import de.ruegnerlukas.sqldsl.dsl.expr.Table
+import de.ruegnerlukas.sqldsl.dsl.expression.Column
+import de.ruegnerlukas.sqldsl.dsl.expression.Expr
+import de.ruegnerlukas.sqldsl.dsl.expression.ReturnAllColumns
+import de.ruegnerlukas.sqldsl.dsl.expression.ReturnColumns
+import de.ruegnerlukas.sqldsl.dsl.expression.Returning
+import de.ruegnerlukas.sqldsl.dsl.expression.Table
 import de.ruegnerlukas.sqldsl.dsl.statements.DeleteBuilderEndStep
 import de.ruegnerlukas.sqldsl.dsl.statements.DeleteStatement
 

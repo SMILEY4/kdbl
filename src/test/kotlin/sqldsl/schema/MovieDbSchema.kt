@@ -1,8 +1,8 @@
 package sqldsl
 
-import de.ruegnerlukas.sqldsl.dsl.expr.AliasTable
-import de.ruegnerlukas.sqldsl.dsl.expr.Table
-import de.ruegnerlukas.sqldsl.dsl.expr.TableLike
+import de.ruegnerlukas.sqldsl.dsl.expression.AliasTable
+import de.ruegnerlukas.sqldsl.dsl.expression.Table
+import de.ruegnerlukas.sqldsl.dsl.expression.TableLike
 
 
 object Actor : ActorTableDef()

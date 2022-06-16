@@ -4,81 +4,78 @@ import de.ruegnerlukas.sqldsl.codegen.dialects.SQLDialect
 import de.ruegnerlukas.sqldsl.codegen.tokens.CsvListToken
 import de.ruegnerlukas.sqldsl.codegen.tokens.GroupToken
 import de.ruegnerlukas.sqldsl.codegen.tokens.ListToken
+import de.ruegnerlukas.sqldsl.codegen.tokens.NamedGroupToken
 import de.ruegnerlukas.sqldsl.codegen.tokens.NoOpToken
 import de.ruegnerlukas.sqldsl.codegen.tokens.StringToken
 import de.ruegnerlukas.sqldsl.codegen.tokens.Token
-import de.ruegnerlukas.sqldsl.dsl.expr.AddAllExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.AddExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.AliasExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.AliasTable
-import de.ruegnerlukas.sqldsl.dsl.expr.AndChainExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.AndExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.AutoIncrementProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.BetweenExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.BlobLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.BooleanLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.Column
-import de.ruegnerlukas.sqldsl.dsl.expr.ColumnProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.CountAllDistinctExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.CountAllExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.CountDistinctExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.CountExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.DateLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.DefaultBlobValueProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.DefaultBooleanValueProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.DefaultDoubleValueProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.DefaultFloatValueProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.DefaultIntValueProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.DefaultLongValueProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.DefaultShortValueProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.DefaultStringValueProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.DerivedColumn
-import de.ruegnerlukas.sqldsl.dsl.expr.DerivedTable
-import de.ruegnerlukas.sqldsl.dsl.expr.DivExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.DoubleLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.EqualExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.Expr
-import de.ruegnerlukas.sqldsl.dsl.expr.FloatLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.ForeignKeyConstraint
-import de.ruegnerlukas.sqldsl.dsl.expr.GreaterEqualThanExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.GreaterThanExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.InListExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.InQueryExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.IntLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.LessEqualThanExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.LessThanExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.LikeExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.ListLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.LiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.LongLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.MaxExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.MinExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.MulExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.NotEqualExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.NotExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.NotInListExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.NotInQueryExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.NotNullExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.NotNullProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.NullExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.OnConflict
-import de.ruegnerlukas.sqldsl.dsl.expr.OnDelete
-import de.ruegnerlukas.sqldsl.dsl.expr.OnUpdate
-import de.ruegnerlukas.sqldsl.dsl.expr.OrChainExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.OrExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.PrimaryKeyProperty
-import de.ruegnerlukas.sqldsl.dsl.expr.ReturnAllColumns
-import de.ruegnerlukas.sqldsl.dsl.expr.ReturnColumns
-import de.ruegnerlukas.sqldsl.dsl.expr.Returning
-import de.ruegnerlukas.sqldsl.dsl.expr.ShortLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.StringLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.SubExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.SubQueryExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.SumExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.Table
-import de.ruegnerlukas.sqldsl.dsl.expr.TableLike
-import de.ruegnerlukas.sqldsl.dsl.expr.TimeLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.UniqueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.AddAllExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.AddExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.AliasExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.AliasTable
+import de.ruegnerlukas.sqldsl.dsl.expression.AndChainExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.AndExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.AutoIncrementProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.BetweenExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.BooleanLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Column
+import de.ruegnerlukas.sqldsl.dsl.expression.ColumnProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.ConditionExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.DateLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.DefaultBooleanValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.DefaultDateValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.DefaultDoubleValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.DefaultFloatValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.DefaultIntValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.DefaultLongValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.DefaultShortValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.DefaultStringValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.DefaultTimeValueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.DerivedColumn
+import de.ruegnerlukas.sqldsl.dsl.expression.DerivedTable
+import de.ruegnerlukas.sqldsl.dsl.expression.DivExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.DoubleLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.EqualExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Expr
+import de.ruegnerlukas.sqldsl.dsl.expression.FloatLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.ForeignKeyConstraint
+import de.ruegnerlukas.sqldsl.dsl.expression.FunctionExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.FunctionType
+import de.ruegnerlukas.sqldsl.dsl.expression.GreaterEqualThanExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.GreaterThanExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.InListExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.InQueryExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.IntLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.LessEqualThanExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.LessThanExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.LikeExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.ListLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.LiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.LongLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.MulExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.NotEqualExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.NotExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.NotInListExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.NotInQueryExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.NotNullExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.NotNullProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.NullExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.OperationExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.OrChainExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.OrExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.PrimaryKeyProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.RefAction
+import de.ruegnerlukas.sqldsl.dsl.expression.ReturnAllColumns
+import de.ruegnerlukas.sqldsl.dsl.expression.ReturnColumns
+import de.ruegnerlukas.sqldsl.dsl.expression.Returning
+import de.ruegnerlukas.sqldsl.dsl.expression.ShortLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.StringLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.SubExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.SubQueryExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Table
+import de.ruegnerlukas.sqldsl.dsl.expression.TableLike
+import de.ruegnerlukas.sqldsl.dsl.expression.TimeLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.TypecastExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.UniqueProperty
 import de.ruegnerlukas.sqldsl.dsl.statements.CreateTableStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.DeleteStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.Dir
@@ -90,10 +87,8 @@ import de.ruegnerlukas.sqldsl.dsl.statements.InsertStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.ItemsInsertContent
 import de.ruegnerlukas.sqldsl.dsl.statements.JoinCondition
 import de.ruegnerlukas.sqldsl.dsl.statements.JoinElement
-import de.ruegnerlukas.sqldsl.dsl.statements.JoinOp
 import de.ruegnerlukas.sqldsl.dsl.statements.LimitStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.OnJoinCondition
-import de.ruegnerlukas.sqldsl.dsl.statements.OrderByElement
 import de.ruegnerlukas.sqldsl.dsl.statements.OrderByStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
 import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
@@ -110,7 +105,6 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 	fun update(update: UpdateStatement): Token {
 		return ListToken()
 			.add("UPDATE")
-			.addIf(update.onConflict != OnConflict.ABORT, mapOr(update.onConflict))
 			.add(tableIdentifier(update.target))
 			.add("SET")
 			.add(CsvListToken(update.set.map {
@@ -127,9 +121,7 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 
 	fun insert(insert: InsertStatement): Token {
 		return ListToken()
-			.add("INSERT")
-			.addIf(insert.onConflict != OnConflict.ABORT, mapOr(insert.onConflict))
-			.add("INTO")
+			.add("INSERT INTO")
 			.add(tableIdentifier(insert.target))
 			.add(
 				when (insert.fields.size) {
@@ -193,50 +185,61 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 	}
 
 	private fun column(column: Column<*>, table: Table): Token {
+		var strDataType = dialect.dataType(column.type)
+		val constraints = column
+			.getProperties()
+			.filter { it !is AutoIncrementProperty }
+			.map { columnProperty(it, table.getColumns()) }
+			.toMutableList()
+		val isAutoIncrement = column
+			.getProperties()
+			.filterIsInstance<AutoIncrementProperty>()
+			.isNotEmpty()
+		val indexPrimaryKey = column
+			.getProperties()
+			.indexOfFirst { it is PrimaryKeyProperty }
+		if (isAutoIncrement) {
+			dialect.autoIncrementColumn(
+				column.type,
+				indexPrimaryKey != -1,
+				{ v -> strDataType = v },
+				{ v -> constraints.add(if (indexPrimaryKey == -1) constraints.size else indexPrimaryKey, StringToken(v)) },
+				{ throw IllegalStateException("Auto increment not allowed for column ${table.tableName}#${column.columnName}") }
+			)
+		}
 		return ListToken()
 			.add(column.columnName)
-			.add(dialect.dataType(column.type))
-			.addAll(column.getProperties().map { columnProperty(it, column, table) })
+			.add(strDataType)
+			.addAll(constraints)
 	}
 
-	private fun columnProperty(e: ColumnProperty, column: Column<*>, table: Table): Token {
-		val numPrimaryKeys = table.getColumns().count { it.getProperties().filterIsInstance<PrimaryKeyProperty>().isNotEmpty() }
+	private fun columnProperty(e: ColumnProperty, columns: List<Column<*>>): Token {
+		val numPrimaryKeys = columns.count { it.getProperties().filterIsInstance<PrimaryKeyProperty>().isNotEmpty() }
 		return when (e) {
 			is PrimaryKeyProperty -> {
 				if (numPrimaryKeys == 1) {
-					val tokens = ListToken().add("PRIMARY KEY")
-					if (column.getProperties().filterIsInstance<AutoIncrementProperty>().isNotEmpty()) {
-						tokens.add("AUTOINCREMENT")
-					}
-					if (e.onConflict != OnConflict.ABORT) {
-						tokens.add(mapOnConflict(e.onConflict))
-					}
-					return tokens
+					StringToken("PRIMARY KEY")
 				} else {
 					NoOpToken()
 				}
 			}
-			is DefaultBooleanValueProperty -> ListToken().add("DEFAULT").add(if (e.value) "TRUE" else "FALSE")
+			is DefaultBooleanValueProperty -> ListToken().add("DEFAULT").add(dialect.booleanLiteral(e.value))
 			is DefaultShortValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
 			is DefaultIntValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
 			is DefaultLongValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
 			is DefaultFloatValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
 			is DefaultDoubleValueProperty -> ListToken().add("DEFAULT").add(e.value.toString())
-			is DefaultStringValueProperty -> ListToken().add("DEFAULT").add("'${e.value}'")
-			is DefaultBlobValueProperty -> ListToken().add("DEFAULT")
-				.add(StringToken(e.value.joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }))
-			is NotNullProperty -> ListToken()
-				.add("NOT NULL")
-				.addIf(e.onConflict != OnConflict.ABORT, mapOnConflict(e.onConflict))
-			is UniqueProperty -> ListToken()
-				.add("UNIQUE")
-				.addIf(e.onConflict != OnConflict.ABORT, mapOnConflict(e.onConflict))
+			is DefaultStringValueProperty -> ListToken().add("DEFAULT").add(dialect.stringLiteral(e.value))
+			is DefaultDateValueProperty -> ListToken().add("DEFAULT").add(dialect.dateLiteral(e.value))
+			is DefaultTimeValueProperty -> ListToken().add("DEFAULT").add(dialect.timeLiteral(e.value))
+			is NotNullProperty -> StringToken("NOT NULL")
+			is UniqueProperty -> StringToken("UNIQUE")
 			is ForeignKeyConstraint -> ListToken()
 				.add("REFERENCES")
 				.add(e.table.tableName)
 				.addIf(e.column != null, "(${e.column!!.columnName})")
-				.addIf(e.onDelete != OnDelete.NO_ACTION, mapOnDelete(e.onDelete))
-				.addIf(e.onUpdate != OnUpdate.NO_ACTION, mapOnUpdate(e.onUpdate))
+				.add(mapOnDelete(e.onDelete))
+				.add(mapOnUpdate(e.onUpdate))
 			is AutoIncrementProperty -> NoOpToken()
 			else -> throwUnknown(e)
 		}
@@ -245,52 +248,24 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 	private fun tableProperties(table: Table): Token {
 		val primaryKeys = table.getColumns().filter { it.getProperties().filterIsInstance<PrimaryKeyProperty>().isNotEmpty() }
 		if (primaryKeys.size > 1) {
-			val onConflict = primaryKeys[0].getProperties().filterIsInstance<PrimaryKeyProperty>().first().onConflict
 			return ListToken()
 				.add("PRIMARY KEY")
 				.add(GroupToken(CsvListToken(primaryKeys.map { StringToken(it.columnName) })))
-				.addIf(onConflict != OnConflict.ABORT, mapOnConflict(onConflict))
 		}
 		return NoOpToken()
 	}
 
-	private fun mapOr(onConflict: OnConflict): String {
-		return when (onConflict) {
-			OnConflict.ROLLBACK -> "OR ROLLBACK"
-			OnConflict.ABORT -> "OR ABORT"
-			OnConflict.FAIL -> "OR FAIL"
-			OnConflict.IGNORE -> "OR IGNORE"
-			OnConflict.REPLACE -> "OR REPLACE"
-		}
-	}
+	private fun mapOnDelete(action: RefAction) = ListToken().add("ON DELETE").add(mapReferentialAction(action))
 
-	private fun mapOnConflict(onConflict: OnConflict): String {
-		return when (onConflict) {
-			OnConflict.ROLLBACK -> "ON CONFLICT ROLLBACK"
-			OnConflict.ABORT -> "ON CONFLICT ABORT"
-			OnConflict.FAIL -> "ON CONFLICT FAIL"
-			OnConflict.IGNORE -> "ON CONFLICT IGNORE"
-			OnConflict.REPLACE -> "ON CONFLICT REPLACE"
-		}
-	}
+	private fun mapOnUpdate(action: RefAction) = ListToken().add("ON UPDATE").add(mapReferentialAction(action))
 
-	private fun mapOnDelete(onDelete: OnDelete): String {
-		return when (onDelete) {
-			OnDelete.NO_ACTION -> "ON DELETE NO ACTION"
-			OnDelete.RESTRICT -> "ON DELETE RESTRICT"
-			OnDelete.SET_NULL -> "ON DELETE SET NULL"
-			OnDelete.SET_DEFAULT -> "ON DELETE SET DEFAULT"
-			OnDelete.CASCADE -> "ON DELETE CASCADE"
-		}
-	}
-
-	private fun mapOnUpdate(onUpdate: OnUpdate): String {
-		return when (onUpdate) {
-			OnUpdate.NO_ACTION -> "ON UPDATE NO ACTION"
-			OnUpdate.RESTRICT -> "ON UPDATE RESTRICT"
-			OnUpdate.SET_NULL -> "ON UPDATE SET NULL"
-			OnUpdate.SET_DEFAULT -> "ON UPDATE SET DEFAULT"
-			OnUpdate.CASCADE -> "ON UPDATE CASCADE"
+	private fun mapReferentialAction(action: RefAction): String {
+		return when (action) {
+			RefAction.NO_ACTION -> "NO ACTION"
+			RefAction.RESTRICT -> "RESTRICT"
+			RefAction.SET_NULL -> "SET NULL"
+			RefAction.SET_DEFAULT -> "SET DEFAULT"
+			RefAction.CASCADE -> "CASCADE"
 		}
 	}
 
@@ -362,20 +337,7 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 	private fun orderBy(stmt: OrderByStatement): Token {
 		return ListToken()
 			.add("ORDER BY")
-			.add(CsvListToken(stmt.elements.map { orderByElement(it) }))
-	}
-
-	private fun limit(stmt: LimitStatement): Token {
-		return ListToken()
-			.add("LIMIT")
-			.add(stmt.limit.toString())
-			.addIf(stmt.offset != 0, "OFFSET ${stmt.offset}")
-	}
-
-	private fun orderByElement(e: OrderByElement): Token {
-		return ListToken()
-			.add(expression(e.expr))
-			.add(orderByDirection(e.dir))
+			.add(CsvListToken(stmt.elements.map { dialect.orderField(expression(it.expr), orderByDirection(it.dir), it.dir) }))
 	}
 
 	private fun orderByDirection(dir: Dir): String {
@@ -385,10 +347,18 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 		}
 	}
 
+	private fun limit(stmt: LimitStatement): Token {
+		return ListToken()
+			.add("LIMIT")
+			.add(stmt.limit.toString())
+			.addIf(stmt.offset != 0, "OFFSET ${stmt.offset}")
+	}
+
 	private fun join(e: JoinElement): Token {
+		val strOp = dialect.joinOperation(e.op) ?: throw java.lang.IllegalStateException("Join operation ${e.op} is not supported")
 		return ListToken()
 			.add(GroupToken(fromElement(e.left)))
-			.add(joinOp(e.op))
+			.add(strOp)
 			.add(GroupToken(fromElement(e.right)))
 			.add(joinCondition(e.condition))
 	}
@@ -405,15 +375,43 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 		}
 	}
 
-	private fun joinOp(op: JoinOp): String {
-		return when (op) {
-			JoinOp.LEFT -> "JOIN"
-			JoinOp.RIGHT -> "JOIN RIGHT"
-			JoinOp.INNER -> "JOIN INNER"
+	private fun expression(e: Expr<*>): Token {
+		return when (e) {
+			is FunctionExpr<*> -> functionExpr(e)
+			is ConditionExpr -> conditionExpression(e)
+			is OperationExpr<*> -> operationExpression(e)
+			is LiteralExpr<*> -> literal(e)
+			is SubQueryExpr<*> -> when (e) {
+				is QueryStatement<*> -> query(e)
+				is QueryBuilderEndStep<*> -> query(e.build<Any>())
+				else -> throwUnknown(e)
+			}
+			is AliasExpr<*> -> StringToken(e.alias)
+			is Column<*> -> columnIdentifier(e)
+			is DerivedColumn<*> -> StringToken("${e.table.tableName}.${e.columnName}")
+			is TypecastExpr<*, *> -> expression(e.expr)
+			else -> throwUnknown(e)
 		}
 	}
 
-	private fun expression(e: Expr<*>): Token {
+	private fun functionExpr(e: FunctionExpr<*>): Token {
+		return when (e.type) {
+			FunctionType.AGG_COUNT_ALL -> StringToken("COUNT(*)")
+			FunctionType.AGG_COUNT_ALL_DISTINCT -> StringToken("COUNT( DISTINCT * )")
+			FunctionType.AGG_COUNT -> StringToken("COUNT(${expression(e.arguments[0])})")
+			FunctionType.AGG_COUNT_DISTINCT -> StringToken("COUNT( DISTINCT ${expression(e.arguments[0])} )")
+			else -> {
+				val fnName = dialect.functionName(e.type) ?: throw IllegalStateException("Function '${e.type}' not supported.")
+				if (e.arguments.isEmpty()) {
+					StringToken("$fnName()")
+				} else {
+					NamedGroupToken(fnName, CsvListToken(e.arguments.map { expression(it) }))
+				}
+			}
+		}
+	}
+
+	private fun conditionExpression(e: ConditionExpr): Token {
 		return when (e) {
 			is EqualExpr<*> -> ListToken()
 				.add(GroupToken(expression(e.left)))
@@ -498,6 +496,12 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 				.add(GroupToken(expression(e.expr)))
 				.add("NOT IN")
 				.add(GroupToken(query(e.query)))
+			else -> throwUnknown(e)
+		}
+	}
+
+	private fun operationExpression(e: OperationExpr<*>): Token {
+		return when (e) {
 			is AddExpr<*> -> ListToken()
 				.add(GroupToken(expression(e.left)))
 				.add("+")
@@ -522,38 +526,21 @@ class SQLCodeGenerator(private val dialect: SQLDialect) {
 					add(GroupToken(expression(expr)))
 				}
 			}
-			is CountAllExpr -> StringToken("COUNT(*)")
-			is CountAllDistinctExpr -> StringToken("COUNT( DISTINCT * )")
-			is CountExpr -> ListToken().add("COUNT(${expression(e.value).buildString()})")
-			is CountDistinctExpr -> ListToken().add("COUNT(DISTINCT ${expression(e.value).buildString()})")
-			is MinExpr -> ListToken().add("MIN(${expression(e.value).buildString()})")
-			is MaxExpr -> ListToken().add("MAX(${expression(e.value).buildString()})")
-			is SumExpr -> ListToken().add("SUM(${expression(e.value).buildString()})")
-			is SubQueryExpr<*> -> when (e) {
-				is QueryStatement<*> -> query(e)
-				is QueryBuilderEndStep<*> -> query(e.build<Any>())
-				else -> throwUnknown(e)
-			}
-			is AliasExpr<*> -> StringToken(e.alias)
-			is LiteralExpr<*> -> literal(e)
-			is Column<*> -> columnIdentifier(e)
-			is DerivedColumn<*> -> StringToken("${e.table.tableName}.${e.columnName}")
 			else -> throwUnknown(e)
 		}
 	}
 
 	private fun literal(e: LiteralExpr<*>): Token {
 		return when (e) {
-			is BooleanLiteralExpr -> StringToken(if (e.value) "TRUE" else "FALSE")
+			is BooleanLiteralExpr -> StringToken(dialect.booleanLiteral(e.value))
 			is ShortLiteralExpr -> StringToken(e.value.toString())
 			is IntLiteralExpr -> StringToken(e.value.toString())
 			is LongLiteralExpr -> StringToken(e.value.toString())
 			is FloatLiteralExpr -> StringToken(e.value.toString())
 			is DoubleLiteralExpr -> StringToken(e.value.toString())
-			is StringLiteralExpr -> StringToken("'${e.value}'")
-			is DateLiteralExpr -> StringToken("'${e.value.strYear()}-${e.value.strMonth()}-${e.value.strDay()}'")
-			is TimeLiteralExpr -> StringToken("'${e.value.strHour()}:${e.value.strMinute()}:${e.value.strSecond()}'")
-			is BlobLiteralExpr -> StringToken(e.value.joinToString(separator = "") { eachByte -> "%02x".format(eachByte) })
+			is StringLiteralExpr -> StringToken(dialect.stringLiteral(e.value))
+			is DateLiteralExpr -> StringToken(dialect.dateLiteral(e.value))
+			is TimeLiteralExpr -> StringToken(dialect.timeLiteral(e.value))
 			is ListLiteralExpr<*> -> GroupToken(CsvListToken(e.values.map { expression(it) }))
 			else -> throwUnknown(e)
 		}

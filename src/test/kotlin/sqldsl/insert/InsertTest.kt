@@ -2,7 +2,7 @@ package sqldsl.insert
 
 import de.ruegnerlukas.sqldsl.builder.SQL
 import de.ruegnerlukas.sqldsl.codegen.SQLCodeGenerator
-import de.ruegnerlukas.sqldsl.dsl.expr.OnConflict
+import de.ruegnerlukas.sqldsl.dsl.expression.OnConflict
 import de.ruegnerlukas.sqldsl.dsl.statements.InsertBuilderEndStep
 import org.junit.jupiter.api.Test
 import sqldsl.Actor

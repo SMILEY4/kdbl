@@ -1,25 +1,22 @@
 package de.ruegnerlukas.sqldsl.dsl.statements
 
-import de.ruegnerlukas.sqldsl.dsl.expr.BlobLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.BooleanLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.Column
-import de.ruegnerlukas.sqldsl.dsl.expr.DateLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.DoubleLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.Expr
-import de.ruegnerlukas.sqldsl.dsl.expr.FloatLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.IntLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.LongLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.OnConflict
-import de.ruegnerlukas.sqldsl.dsl.expr.Returning
-import de.ruegnerlukas.sqldsl.dsl.expr.ShortLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.StringLiteralExpr
-import de.ruegnerlukas.sqldsl.dsl.expr.Table
-import de.ruegnerlukas.sqldsl.dsl.expr.TimeLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.BooleanLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Column
+import de.ruegnerlukas.sqldsl.dsl.expression.DateLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.DoubleLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Expr
+import de.ruegnerlukas.sqldsl.dsl.expression.FloatLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.IntLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.LongLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Returning
+import de.ruegnerlukas.sqldsl.dsl.expression.ShortLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.StringLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.Table
+import de.ruegnerlukas.sqldsl.dsl.expression.TimeLiteralExpr
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
 class UpdateStatement(
-	val onConflict: OnConflict,
 	val target: Table,
 	val set: List<UpdateElement<*>>,
 	val where: Expr<Boolean>? = null,
@@ -48,6 +45,5 @@ fun Column<Long>.set(value: Long) = UpdateElement(this, LongLiteralExpr(value))
 fun Column<Float>.set(value: Float) = UpdateElement(this, FloatLiteralExpr(value))
 fun Column<Double>.set(value: Double) = UpdateElement(this, DoubleLiteralExpr(value))
 fun Column<String>.set(value: String) = UpdateElement(this, StringLiteralExpr(value))
-fun Column<ByteArray>.set(value: ByteArray) = UpdateElement(this, BlobLiteralExpr(value))
 fun Column<SqlDate>.set(value: SqlDate) = UpdateElement(this, DateLiteralExpr(value))
 fun Column<SqlTime>.set(value: SqlTime) = UpdateElement(this, TimeLiteralExpr(value))

@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.dsl.statements
 
-import de.ruegnerlukas.sqldsl.dsl.expr.Table
+import de.ruegnerlukas.sqldsl.dsl.expression.Table
 
 class SelectStatement(val distinct: Boolean, val elements: List<SelectElement>)
 

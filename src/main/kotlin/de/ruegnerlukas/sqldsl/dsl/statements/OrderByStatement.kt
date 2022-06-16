@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.dsl.statements
 
-import de.ruegnerlukas.sqldsl.dsl.expr.Expr
+import de.ruegnerlukas.sqldsl.dsl.expression.Expr
 
 class OrderByStatement(val elements: List<OrderByElement>)
 

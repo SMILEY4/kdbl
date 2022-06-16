@@ -1,4 +1,4 @@
-package de.ruegnerlukas.sqldsl.dsl.expr
+package de.ruegnerlukas.sqldsl.dsl.expression
 
 import de.ruegnerlukas.sqldsl.dsl.statements.FromElement
 import de.ruegnerlukas.sqldsl.utils.SqlDate
@@ -27,7 +27,6 @@ abstract class Table(val tableName: String) : TableLike {
 	protected fun date(name: String) = Column<SqlDate>(this, name, DataType.DATE).apply { columns.add(this) }
 	protected fun time(name: String) = Column<SqlTime>(this, name, DataType.TIME).apply { columns.add(this) }
 	protected fun timestamp(name: String) = Column<Long>(this, name, DataType.TIMESTAMP).apply { columns.add(this) }
-	protected fun blob(name: String) = Column<ByteArray>(this, name, DataType.BLOB).apply { columns.add(this) }
 
 	abstract fun alias(alias: String): AliasTable
 }
@@ -59,7 +58,6 @@ class DerivedTable(val tableName: String) : TableLike {
 	fun columnDate(columnName: String): DerivedColumn<SqlDate> = DerivedColumn(this, columnName)
 	fun columnTime(columnName: String): DerivedColumn<SqlTime> = DerivedColumn(this, columnName)
 	fun columnTimestamp(columnName: String): DerivedColumn<Long> = DerivedColumn(this, columnName)
-	fun columnBlob(columnName: String): DerivedColumn<ByteArray> = DerivedColumn(this, columnName)
 
 	fun <T> column(columnExpr: Column<T>): DerivedColumn<T> = DerivedColumn(this, columnExpr.columnName)
 

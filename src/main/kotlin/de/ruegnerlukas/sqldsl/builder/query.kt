@@ -1,6 +1,6 @@
 package de.ruegnerlukas.sqldsl.builder
 
-import de.ruegnerlukas.sqldsl.dsl.expr.Expr
+import de.ruegnerlukas.sqldsl.dsl.expression.Expr
 import de.ruegnerlukas.sqldsl.dsl.statements.FromElement
 import de.ruegnerlukas.sqldsl.dsl.statements.FromStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.GroupByStatement
