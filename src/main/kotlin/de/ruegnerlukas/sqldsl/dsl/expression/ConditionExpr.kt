@@ -2,6 +2,9 @@ package de.ruegnerlukas.sqldsl.dsl.expression
 
 import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
 
+/**
+ * An expression with a "true" or "false"-result
+ */
 interface ConditionExpr : Expr<Boolean>
 
 class EqualExpr<T>(val left: Expr<T>, val right: Expr<T>) : ConditionExpr

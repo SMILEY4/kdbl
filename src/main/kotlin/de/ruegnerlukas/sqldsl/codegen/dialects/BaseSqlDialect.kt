@@ -7,6 +7,9 @@ import de.ruegnerlukas.sqldsl.dsl.expression.FunctionType
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
+/**
+ * Base dialect with common code-generation
+ */
 abstract class BaseSqlDialect : SQLDialect {
 
 	override fun booleanLiteral(value: Boolean) = when (value) {

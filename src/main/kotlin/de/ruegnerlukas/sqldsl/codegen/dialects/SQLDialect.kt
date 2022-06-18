@@ -10,6 +10,9 @@ import de.ruegnerlukas.sqldsl.dsl.statements.JoinOp
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
+/**
+ * Sql-dialect specific code-generation
+ */
 interface SQLDialect {
 
 	/**

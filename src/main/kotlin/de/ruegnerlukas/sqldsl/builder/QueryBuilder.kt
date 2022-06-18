@@ -15,22 +15,43 @@ import de.ruegnerlukas.sqldsl.dsl.statements.SelectElement
 import de.ruegnerlukas.sqldsl.dsl.statements.SelectStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.WhereStatement
 
+/**
+ * Builder(-chain) for a [QueryStatement]
+ */
 object QueryBuilder {
 
+	/**
+	 * Builder-step with start-options
+	 */
 	class StartQueryBuilder {
 
+		/**
+		 * Select the given columns
+		 */
 		fun select(e: List<SelectElement>) = PostSelectBuilder(
 			SelectStatement(false, e)
 		)
 
+
+		/**
+		 * Select the given (distinct) columns
+		 */
 		fun selectDistinct(e: List<SelectElement>) = PostSelectBuilder(
 			SelectStatement(true, e)
 		)
 
+
+		/**
+		 * Select all columns
+		 */
 		fun selectAll() = PostSelectBuilder(
 			SelectStatement(false, listOf(SelectAllElement()))
 		)
 
+
+		/**
+		 * Select all distinct columns
+		 */
 		fun selectDistinctAll() = PostSelectBuilder(
 			SelectStatement(true, listOf(SelectAllElement()))
 		)
@@ -38,36 +59,60 @@ object QueryBuilder {
 	}
 
 
+	/**
+	 * Builder-step with options for after the "select"-statement
+	 */
 	class PostSelectBuilder(
 		private val select: SelectStatement
 	) {
 
+		/**
+		 * specify the tables/sources to query from
+		 */
 		fun from(e: List<FromElement>) = PostFromBuilder(
 			select,
 			FromStatement(e)
 		)
 
+
+		/**
+		 * specify the tables/sources to query from
+		 */
 		fun from(vararg e: FromElement) = from(e.toList())
 
 	}
 
 
+	/**
+	 * Builder-step with options for after the "from"-statement
+	 */
 	class PostFromBuilder(
 		private val select: SelectStatement,
 		private val from: FromStatement
 	) : QueryBuilderEndStep<Any> {
 
+		/**
+		 * Build the [QueryStatement] with the current data
+		 */
 		override fun <T> build() = QueryStatement<T>(
 			select = select,
 			from = from
 		)
 
+
+		/**
+		 * Only include the rows that match the given condition
+		 */
 		fun where(condition: Expr<Boolean>) = PostWhereBuilder(
 			select,
 			from,
 			WhereStatement(condition)
 		)
 
+
+		/**
+		 * Group all rows by the given columns/expressions
+		 */
 		fun groupBy(e: List<Expr<*>>) = PostGroupByBuilder(
 			select,
 			from,
@@ -75,8 +120,16 @@ object QueryBuilder {
 			GroupByStatement(e)
 		)
 
+
+		/**
+		 * Group all rows by the given columns/expressions
+		 */
 		fun groupBy(vararg e: Expr<*>) = groupBy(e.toList())
 
+
+		/**
+		 * Order all rows by the given columns/expressions
+		 */
 		fun orderBy(e: List<OrderByElement>) = PostOrderByBuilder(
 			select,
 			from,
@@ -86,23 +139,37 @@ object QueryBuilder {
 			OrderByStatement(e)
 		)
 
+
+		/**
+		 * Order all rows by the given columns/expressions
+		 */
 		fun orderBy(vararg e: OrderByElement) = orderBy(e.toList())
 
 	}
 
 
+	/**
+	 * Builder-step with options for after the "where"-statement
+	 */
 	class PostWhereBuilder(
 		private val select: SelectStatement,
 		private val from: FromStatement,
 		private val where: WhereStatement
 	) : QueryBuilderEndStep<Any> {
 
+		/**
+		 * Build the [QueryStatement] with the current data
+		 */
 		override fun <T> build() = QueryStatement<T>(
 			select = select,
 			from = from,
 			where = where
 		)
 
+
+		/**
+		 * Group the selected rows by the given columns/expressions
+		 */
 		fun groupBy(e: List<Expr<*>>) = PostGroupByBuilder(
 			select,
 			from,
@@ -110,8 +177,16 @@ object QueryBuilder {
 			GroupByStatement(e)
 		)
 
+
+		/**
+		 * Group the selected rows by the given columns/expressions
+		 */
 		fun groupBy(vararg e: Expr<*>) = groupBy(e.toList())
 
+
+		/**
+		 * Order the selected rows by the given columns/expressions
+		 */
 		fun orderBy(e: List<OrderByElement>) = PostOrderByBuilder(
 			select,
 			from,
@@ -121,11 +196,18 @@ object QueryBuilder {
 			OrderByStatement(e)
 		)
 
+
+		/**
+		 * Order the selected rows by the given columns/expressions
+		 */
 		fun orderBy(vararg e: OrderByElement) = orderBy(e.toList())
 
 	}
 
 
+	/**
+	 * Builder-step with options for after the "group-by"-statement
+	 */
 	class PostGroupByBuilder(
 		private val select: SelectStatement,
 		private val from: FromStatement,
@@ -133,6 +215,9 @@ object QueryBuilder {
 		private val groupBy: GroupByStatement
 	) : QueryBuilderEndStep<Any> {
 
+		/**
+		 * Build the [QueryStatement] with the current data
+		 */
 		override fun <T> build() = QueryStatement<T>(
 			select = select,
 			from = from,
@@ -140,6 +225,10 @@ object QueryBuilder {
 			groupBy = groupBy
 		)
 
+
+		/**
+		 * Only return the rows/groups that match the given condition
+		 */
 		fun having(condition: Expr<Boolean>) = PostHavingBuilder(
 			select,
 			from,
@@ -148,6 +237,10 @@ object QueryBuilder {
 			HavingStatement(condition)
 		)
 
+
+		/**
+		 * Order the rows/groups by the given columns/expressions
+		 */
 		fun orderBy(e: List<OrderByElement>) = PostOrderByBuilder(
 			select,
 			from,
@@ -157,11 +250,18 @@ object QueryBuilder {
 			OrderByStatement(e)
 		)
 
+
+		/**
+		 * Order the rows/groups by the given columns/expressions
+		 */
 		fun orderBy(vararg e: OrderByElement) = orderBy(e.toList())
 
 	}
 
 
+	/**
+	 * Builder-step with options for after the "having"-statement
+	 */
 	class PostHavingBuilder(
 		private val select: SelectStatement,
 		private val from: FromStatement,
@@ -170,6 +270,9 @@ object QueryBuilder {
 		private val having: HavingStatement
 	) : QueryBuilderEndStep<Any> {
 
+		/**
+		 * Build the [QueryStatement] with the current data
+		 */
 		override fun <T> build() = QueryStatement<T>(
 			select = select,
 			from = from,
@@ -178,6 +281,10 @@ object QueryBuilder {
 			having = having
 		)
 
+
+		/**
+		 * Order the rows/groups by the given columns/expressions
+		 */
 		fun orderBy(e: List<OrderByElement>) = PostOrderByBuilder(
 			select,
 			from,
@@ -187,11 +294,18 @@ object QueryBuilder {
 			OrderByStatement(e)
 		)
 
+
+		/**
+		 * Order the rows/groups by the given columns/expressions
+		 */
 		fun orderBy(vararg e: OrderByElement) = orderBy(e.toList())
 
 	}
 
 
+	/**
+	 * Builder-step with options for after the "order-by"-statement
+	 */
 	class PostOrderByBuilder(
 		private val select: SelectStatement,
 		private val from: FromStatement,
@@ -201,6 +315,9 @@ object QueryBuilder {
 		private val orderBy: OrderByStatement
 	) : QueryBuilderEndStep<Any> {
 
+		/**
+		 * Build the [QueryStatement] with the current data
+		 */
 		override fun <T> build() = QueryStatement<T>(
 			select = select,
 			from = from,
@@ -210,6 +327,10 @@ object QueryBuilder {
 			orderBy = orderBy
 		)
 
+
+		/**
+		 * Limit and/or offset the resulting rows
+		 */
 		fun limit(limit: Int, offset: Int) = PostLimitBuilder(
 			select,
 			from,
@@ -220,11 +341,24 @@ object QueryBuilder {
 			LimitStatement(limit, offset)
 		)
 
+
+		/**
+		 * Limit and/or offset the resulting rows
+		 */
 		fun limit(limit: Int) = limit(limit, 0)
+
+
+		/**
+		 * Limit and/or offset the resulting rows according to the given page and size
+		 */
+		fun paged(pageIndex: Int, pageSize: Int) = limit(pageSize, pageIndex * pageSize)
 
 	}
 
 
+	/**
+	 * Builder-step with options for after the "limit"-statement
+	 */
 	class PostLimitBuilder(
 		private val select: SelectStatement,
 		private val from: FromStatement,
@@ -235,6 +369,9 @@ object QueryBuilder {
 		private val limit: LimitStatement
 	) : QueryBuilderEndStep<Any> {
 
+		/**
+		 * Build the [QueryStatement] with the current data
+		 */
 		override fun <T> build() = QueryStatement<T>(
 			select = select,
 			from = from,

@@ -33,6 +33,7 @@ class TestRepository(private val db: Database) {
 						.set(Actor.gender, gender),
 				)
 		)
+		.withReturning()
 		.execute()
 
 	fun getMoviesByYear(year: Int) = db
@@ -54,6 +55,7 @@ class TestRepository(private val db: Database) {
 					.from(Movie)
 					.where(Movie.id.isEqual(id1))
 			)
+			.withUpdateCount()
 			.execute()
 		transaction
 			.startDelete(
@@ -62,6 +64,7 @@ class TestRepository(private val db: Database) {
 					.from(Movie)
 					.where(Movie.id.isEqual(id2))
 			)
+			.withUpdateCount()
 			.execute()
 	}
 
@@ -89,6 +92,7 @@ class CachedTestRepository(private val db: Database) {
 						.set(Actor.gender, placeholder("gender")),
 				)
 		}
+		.withReturning()
 		.parameter("fName", fName)
 		.parameter("lName", lName)
 		.parameter("gender", gender)

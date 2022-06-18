@@ -4,13 +4,24 @@ import de.ruegnerlukas.sqldsl.dsl.statements.FromElement
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
-interface TableLike : FromElement
+/**
+ * A table or sth directly referencing a single table (i.e. a table-alias)
+ */
+sealed interface TableLike : FromElement
 
+
+/**
+ * A table with an alias
+ */
 interface AliasTable : TableLike {
 	val table: TableLike
 	val alias: String
 }
 
+
+/**
+ * A table
+ */
 abstract class Table(val tableName: String) : TableLike {
 
 	private val columns = mutableListOf<Column<*>>()
@@ -39,11 +50,19 @@ class DerivedTable(val tableName: String) : TableLike {
 
 	private var content: FromElement? = null
 
+
+	/**
+	 * Assign the given content to this table
+	 */
 	fun assign(content: FromElement): DerivedTable {
 		this.content = content
 		return this
 	}
 
+
+	/**
+	 * @return the assigned content
+	 */
 	fun getContent(): FromElement {
 		return this.content ?: throw IllegalStateException("No content assigned to derived table '$tableName'")
 	}

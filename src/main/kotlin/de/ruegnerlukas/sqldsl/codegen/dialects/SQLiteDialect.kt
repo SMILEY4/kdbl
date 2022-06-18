@@ -7,6 +7,9 @@ import de.ruegnerlukas.sqldsl.dsl.expression.FunctionType
 import de.ruegnerlukas.sqldsl.dsl.statements.Dir
 import de.ruegnerlukas.sqldsl.dsl.statements.JoinOp
 
+/**
+ * Code generation for SQLite
+ */
 class SQLiteDialect : BaseSqlDialect() {
 
 	override fun dataType(type: DataType): String {

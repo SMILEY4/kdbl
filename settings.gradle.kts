@@ -1,3 +1,2 @@
-
-rootProject.name = "sql-dsl"
+rootProject.name = "kdbl"
 

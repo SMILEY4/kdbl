@@ -4,25 +4,55 @@ import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
 
+/**
+ * A specific column of a [DerivedTable]
+ */
 class DerivedColumn<T>(val table: DerivedTable, val columnName: String) : Expr<T>
 
+
+/**
+ * A specific column of a specific table of a given type
+ */
 class Column<T>(val table: TableLike, val columnName: String, val type: DataType) : Expr<T> {
 
 	internal val properties: MutableList<ColumnProperty> = mutableListOf()
 
 	fun getProperties() = properties.toList()
 
+
+	/**
+	 * make this column a primary-key
+	 */
 	fun primaryKey() = this.also { properties.add(PrimaryKeyProperty()) }
 
+
+	/**
+	 * Make this colum auto-incrementing. This is only supported for integer-columns
+	 */
 	fun autoIncrement() = this.also { properties.add(AutoIncrementProperty()) }
 
+	/**
+	 * Don't allow "null"-values in this column
+	 */
 	fun notNull() = this.also { properties.add(NotNullProperty()) }
 
+
+	/**
+	 * Don't allow duplicate values in this column
+	 */
 	fun unique() = this.also { properties.add(UniqueProperty()) }
 
+
+	/**
+	 * make this column a foreign-key
+	 */
 	fun foreignKey(table: Table, onUpdate: RefAction = RefAction.NO_ACTION, onDelete: RefAction = RefAction.NO_ACTION) =
 		this.also { properties.add(ForeignKeyConstraint(table, null, onUpdate, onDelete)) }
 
+
+	/**
+	 * make this column a foreign-key
+	 */
 	fun foreignKey(column: Column<*>, onUpdate: RefAction = RefAction.NO_ACTION, onDelete: RefAction = RefAction.NO_ACTION) =
 		this.also { properties.add(ForeignKeyConstraint(column.table as Table, column, onUpdate, onDelete)) }
 
@@ -30,7 +60,7 @@ class Column<T>(val table: TableLike, val columnName: String, val type: DataType
 
 interface ColumnProperty
 
-class PrimaryKeyProperty() : ColumnProperty
+class PrimaryKeyProperty : ColumnProperty
 
 interface DefaultValueProperty<T> : ColumnProperty
 class DefaultBooleanValueProperty(val value: Boolean) : DefaultValueProperty<Boolean>

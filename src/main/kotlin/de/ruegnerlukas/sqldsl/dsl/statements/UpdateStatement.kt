@@ -16,22 +16,35 @@ import de.ruegnerlukas.sqldsl.dsl.expression.TimeLiteralExpr
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
-interface SqlUpdateStatement
+/**
+ * Either the [UpdateStatement] directly or a builder that can produce the statement. For some situations, both can be used interchangeably
+ */
+sealed interface SqlUpdateStatement
 
+
+/**
+ * An "UPDATE-Statement
+ */
 class UpdateStatement(
 	val target: Table,
 	val set: List<UpdateElement<*>>,
 	val where: Expr<Boolean>? = null,
 	val from: FromStatement? = null,
 	val returning: Returning? = null,
-): SqlUpdateStatement
+) : SqlUpdateStatement
 
 
-interface UpdateBuilderEndStep: SqlUpdateStatement {
+/**
+ * A builder that can directly build the [UpdateStatement]
+ */
+interface UpdateBuilderEndStep : SqlUpdateStatement {
 	fun build(): UpdateStatement
 }
 
 
+/**
+ * A single modification, i.e. a column with its new value
+ */
 class UpdateElement<T>(
 	val column: Column<T>,
 	val value: Expr<T>
@@ -39,7 +52,6 @@ class UpdateElement<T>(
 
 
 fun <T> Column<T>.set(expr: Expr<T>) = UpdateElement(this, expr)
-
 fun Column<Boolean>.set(value: Boolean) = UpdateElement(this, BooleanLiteralExpr(value))
 fun Column<Short>.set(value: Short) = UpdateElement(this, ShortLiteralExpr(value))
 fun Column<Int>.set(value: Int) = UpdateElement(this, IntLiteralExpr(value))

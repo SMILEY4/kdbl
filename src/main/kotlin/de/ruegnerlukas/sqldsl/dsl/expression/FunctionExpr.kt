@@ -1,13 +1,8 @@
 package de.ruegnerlukas.sqldsl.dsl.expression
 
-/*
-POSTGRES
-https://www.postgresql.org/docs/12/functions-math.html
-https://www.postgresql.org/docs/12/functions-string.html
-https://www.postgresql.org/docs/12/functions-binarystring.html
-https://www.postgresql.org/docs/12/functions-aggregate.html
+/**
+ * The possible functions
  */
-
 enum class FunctionType {
 	ABS,
 	CEIL,
@@ -66,6 +61,10 @@ enum class FunctionType {
 
 }
 
+
+/**
+ * A build-in function as an expression
+ */
 class FunctionExpr<T>(val type: FunctionType, val arguments: List<Expr<*>>) : Expr<T> {
 
 	constructor(fnType: FunctionType, vararg fnArguments: Expr<*>) : this(fnType, fnArguments.toList())

@@ -1,5 +1,8 @@
 package de.ruegnerlukas.sqldsl.dsl.expression
 
+/**
+ * Possible data-types of e.g. columns
+ */
 enum class DataType {
 
 	/**

@@ -16,8 +16,15 @@ import de.ruegnerlukas.sqldsl.dsl.expression.TimeLiteralExpr
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
-interface SqlInsertStatement
+/**
+ * Either the [InsertStatement] directly or a builder that can produce the statement. For some situations, both can be used interchangeably
+ */
+sealed interface SqlInsertStatement
 
+
+/**
+ * An "INSERT-Statement
+ */
 class InsertStatement(
 	val target: Table,
 	val fields: List<Column<*>>,
@@ -25,23 +32,31 @@ class InsertStatement(
 	val returning: Returning?
 ) : SqlInsertStatement
 
+
+/**
+ * A builder that can directly build the [InsertStatement]
+ */
 interface InsertBuilderEndStep : SqlInsertStatement {
 	fun build(): InsertStatement
 }
 
 
+/**
+ * The content to insert into a table. Either specified items or (the result of) a sub-query
+ */
 interface InsertContent
 
 
+/**
+ * The items to insert into a table
+ */
 class ItemsInsertContent(val items: List<InsertItem>) : InsertContent
 
 
-interface InsertItem {
-	fun getValue(column: Column<*>): LiteralExpr<*>?
-}
-
-
-class InsertItemImpl : InsertItem {
+/**
+ * An individual item to insert into a table
+ */
+class InsertItem {
 
 	private val values: MutableMap<Column<*>, LiteralExpr<*>> = mutableMapOf()
 
@@ -65,7 +80,7 @@ class InsertItemImpl : InsertItem {
 	@JvmName("set_date") fun set(column: Column<SqlDate>, value: LiteralExpr<SqlDate>) = this.apply { values[column] = value }
 	@JvmName("set_time") fun set(column: Column<SqlTime>, value: LiteralExpr<SqlTime>) = this.apply { values[column] = value }
 
-	override fun getValue(column: Column<*>) = values[column]
+	fun getValue(column: Column<*>) = values[column]
 
 }
 

@@ -3,6 +3,9 @@ package de.ruegnerlukas.sqldsl.dsl.expression
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
+/**
+ * A single constant value as an expression
+ */
 interface LiteralExpr<T> : Expr<T>
 
 class BooleanLiteralExpr(val value: Boolean) : LiteralExpr<Boolean>

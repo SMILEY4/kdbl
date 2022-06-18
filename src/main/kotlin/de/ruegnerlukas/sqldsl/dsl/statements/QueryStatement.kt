@@ -2,8 +2,15 @@ package de.ruegnerlukas.sqldsl.dsl.statements
 
 import de.ruegnerlukas.sqldsl.dsl.expression.SubQueryExpr
 
-interface SqlQueryStatement<T>
+/**
+ * Either the [QueryStatement] directly or a builder that can produce the statement. For some situations, both can be used interchangeably
+ */
+sealed interface SqlQueryStatement<T>
 
+
+/**
+ * A query- / "SELECT-Statement
+ */
 class QueryStatement<T>(
 	val select: SelectStatement,
 	val from: FromStatement,
@@ -12,8 +19,12 @@ class QueryStatement<T>(
 	val having: HavingStatement? = null,
 	val orderBy: OrderByStatement? = null,
 	val limit: LimitStatement? = null,
-): SqlQueryStatement<T>, SubQueryExpr<T>, FromElement, InsertContent
+) : SqlQueryStatement<T>, SubQueryExpr<T>, FromElement, InsertContent
 
+
+/**
+ * A builder that can directly build the [QueryStatement]
+ */
 interface QueryBuilderEndStep<T> : SqlQueryStatement<T>, SubQueryExpr<T>, FromElement, InsertContent {
 	fun <T> build(): QueryStatement<T>
 }

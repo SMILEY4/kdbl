@@ -1,5 +1,8 @@
 package de.ruegnerlukas.sqldsl.dsl.expression
 
+/**
+ * An operation like plus or minus as an expression
+ */
 interface OperationExpr<T> : Expr<T>
 
 class AddExpr<T>(val left: Expr<T>, val right: Expr<T>) : OperationExpr<T>

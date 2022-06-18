@@ -10,6 +10,9 @@ import de.ruegnerlukas.sqldsl.dsl.expression.FunctionType
 import de.ruegnerlukas.sqldsl.dsl.statements.Dir
 import de.ruegnerlukas.sqldsl.dsl.statements.JoinOp
 
+/**
+ * Code generation for MySql
+ */
 class MySqlDialect : BaseSqlDialect() {
 
 	override fun dataType(type: DataType): String {

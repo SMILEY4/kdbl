@@ -2,10 +2,16 @@ package de.ruegnerlukas.sqldsl.db.actions
 
 import de.ruegnerlukas.sqldsl.db.Database
 
-class DbQuery(db: Database, sql: String, placeholders: List<String>) : DbAction<DbQueryResult>(db, sql, placeholders) {
+/**
+ * A single "SELECT"-operations
+ * @param db the database to use
+ * @param sql the sql-string with possible placeholders
+ * @param placeholders the names of the placeholders in the correct order
+ */
+class DbQuery(db: Database, sql: String, placeholders: List<String>) : DbAction<DbReturningResult>(db, sql, placeholders) {
 
-	override fun execute(): DbQueryResult {
-		return DbQueryResult(db.executeQuery(sql, getParameters()))
+	override fun execute(): DbReturningResult {
+		return DbReturningResult(db.executeQuery(sql, getParameterValues()))
 	}
 
 }
