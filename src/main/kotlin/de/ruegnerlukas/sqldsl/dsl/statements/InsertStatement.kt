@@ -16,12 +16,18 @@ import de.ruegnerlukas.sqldsl.dsl.expression.TimeLiteralExpr
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
+interface SqlInsertStatement
+
 class InsertStatement(
 	val target: Table,
 	val fields: List<Column<*>>,
 	val content: InsertContent,
 	val returning: Returning?
-)
+) : SqlInsertStatement
+
+interface InsertBuilderEndStep : SqlInsertStatement {
+	fun build(): InsertStatement
+}
 
 
 interface InsertContent
@@ -49,11 +55,17 @@ class InsertItemImpl : InsertItem {
 	fun set(column: Column<SqlDate>, value: SqlDate) = this.apply { values[column] = DateLiteralExpr(value) }
 	fun set(column: Column<SqlTime>, value: SqlTime) = this.apply { values[column] = TimeLiteralExpr(value) }
 
+	@JvmName("set_boolean") fun set(column: Column<Boolean>, value: LiteralExpr<Boolean>) = this.apply { values[column] = value }
+	@JvmName("set_short") fun set(column: Column<Short>, value: LiteralExpr<Short>) = this.apply { values[column] = value }
+	@JvmName("set_int") fun set(column: Column<Int>, value: LiteralExpr<Int>) = this.apply { values[column] = value }
+	@JvmName("set_long") fun set(column: Column<Long>, value: LiteralExpr<Long>) = this.apply { values[column] = value }
+	@JvmName("set_float") fun set(column: Column<Float>, value: LiteralExpr<Float>) = this.apply { values[column] = value }
+	@JvmName("set_double") fun set(column: Column<Double>, value: LiteralExpr<Double>) = this.apply { values[column] = value }
+	@JvmName("set_string") fun set(column: Column<String>, value: LiteralExpr<String>) = this.apply { values[column] = value }
+	@JvmName("set_date") fun set(column: Column<SqlDate>, value: LiteralExpr<SqlDate>) = this.apply { values[column] = value }
+	@JvmName("set_time") fun set(column: Column<SqlTime>, value: LiteralExpr<SqlTime>) = this.apply { values[column] = value }
+
 	override fun getValue(column: Column<*>) = values[column]
 
 }
 
-
-interface InsertBuilderEndStep {
-	fun build(): InsertStatement
-}

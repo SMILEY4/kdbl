@@ -7,4 +7,5 @@ class GroupToken(private val token: Token) : Token() {
 			else -> "(${token.buildString()})"
 		}
 	}
+	override fun buildExtended(placeholders: MutableList<String>) = buildString()
 }

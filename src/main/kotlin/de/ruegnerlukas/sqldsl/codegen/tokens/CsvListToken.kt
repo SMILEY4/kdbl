@@ -45,4 +45,7 @@ class CsvListToken(tokens: List<Token> = listOf()) : Token() {
 			.map { it.buildString() }
 			.joinToString(", ")
 	}
+
+	override fun buildExtended(placeholders: MutableList<String>) = buildString()
+
 }

@@ -15,3 +15,5 @@ class StringLiteralExpr(val value: String) : LiteralExpr<String>
 class DateLiteralExpr(val value: SqlDate) : LiteralExpr<SqlDate>
 class TimeLiteralExpr(val value: SqlTime) : LiteralExpr<SqlTime>
 class ListLiteralExpr<T>(val values: List<Expr<T>>) : LiteralExpr<T>
+class PlaceholderLiteralExpr<T>(val name: String) : LiteralExpr<T>
+

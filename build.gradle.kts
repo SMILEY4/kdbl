@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+    implementation("com.zaxxer:HikariCP:5.0.1")
     testImplementation(kotlin("test"))
 }
 

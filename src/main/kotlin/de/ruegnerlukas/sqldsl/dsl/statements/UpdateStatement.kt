@@ -16,16 +16,18 @@ import de.ruegnerlukas.sqldsl.dsl.expression.TimeLiteralExpr
 import de.ruegnerlukas.sqldsl.utils.SqlDate
 import de.ruegnerlukas.sqldsl.utils.SqlTime
 
+interface SqlUpdateStatement
+
 class UpdateStatement(
 	val target: Table,
 	val set: List<UpdateElement<*>>,
 	val where: Expr<Boolean>? = null,
 	val from: FromStatement? = null,
 	val returning: Returning? = null,
-)
+): SqlUpdateStatement
 
 
-interface UpdateBuilderEndStep {
+interface UpdateBuilderEndStep: SqlUpdateStatement {
 	fun build(): UpdateStatement
 }
 
