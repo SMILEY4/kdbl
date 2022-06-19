@@ -37,7 +37,7 @@ class MovieDbJoinTest {
 			)
 			.where(derived.column(Rating.stars).isNull())
 		assertQuery(
-			query, "SELECT result.rev_name FROM (reviewer JOIN rating USING (result.rev_id)) AS result WHERE result.rev_stars IS NULL"
+			query, "SELECT result.rev_name FROM (reviewer INNER JOIN rating USING (result.rev_id)) AS result WHERE result.rev_stars IS NULL"
 		)
 	}
 
@@ -55,7 +55,7 @@ class MovieDbJoinTest {
 			.where(derived.column(Actor.gender).isEqual("F"))
 		assertQuery(
 			query,
-			"SELECT * FROM (actor JOIN movie_cast ON (actor.act_id = movie_cast.act_id)) AS result WHERE result.act_gender = 'F'"
+			"SELECT * FROM (actor INNER JOIN movie_cast ON (actor.act_id = movie_cast.act_id)) AS result WHERE result.act_gender = 'F'"
 		)
 	}
 

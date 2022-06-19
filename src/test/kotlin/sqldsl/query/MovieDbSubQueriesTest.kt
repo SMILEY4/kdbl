@@ -333,7 +333,7 @@ class MovieDbSubQueriesTest {
 			.where(Director.fName.isEqual("James") and Director.lName.isEqual("Cameron"))
 		assertQuery(
 			query,
-			"SELECT movie.mov_title FROM (movie JOIN movie_direction ON (movie.mov_id = movie_direction.mov_id)) JOIN director ON (movie_direction.dir_id = director.dir_id) WHERE (director.dir_fname = 'James') AND (director.dir_lname = 'Cameron')"
+			"SELECT movie.mov_title FROM (movie INNER JOIN movie_direction ON (movie.mov_id = movie_direction.mov_id)) INNER JOIN director ON (movie_direction.dir_id = director.dir_id) WHERE (director.dir_fname = 'James') AND (director.dir_lname = 'Cameron')"
 		)
 	}
 

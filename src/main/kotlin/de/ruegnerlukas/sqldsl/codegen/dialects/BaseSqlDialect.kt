@@ -1,5 +1,7 @@
 package de.ruegnerlukas.sqldsl.codegen.dialects
 
+import de.ruegnerlukas.sqldsl.codegen.tokens.ListToken
+import de.ruegnerlukas.sqldsl.codegen.tokens.NamedGroupToken
 import de.ruegnerlukas.sqldsl.codegen.tokens.StringToken
 import de.ruegnerlukas.sqldsl.codegen.tokens.Token
 import de.ruegnerlukas.sqldsl.dsl.expression.Expr
@@ -27,8 +29,8 @@ abstract class BaseSqlDialect : SQLDialect {
 		return when(type) {
 			FunctionType.AGG_COUNT_ALL -> StringToken("COUNT(*)")
 			FunctionType.AGG_COUNT_ALL_DISTINCT -> StringToken("COUNT( DISTINCT * )")
-			FunctionType.AGG_COUNT -> StringToken("COUNT(${exprBuilder(args[0])})")
-			FunctionType.AGG_COUNT_DISTINCT -> StringToken("COUNT( DISTINCT ${exprBuilder(args[0])} )")
+			FunctionType.AGG_COUNT -> NamedGroupToken("COUNT", exprBuilder(args[0]))
+			FunctionType.AGG_COUNT_DISTINCT -> NamedGroupToken("COUNT", ListToken().add("DISTINCT").add(exprBuilder(args[0])))
 			else -> null
 		}
 	}

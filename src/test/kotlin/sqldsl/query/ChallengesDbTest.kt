@@ -103,7 +103,7 @@ class ChallengesDbTest {
 			)
 		assertQuery(
 			query,
-			"SELECT DISTINCT l1.marks AS consecutive_nums FROM ((logs AS l1) JOIN (logs AS l2) ON ((l1.marks = l2.marks) AND (l1.student_id = (l2.student_id - 1)))) JOIN (logs AS l3) ON ((l1.marks = l3.marks) AND (l2.student_id = (l3.student_id - 1)))"
+			"SELECT DISTINCT l1.marks AS consecutive_nums FROM ((logs AS l1) INNER JOIN (logs AS l2) ON ((l1.marks = l2.marks) AND (l1.student_id = (l2.student_id - 1)))) INNER JOIN (logs AS l3) ON ((l1.marks = l3.marks) AND (l2.student_id = (l3.student_id - 1)))"
 		)
 	}
 
@@ -168,7 +168,7 @@ class ChallengesDbTest {
 			)
 		assertQuery(
 			query,
-			"SELECT s1.exam_id, p.subject_name, s1.exam_year AS first_year, s1.no_of_student FROM ((exam_test AS s1) JOIN (subject_test AS p) ON (s1.subject_id = p.subject_id)) JOIN ((SELECT exam_test.subject_id, (MIN(exam_test.exam_year)) AS min_year FROM exam_test GROUP BY exam_test.subject_id) AS s2) ON ((s1.subject_id = s2.subject_id) AND (s1.exam_year = s2.min_year))"
+			"SELECT s1.exam_id, p.subject_name, s1.exam_year AS first_year, s1.no_of_student FROM ((exam_test AS s1) INNER JOIN (subject_test AS p) ON (s1.subject_id = p.subject_id)) INNER JOIN ((SELECT exam_test.subject_id, (MIN(exam_test.exam_year)) AS min_year FROM exam_test GROUP BY exam_test.subject_id) AS s2) ON ((s1.subject_id = s2.subject_id) AND (s1.exam_year = s2.min_year))"
 		)
 	}
 
@@ -240,7 +240,7 @@ class ChallengesDbTest {
 			.having(totalSaleAmount.isGreaterThan(30000F) and Sale3.amount.count().isGreaterOrEqualThan(5))
 		assertQuery(
 			query,
-			"SELECT salesman.SALESMAN_ID, salesman.SALESMAN_NAME AS name, (COUNT(sales.TRANSACTION_ID)) AS order_count, (SUM(sales.SALE_AMOUNT)) AS total_sale_amount FROM sales JOIN salesman ON (sales.SALESMAN_ID = salesman.SALESMAN_ID) GROUP BY salesman.SALESMAN_ID, salesman.SALESMAN_NAME HAVING (total_sale_amount > 30000.0) AND ((COUNT(sales.SALE_AMOUNT)) >= 5)"
+			"SELECT salesman.SALESMAN_ID, salesman.SALESMAN_NAME AS name, (COUNT(sales.TRANSACTION_ID)) AS order_count, (SUM(sales.SALE_AMOUNT)) AS total_sale_amount FROM sales INNER JOIN salesman ON (sales.SALESMAN_ID = salesman.SALESMAN_ID) GROUP BY salesman.SALESMAN_ID, salesman.SALESMAN_NAME HAVING (total_sale_amount > 30000.0) AND ((COUNT(sales.SALE_AMOUNT)) >= 5)"
 		)
 	}
 

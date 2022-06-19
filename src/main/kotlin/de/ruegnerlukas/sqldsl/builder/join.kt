@@ -1,11 +1,11 @@
 package de.ruegnerlukas.sqldsl.builder
 
 import de.ruegnerlukas.sqldsl.dsl.expression.Expr
+import de.ruegnerlukas.sqldsl.dsl.expression.JoinElement
+import de.ruegnerlukas.sqldsl.dsl.expression.JoinOp
+import de.ruegnerlukas.sqldsl.dsl.expression.OnJoinCondition
+import de.ruegnerlukas.sqldsl.dsl.expression.UsingJoinCondition
 import de.ruegnerlukas.sqldsl.dsl.statements.FromElement
-import de.ruegnerlukas.sqldsl.dsl.statements.JoinElement
-import de.ruegnerlukas.sqldsl.dsl.statements.JoinOp
-import de.ruegnerlukas.sqldsl.dsl.statements.OnJoinCondition
-import de.ruegnerlukas.sqldsl.dsl.statements.UsingJoinCondition
 
 fun FromElement.join(other: FromElement) = JoinConditionBuilder(JoinOp.INNER, this, other)
 

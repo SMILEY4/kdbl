@@ -45,6 +45,8 @@ import de.ruegnerlukas.sqldsl.dsl.expression.GreaterThanExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.InListExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.InQueryExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.IntLiteralExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.JoinCondition
+import de.ruegnerlukas.sqldsl.dsl.expression.JoinElement
 import de.ruegnerlukas.sqldsl.dsl.expression.LessEqualThanExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.LessThanExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.LikeExpr
@@ -59,6 +61,7 @@ import de.ruegnerlukas.sqldsl.dsl.expression.NotInQueryExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.NotNullExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.NotNullProperty
 import de.ruegnerlukas.sqldsl.dsl.expression.NullExpr
+import de.ruegnerlukas.sqldsl.dsl.expression.OnJoinCondition
 import de.ruegnerlukas.sqldsl.dsl.expression.OperationExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.OrChainExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.OrExpr
@@ -77,6 +80,7 @@ import de.ruegnerlukas.sqldsl.dsl.expression.TableLike
 import de.ruegnerlukas.sqldsl.dsl.expression.TimeLiteralExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.TypecastExpr
 import de.ruegnerlukas.sqldsl.dsl.expression.UniqueProperty
+import de.ruegnerlukas.sqldsl.dsl.expression.UsingJoinCondition
 import de.ruegnerlukas.sqldsl.dsl.statements.CreateTableStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.DeleteStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.Dir
@@ -86,10 +90,7 @@ import de.ruegnerlukas.sqldsl.dsl.statements.GroupByStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.HavingStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.InsertStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.ItemsInsertContent
-import de.ruegnerlukas.sqldsl.dsl.statements.JoinCondition
-import de.ruegnerlukas.sqldsl.dsl.statements.JoinElement
 import de.ruegnerlukas.sqldsl.dsl.statements.LimitStatement
-import de.ruegnerlukas.sqldsl.dsl.statements.OnJoinCondition
 import de.ruegnerlukas.sqldsl.dsl.statements.OrderByStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.QueryBuilderEndStep
 import de.ruegnerlukas.sqldsl.dsl.statements.QueryStatement
@@ -98,7 +99,6 @@ import de.ruegnerlukas.sqldsl.dsl.statements.SelectAllFromTableElement
 import de.ruegnerlukas.sqldsl.dsl.statements.SelectElement
 import de.ruegnerlukas.sqldsl.dsl.statements.SelectStatement
 import de.ruegnerlukas.sqldsl.dsl.statements.UpdateStatement
-import de.ruegnerlukas.sqldsl.dsl.statements.UsingJoinCondition
 import de.ruegnerlukas.sqldsl.dsl.statements.WhereStatement
 
 class SQLCodeGeneratorImpl(private val dialect: SQLDialect) : SQLCodeGenerator {
