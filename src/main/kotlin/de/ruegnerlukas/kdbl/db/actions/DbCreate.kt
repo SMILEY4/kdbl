@@ -10,7 +10,7 @@ import de.ruegnerlukas.kdbl.db.Database
  */
 class DbCreate(db: Database, sql: String, placeholders: List<String>) : DbAction<Unit>(db, sql, placeholders) {
 
-	override fun execute() {
+	override suspend fun execute() {
 		db.execute(sql, getParameterValues())
 	}
 

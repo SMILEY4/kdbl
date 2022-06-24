@@ -19,9 +19,12 @@ import de.ruegnerlukas.kdbl.dsl.statements.SqlQueryStatement
 import de.ruegnerlukas.kdbl.dsl.statements.SqlUpdateStatement
 import de.ruegnerlukas.kdbl.dsl.statements.UpdateBuilderEndStep
 import de.ruegnerlukas.kdbl.dsl.statements.UpdateStatement
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
+import java.sql.Types
 
 /**
  * The base of a database with the basic functions
@@ -87,11 +90,11 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 
 	/**
 	 * Start an INSERT-statement
-	 * @param sql the "insert"-statement
+	 * @param builder a function providing the "insert"-statement
 	 */
-	fun startInsert(sql: SqlInsertStatement): DbInsertReturnType {
+	fun startInsert(builder: () -> SqlInsertStatement): DbInsertReturnType {
 		val placeholders = mutableListOf<String>()
-		return when (sql) {
+		return when (val sql = builder()) {
 			is InsertStatement -> startInsert(codeGen.insert(sql).buildExtended(placeholders), placeholders)
 			is InsertBuilderEndStep -> startInsert(codeGen.insert(sql.build()).buildExtended(placeholders), placeholders)
 		}
@@ -129,11 +132,11 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 
 	/**
 	 * Start an UPDATE-statement
-	 * @param sql the "update"-statement
+	 * @param builder a function providing the "update"-statement
 	 */
-	fun startUpdate(sql: SqlUpdateStatement): DbUpdateReturnType {
+	fun startUpdate(builder: () -> SqlUpdateStatement): DbUpdateReturnType {
 		val placeholders = mutableListOf<String>()
-		return when (sql) {
+		return when (val sql = builder()) {
 			is UpdateStatement -> startUpdate(codeGen.update(sql).buildExtended(placeholders), placeholders)
 			is UpdateBuilderEndStep -> startUpdate(codeGen.update(sql.build()).buildExtended(placeholders), placeholders)
 		}
@@ -171,11 +174,11 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 
 	/**
 	 * Start a DELETE-statement
-	 * @param sql the "delete"-statement
+	 * @param builder a function providing the "delete"-statement
 	 */
-	fun startDelete(sql: SqlDeleteStatement): DbDeleteReturnType {
+	fun startDelete(builder: () -> SqlDeleteStatement): DbDeleteReturnType {
 		val placeholders = mutableListOf<String>()
-		return when (sql) {
+		return when (val sql = builder()) {
 			is DeleteStatement -> startDelete(codeGen.delete(sql).buildExtended(placeholders), placeholders)
 			is DeleteBuilderEndStep -> startDelete(codeGen.delete(sql.build()).buildExtended(placeholders), placeholders)
 		}
@@ -213,11 +216,11 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 
 	/**
 	 * Start a SELECT-statement
-	 * @param sql the "select"-statement
+	 * @param builder a function providing the "select"-statement
 	 */
-	fun startQuery(sql: SqlQueryStatement<*>): DbQuery {
+	fun startQuery(builder: () -> SqlQueryStatement<*>): DbQuery {
 		val placeholders = mutableListOf<String>()
-		return when (sql) {
+		return when (val sql = builder()) {
 			is QueryStatement<*> -> startQuery(codeGen.query(sql).buildExtended(placeholders), placeholders)
 			is QueryBuilderEndStep<*> -> startQuery(codeGen.query(sql.build<Any>()).buildExtended(placeholders), placeholders)
 		}
@@ -248,7 +251,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param withRollback whether the operations should be rolled back on failure
 	 * @param block the block with the sql-operations. A [Database] is provided that executes all its operations as part of the transaction
 	 */
-	fun startTransaction(withRollback: Boolean, block: (db: Database) -> Unit) {
+	suspend fun startTransaction(withRollback: Boolean, block: suspend (db: Database) -> Unit) {
 		getConnection().use {
 			try {
 				val transaction = SingleConnectionDatabase(it, codeGen)
@@ -274,11 +277,13 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param sql the sql-string
 	 * @param params the list of parameters in the correct order
 	 */
-	fun execute(sql: String, params: List<Any>) {
-		getConnection().use {
-			val statement = it.prepareStatement(sql)
-			setParameters(statement, params)
-			statement.execute()
+	suspend fun execute(sql: String, params: List<Any?>) {
+		withContext(Dispatchers.IO) {
+			getConnection().use {
+				val statement = it.prepareStatement(sql)
+				setParameters(statement, params)
+				statement.execute()
+			}
 		}
 	}
 
@@ -289,12 +294,14 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param params the list of parameters in the correct order
 	 * @return the result of the operation
 	 */
-	fun executeReturning(sql: String, params: List<Any>): ResultSet {
-		getConnection().use {
-			val statement = it.prepareStatement(sql)
-			setParameters(statement, params)
-			statement.execute()
-			return statement.resultSet
+	suspend fun executeReturning(sql: String, params: List<Any?>): ResultSet {
+		return withContext(Dispatchers.IO) {
+			getConnection().use {
+				val statement = it.prepareStatement(sql)
+				setParameters(statement, params)
+				statement.execute()
+				statement.resultSet
+			}
 		}
 	}
 
@@ -305,11 +312,13 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param params the list of parameters in the correct order
 	 * @return the result of the query
 	 */
-	fun executeQuery(sql: String, params: List<Any>): ResultSet {
-		getConnection().use {
-			val statement = it.prepareStatement(sql)
-			setParameters(statement, params)
-			return statement.executeQuery()
+	suspend fun executeQuery(sql: String, params: List<Any?>): ResultSet {
+		return withContext(Dispatchers.IO) {
+			getConnection().use {
+				val statement = it.prepareStatement(sql)
+				setParameters(statement, params)
+				statement.executeQuery()
+			}
 		}
 	}
 
@@ -320,11 +329,13 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param params the list of parameters in the correct order
 	 * @return the number of affected rows
 	 */
-	fun executeUpdate(sql: String, params: List<Any>): Int {
-		getConnection().use {
-			val statement = it.prepareStatement(sql)
-			setParameters(statement, params)
-			return statement.executeUpdate()
+	suspend fun executeUpdate(sql: String, params: List<Any?>): Int {
+		return withContext(Dispatchers.IO) {
+			getConnection().use {
+				val statement = it.prepareStatement(sql)
+				setParameters(statement, params)
+				statement.executeUpdate()
+			}
 		}
 	}
 
@@ -334,7 +345,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param statement the sql-statement
 	 * @param params the list of values in the correct order
 	 */
-	private fun setParameters(statement: PreparedStatement, params: List<Any>) {
+	private fun setParameters(statement: PreparedStatement, params: List<Any?>) {
 		params.forEachIndexed { index, param ->
 			when (param) {
 				is Short -> statement.setShort(index, param)
@@ -344,6 +355,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 				is Double -> statement.setDouble(index, param)
 				is Boolean -> statement.setBoolean(index, param)
 				is String -> statement.setString(index, param)
+				null -> statement.setNull(index, Types.NULL)
 				else -> throw Exception("Unknown parameter-type: '$param'")
 			}
 		}

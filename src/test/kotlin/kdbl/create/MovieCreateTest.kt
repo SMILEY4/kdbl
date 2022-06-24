@@ -3,7 +3,7 @@ package kdbl.create
 import de.ruegnerlukas.kdbl.builder.SQL
 import org.junit.jupiter.api.Test
 import kdbl.Actor
-import kdbl.Exam
+import kdbl.schema.Exam
 import kdbl.Movie
 import kdbl.Rating
 import kdbl.utils.assertQuery

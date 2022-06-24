@@ -19,14 +19,14 @@ import de.ruegnerlukas.kdbl.builder.sub
 import de.ruegnerlukas.kdbl.dsl.expression.AliasExpr
 import de.ruegnerlukas.kdbl.dsl.expression.DerivedTable
 import org.junit.jupiter.api.Test
-import kdbl.Employee
-import kdbl.Exam
-import kdbl.Logs
-import kdbl.Sale
-import kdbl.Sale2
-import kdbl.Sale3
-import kdbl.Salesman
-import kdbl.Subject
+import kdbl.schema.Employee
+import kdbl.schema.Exam
+import kdbl.schema.Logs
+import kdbl.schema.Sale
+import kdbl.schema.Sale2
+import kdbl.schema.Sale3
+import kdbl.schema.Salesman
+import kdbl.schema.Subject
 import kdbl.utils.assertQuery
 
 /**

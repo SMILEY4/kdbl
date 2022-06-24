@@ -11,72 +11,76 @@ import de.ruegnerlukas.kdbl.db.Database
  */
 abstract class DbAction<T>(protected val db: Database, protected val sql: String, protected val placeholders: List<String>) {
 
-	private val parameters: MutableMap<String, Any> = mutableMapOf()
+	private val parameters: MutableMap<String, Any?> = mutableMapOf()
 
 
 	/**
 	 * Set the value for a placeholder with the given value (order does not matter)
 	 * @param name the name of the placeholder
-	 * @param value the value
+	 * @param value the value or null
 	 */
-	fun parameter(name: String, value: Short) = this.apply { parameters[name] = value }
+	fun parameter(name: String, value: Short?) = this.apply { parameters[name] = value }
 
 
 	/**
 	 * Set the value for a placeholder with the given value (order does not matter)
 	 * @param name the name of the placeholder
-	 * @param value the value
+	 * @param value the value or null
 	 */
-	fun parameter(name: String, value: Int) = this.apply { parameters[name] = value }
+	fun parameter(name: String, value: Int?) = this.apply { parameters[name] = value }
 
 
 	/**
 	 * Set the value for a placeholder with the given value (order does not matter)
 	 * @param name the name of the placeholder
-	 * @param value the value
+	 * @param value the value or null
 	 */
-	fun parameter(name: String, value: Long) = this.apply { parameters[name] = value }
+	fun parameter(name: String, value: Long?) = this.apply { parameters[name] = value }
 
 
 	/**
 	 * Set the value for a placeholder with the given value (order does not matter)
 	 * @param name the name of the placeholder
-	 * @param value the value
+	 * @param value the value or null
 	 */
-	fun parameter(name: String, value: Float) = this.apply { parameters[name] = value }
+	fun parameter(name: String, value: Float?) = this.apply { parameters[name] = value }
 
 
 	/**
 	 * Set the value for a placeholder with the given value (order does not matter)
 	 * @param name the name of the placeholder
-	 * @param value the value
+	 * @param value the value or null
 	 */
-	fun parameter(name: String, value: Double) = this.apply { parameters[name] = value }
+	fun parameter(name: String, value: Double?) = this.apply { parameters[name] = value }
 
 
 	/**
 	 * Set the value for a placeholder with the given value (order does not matter)
 	 * @param name the name of the placeholder
-	 * @param value the value
+	 * @param value the value or null
 	 */
-	fun parameter(name: String, value: Boolean) = this.apply { parameters[name] = value }
+	fun parameter(name: String, value: Boolean?) = this.apply { parameters[name] = value }
 
 
 	/**
 	 * Set the value for a placeholder with the given value (order does not matter)
 	 * @param name the name of the placeholder
-	 * @param value the value
+	 * @param value the value or null
 	 */
-	fun parameter(name: String, value: String) = this.apply { parameters[name] = value }
+	fun parameter(name: String, value: String?) = this.apply { parameters[name] = value }
 
 
 	/**
 	 * Get the values of the parameters in the correct order
 	 */
-	protected fun getParameterValues(): List<Any> {
-		val paramList = mutableListOf<Any>()
+	protected fun getParameterValues(): List<Any?> {
+		val paramList = mutableListOf<Any?>()
 		placeholders.forEach {
-			paramList.add(parameters[it] ?: throw Exception("No Parameter for placeholder '$it' found."))
+			if (parameters.containsKey(it)) {
+				paramList.add(parameters[it])
+			} else {
+				throw Exception("No Parameter for placeholder '$it' found.")
+			}
 		}
 		return paramList
 	}
@@ -85,6 +89,6 @@ abstract class DbAction<T>(protected val db: Database, protected val sql: String
 	/**
 	 * Execute this operation
 	 */
-	abstract fun execute(): T
+	abstract suspend fun execute(): T
 
 }

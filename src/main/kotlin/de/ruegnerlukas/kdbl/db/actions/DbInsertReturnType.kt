@@ -33,9 +33,8 @@ class DbInsertReturnType(private val db: Database, private val sql: String, priv
  */
 class DbInsertReturning(db: Database, sql: String, placeholders: List<String>) : DbAction<DbReturningResult>(db, sql, placeholders) {
 
-	override fun execute(): DbReturningResult {
+	override suspend fun execute(): DbReturningResult {
 		return DbReturningResult(db.executeReturning(sql, getParameterValues()))
-
 	}
 
 }
@@ -49,7 +48,7 @@ class DbInsertReturning(db: Database, sql: String, placeholders: List<String>) :
  */
 class DbInsertCounting(db: Database, sql: String, placeholders: List<String>) : DbAction<Int>(db, sql, placeholders) {
 
-	override fun execute(): Int {
+	override suspend fun execute(): Int {
 		return db.executeUpdate(sql, getParameterValues())
 	}
 

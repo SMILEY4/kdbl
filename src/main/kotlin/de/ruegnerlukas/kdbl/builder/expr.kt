@@ -4,8 +4,11 @@ import de.ruegnerlukas.kdbl.dsl.expression.AliasExpr
 import de.ruegnerlukas.kdbl.dsl.expression.DerivedTable
 import de.ruegnerlukas.kdbl.dsl.expression.Expr
 import de.ruegnerlukas.kdbl.dsl.expression.PlaceholderLiteralExpr
+import de.ruegnerlukas.kdbl.dsl.expression.Table
 import de.ruegnerlukas.kdbl.dsl.expression.TypecastExpr
 import de.ruegnerlukas.kdbl.dsl.statements.FromElement
+import de.ruegnerlukas.kdbl.dsl.statements.SelectAllElement
+import de.ruegnerlukas.kdbl.dsl.statements.SelectAllFromTableElement
 
 fun <T> Expr<T>.alias(alias: String) = AliasExpr(this, alias)
 fun <T> Expr<T>.alias(aliasExpr: AliasExpr<T>) = aliasExpr.assign(this)
@@ -14,6 +17,9 @@ fun FromElement.assign(table: DerivedTable): DerivedTable {
 	table.assign(this)
 	return table
 }
+
+fun Table.allColumns() = SelectAllFromTableElement(this)
+fun allColumns() = SelectAllElement()
 
 fun <T> placeholder(name: String) = PlaceholderLiteralExpr<T>(name)
 

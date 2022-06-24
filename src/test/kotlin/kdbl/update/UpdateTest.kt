@@ -8,9 +8,9 @@ import de.ruegnerlukas.kdbl.builder.isEqual
 import de.ruegnerlukas.kdbl.dsl.expression.DerivedTable
 import de.ruegnerlukas.kdbl.dsl.statements.set
 import org.junit.jupiter.api.Test
-import kdbl.Logs
+import kdbl.schema.Logs
 import kdbl.Movie
-import kdbl.Sale
+import kdbl.schema.Sale
 import kdbl.utils.assertQuery
 
 

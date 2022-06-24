@@ -1,4 +1,4 @@
-package kdbl
+package kdbl.schema
 
 import de.ruegnerlukas.kdbl.dsl.expression.AliasTable
 import de.ruegnerlukas.kdbl.dsl.expression.Table

@@ -61,6 +61,7 @@ import de.ruegnerlukas.kdbl.dsl.expression.NotInQueryExpr
 import de.ruegnerlukas.kdbl.dsl.expression.NotNullExpr
 import de.ruegnerlukas.kdbl.dsl.expression.NotNullProperty
 import de.ruegnerlukas.kdbl.dsl.expression.NullExpr
+import de.ruegnerlukas.kdbl.dsl.expression.NullLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.OnJoinCondition
 import de.ruegnerlukas.kdbl.dsl.expression.OperationExpr
 import de.ruegnerlukas.kdbl.dsl.expression.OrChainExpr
@@ -541,6 +542,7 @@ class SQLCodeGeneratorImpl(private val dialect: SQLDialect) : SQLCodeGenerator {
 			is TimeLiteralExpr -> StringToken(dialect.timeLiteral(e.value))
 			is ListLiteralExpr<*> -> GroupToken(CsvListToken(e.values.map { expression(it) }))
 			is PlaceholderLiteralExpr<*> -> PlaceholderToken(e.name)
+			is NullLiteralExpr<*> -> StringToken("NULL")
 			else -> throwUnknown(e)
 		}
 	}
