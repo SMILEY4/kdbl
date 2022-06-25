@@ -29,14 +29,14 @@ sealed class ActorTableDef : Table("actor") {
 
 object Movie : MovieTableDef()
 
-sealed class MovieTableDef : Table("movie") {
+sealed class MovieTableDef : Table("movie", true) {
     val id = integer("mov_id").primaryKey()
-    val title = text("mov_title").notNull()
-    val year = integer("mov_year").notNull()
-    val time = integer("mov_time").notNull()
-    val lang = text("mov_lang").notNull()
-    val dateRelease = text("mov_dt_rel").notNull()
-    val releaseCountry = text("mov_rel_country").notNull()
+    val title = text("mov_title")
+    val year = integer("mov_year")
+    val time = integer("mov_time")
+    val lang = text("mov_lang").nullable()
+    val dateRelease = text("mov_dt_rel")
+    val releaseCountry = text("mov_rel_country")
 
     companion object {
         class MovieTableDefAlias(override val table: TableLike, override val alias: String) : MovieTableDef(), AliasTable

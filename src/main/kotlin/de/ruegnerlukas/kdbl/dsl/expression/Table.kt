@@ -22,22 +22,29 @@ interface AliasTable : TableLike {
 /**
  * A table
  */
-abstract class Table(val tableName: String) : TableLike {
+abstract class Table(val tableName: String, private val defaultNotNullColumns: Boolean = false) : TableLike {
 
 	private val columns = mutableListOf<Column<*>>()
 
 	fun getColumns() = columns.toList()
 
-	protected fun boolean(name: String) = Column<Boolean>(this, name, DataType.BOOL).apply { columns.add(this) }
-	protected fun smallint(name: String) = Column<Short>(this, name, DataType.SMALLINT).apply { columns.add(this) }
-	protected fun integer(name: String) = Column<Int>(this, name, DataType.INT).apply { columns.add(this) }
-	protected fun bigint(name: String) = Column<Long>(this, name, DataType.BIGINT).apply { columns.add(this) }
-	protected fun float(name: String) = Column<Float>(this, name, DataType.FLOAT).apply { columns.add(this) }
-	protected fun double(name: String) = Column<Double>(this, name, DataType.DOUBLE).apply { columns.add(this) }
-	protected fun text(name: String) = Column<String>(this, name, DataType.TEXT).apply { columns.add(this) }
-	protected fun date(name: String) = Column<SqlDate>(this, name, DataType.DATE).apply { columns.add(this) }
-	protected fun time(name: String) = Column<SqlTime>(this, name, DataType.TIME).apply { columns.add(this) }
-	protected fun timestamp(name: String) = Column<Long>(this, name, DataType.TIMESTAMP).apply { columns.add(this) }
+	private fun register(column: Column<*>) {
+		if (defaultNotNullColumns) {
+			column.notNull()
+		}
+		columns.add(column)
+	}
+
+	protected fun boolean(name: String) = Column<Boolean>(this, name, DataType.BOOL).apply { register(this) }
+	protected fun smallint(name: String) = Column<Short>(this, name, DataType.SMALLINT).apply { register(this) }
+	protected fun integer(name: String) = Column<Int>(this, name, DataType.INT).apply { register(this) }
+	protected fun bigint(name: String) = Column<Long>(this, name, DataType.BIGINT).apply { register(this) }
+	protected fun float(name: String) = Column<Float>(this, name, DataType.FLOAT).apply { register(this) }
+	protected fun double(name: String) = Column<Double>(this, name, DataType.DOUBLE).apply { register(this) }
+	protected fun text(name: String) = Column<String>(this, name, DataType.TEXT).apply { register(this) }
+	protected fun date(name: String) = Column<SqlDate>(this, name, DataType.DATE).apply { register(this) }
+	protected fun time(name: String) = Column<SqlTime>(this, name, DataType.TIME).apply { register(this) }
+	protected fun timestamp(name: String) = Column<Long>(this, name, DataType.TIMESTAMP).apply { register(this) }
 
 	abstract fun alias(alias: String): AliasTable
 }

@@ -36,6 +36,10 @@ class Column<T>(val table: TableLike, val columnName: String, val type: DataType
 	 */
 	fun notNull() = this.also { properties.add(NotNullProperty()) }
 
+	/**
+	 * Allow "null"-values in this column (usually if "not-null" is default for the table)
+	 */
+	fun nullable() = this.also { properties.removeIf{ it is NotNullProperty } }
 
 	/**
 	 * Don't allow duplicate values in this column
