@@ -11,6 +11,7 @@ fun ResultSet.forEach(block: (e: ResultSet) -> Unit) {
 	}
 }
 
+
 /**
  * Maps each "entry" in this result-set and returns all as a list
  */
@@ -20,4 +21,16 @@ fun <T> ResultSet.map(block: (e: ResultSet) -> T): List<T> {
 		list.add(block(this))
 	}
 	return list
+}
+
+
+/**
+ * Returns the first entry or null
+ */
+fun ResultSet.getFirst(): ResultSet? {
+	if (next()) {
+		return this
+	} else {
+		return null
+	}
 }

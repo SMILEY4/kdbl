@@ -6,7 +6,7 @@ import de.ruegnerlukas.kdbl.utils.SqlTime
 /**
  * A single constant value as an expression
  */
-interface LiteralExpr<T> : Expr<T>
+interface LiteralExpr<out T> : Expr<T>
 
 class BooleanLiteralExpr(val value: Boolean) : LiteralExpr<Boolean>
 class ShortLiteralExpr(val value: Short) : LiteralExpr<Short>

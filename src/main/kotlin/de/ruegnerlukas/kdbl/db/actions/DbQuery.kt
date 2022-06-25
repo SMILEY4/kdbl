@@ -2,16 +2,22 @@ package de.ruegnerlukas.kdbl.db.actions
 
 import de.ruegnerlukas.kdbl.db.Database
 
-/**
- * A single "SELECT"-operations
- * @param db the database to use
- * @param sql the sql-string with possible placeholders
- * @param placeholders the names of the placeholders in the correct order
- */
-class DbQuery(db: Database, sql: String, placeholders: List<String>) : DbAction<DbReturningResult>(db, sql, placeholders) {
 
-	override suspend fun execute(): DbReturningResult {
-		return DbReturningResult(db.executeQuery(sql, getParameterValues()))
+class DbQuery(
+	private val db: Database,
+	private val sql: String,
+	placeholders: List<String>
+) : ParameterStore<DbQuery>(placeholders) {
+
+	override fun provideThis() = this
+
+
+	/**
+	 * Execute the "SELECT"-statement
+	 */
+	suspend fun execute(): StatementReturningResult {
+		val resultSet = db.executeReturning(sql, getParameterValues())
+		return StatementReturningResult(resultSet)
 	}
 
 }

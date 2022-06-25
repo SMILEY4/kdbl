@@ -1,16 +1,60 @@
 package de.ruegnerlukas.kdbl.builder
 
+import de.ruegnerlukas.kdbl.dsl.expression.BooleanLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.Column
+import de.ruegnerlukas.kdbl.dsl.expression.DateLiteralExpr
+import de.ruegnerlukas.kdbl.dsl.expression.DoubleLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.Expr
+import de.ruegnerlukas.kdbl.dsl.expression.FloatLiteralExpr
+import de.ruegnerlukas.kdbl.dsl.expression.IntLiteralExpr
+import de.ruegnerlukas.kdbl.dsl.expression.LongLiteralExpr
+import de.ruegnerlukas.kdbl.dsl.expression.NullLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.ReturnAllColumns
 import de.ruegnerlukas.kdbl.dsl.expression.ReturnColumns
 import de.ruegnerlukas.kdbl.dsl.expression.Returning
+import de.ruegnerlukas.kdbl.dsl.expression.ShortLiteralExpr
+import de.ruegnerlukas.kdbl.dsl.expression.StringLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.Table
+import de.ruegnerlukas.kdbl.dsl.expression.TimeLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.statements.FromElement
 import de.ruegnerlukas.kdbl.dsl.statements.FromStatement
 import de.ruegnerlukas.kdbl.dsl.statements.UpdateBuilderEndStep
 import de.ruegnerlukas.kdbl.dsl.statements.UpdateElement
 import de.ruegnerlukas.kdbl.dsl.statements.UpdateStatement
+import de.ruegnerlukas.kdbl.utils.SqlDate
+import de.ruegnerlukas.kdbl.utils.SqlTime
+
+
+class ModificationsMap() {
+
+	private val modifications = mutableListOf<UpdateElement<*>>()
+
+	operator fun <T> set(key: Column<T>, value: T?) {
+		@Suppress("UNCHECKED_CAST")
+		val e = UpdateElement(
+			key,
+			value?.let {
+				when (value) {
+					is Boolean -> BooleanLiteralExpr(value)
+					is Short -> ShortLiteralExpr(value)
+					is Int -> IntLiteralExpr(value)
+					is Long -> LongLiteralExpr(value)
+					is Float -> FloatLiteralExpr(value)
+					is Double -> DoubleLiteralExpr(value)
+					is String -> StringLiteralExpr(value)
+					is SqlDate -> DateLiteralExpr(value)
+					is SqlTime -> TimeLiteralExpr(value)
+					else -> throw Exception("Type '$value' not supported")
+				} as Expr<T>
+			} ?: NullLiteralExpr()
+		)
+		modifications.add(e)
+	}
+
+	internal fun getModification() = modifications.toList()
+
+}
+
 
 /**
  * Builder(-chain) for an [UpdateStatement]
@@ -34,6 +78,12 @@ object UpdateBuilder {
 	class PostTargetBuilder(
 		private val target: Table
 	) {
+
+		/**
+		 * specify the modification to apply to each (selected) row
+		 */
+		fun set(block: (map: ModificationsMap) -> Unit) = PostSetBuilder(target, ModificationsMap().apply(block).getModification())
+
 
 		/**
 		 * specify the modification to apply to each (selected) row

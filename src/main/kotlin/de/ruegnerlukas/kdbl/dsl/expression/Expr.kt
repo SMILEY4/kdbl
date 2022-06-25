@@ -5,7 +5,7 @@ import de.ruegnerlukas.kdbl.dsl.statements.SelectElement
 /**
  * An expression that can result in any value
  */
-interface Expr<T> : SelectElement
+interface Expr<out T> : SelectElement
 
 
 /**

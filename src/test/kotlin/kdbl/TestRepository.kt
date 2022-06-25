@@ -11,17 +11,23 @@ data class MovieRecord(
 	val title: String
 )
 
+data class NameRecord(
+	val firstName: String,
+	val lastName: String
+)
+
 
 class TestRepository(private val db: Database) {
 
-	fun createMovieTable() = db
+	suspend fun createMovieTable() = db
 		.startCreate(
 			SQL.create(Movie)
 		)
 		.execute()
 
-	fun insertActor(fName: String, lName: String, gender: String) = db
-		.startInsert(
+
+	suspend fun insertActor(fName: String, lName: String, gender: String) = db
+		.startInsert {
 			SQL
 				.insert()
 				.into(Actor)
@@ -32,40 +38,68 @@ class TestRepository(private val db: Database) {
 						.set(Actor.lName, lName)
 						.set(Actor.gender, gender),
 				)
-		)
-		.withReturning()
-		.execute()
+		}
+		.executeCounting()
 
-	fun getMoviesByYear(year: Int) = db
-		.startQuery(
+	suspend fun updateActor(id: Int, fName: String, lName: String) = db
+		.startUpdate {
+			SQL
+				.update(Actor)
+				.set {
+					it[Actor.fName] = fName
+					it[Actor.lName] = lName
+				}
+				.where(Actor.id.isEqual(id))
+		}
+
+
+	suspend fun insertActorGetName(fName: String, lName: String, gender: String) = db
+		.startInsert {
+			SQL
+				.insert()
+				.into(Actor)
+				.columns(Actor.id, Actor.fName, Actor.lName, Actor.gender)
+				.items(
+					SQL.item()
+						.set(Actor.fName, fName)
+						.set(Actor.lName, lName)
+						.set(Actor.gender, gender),
+				)
+				.returning(Actor.fName, Actor.lName)
+		}
+		.executeReturning()
+		.getOne { NameRecord(it.getString(Actor.fName.columnName), it.getString(Actor.lName.columnName)) }
+
+
+	suspend fun getMoviesByYear(year: Int) = db
+		.startQuery {
 			SQL
 				.select(Movie.id, Movie.title)
 				.from(Movie)
 				.where(Movie.year.isEqual(year))
 
-		)
+		}
 		.execute()
-		.mapRows { MovieRecord(it.getInt(Movie.id.columnName), it.getString(Movie.title.columnName)) }
+		.getMultiple { MovieRecord(it.getInt(Movie.id.columnName), it.getString(Movie.title.columnName)) }
 
-	fun deleteTwoMovies(id1: Int, id2: Int) = db.startTransaction(true) { transaction ->
+
+	suspend fun deleteTwoMovies(id1: Int, id2: Int) = db.startTransaction(true) { transaction ->
 		transaction
-			.startDelete(
+			.startDelete {
 				SQL
 					.delete()
 					.from(Movie)
 					.where(Movie.id.isEqual(id1))
-			)
-			.withUpdateCount()
-			.execute()
+			}
+			.executeCounting()
 		transaction
-			.startDelete(
+			.startDelete {
 				SQL
 					.delete()
 					.from(Movie)
 					.where(Movie.id.isEqual(id2))
-			)
-			.withUpdateCount()
-			.execute()
+			}
+			.executeCounting()
 	}
 
 }
@@ -73,13 +107,13 @@ class TestRepository(private val db: Database) {
 
 class CachedTestRepository(private val db: Database) {
 
-	fun createMovieTable() = db
+	suspend fun createMovieTable() = db
 		.startCreate("createMovieTable") {
 			SQL.create(Movie)
 		}
 		.execute()
 
-	fun insertActor(fName: String, lName: String, gender: String) = db
+	suspend fun insertActor(fName: String, lName: String, gender: String) = db
 		.startInsert("insertActor") {
 			SQL
 				.insert()
@@ -92,13 +126,15 @@ class CachedTestRepository(private val db: Database) {
 						.set(Actor.gender, placeholder("gender")),
 				)
 		}
-		.withReturning()
-		.parameter("fName", fName)
-		.parameter("lName", lName)
-		.parameter("gender", gender)
-		.execute()
+		.parameters {
+			it["fname"] = fName
+			it["lName"] = lName
+			it["gender"] = gender
+		}
+		.executeReturning()
+		.getMultiple { NameRecord(it.getString(Actor.fName.columnName), it.getString(Actor.lName.columnName)) }
 
-	fun getMoviesByYear(year: Int) = db
+	suspend fun getMoviesByYear(year: Int) = db
 		.startQuery("getMoviesByYear") {
 			SQL
 				.select(Movie.id, Movie.title)
@@ -107,7 +143,7 @@ class CachedTestRepository(private val db: Database) {
 		}
 		.parameter("year", year)
 		.execute()
-		.mapRows { MovieRecord(it.getInt(Movie.id.columnName), it.getString(Movie.title.columnName)) }
+		.getMultipleOrNone { MovieRecord(it.getInt(Movie.id.columnName), it.getString(Movie.title.columnName)) }
 
 }
 

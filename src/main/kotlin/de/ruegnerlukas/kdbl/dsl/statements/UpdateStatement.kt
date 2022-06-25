@@ -8,6 +8,7 @@ import de.ruegnerlukas.kdbl.dsl.expression.Expr
 import de.ruegnerlukas.kdbl.dsl.expression.FloatLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.IntLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.LongLiteralExpr
+import de.ruegnerlukas.kdbl.dsl.expression.NullLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.Returning
 import de.ruegnerlukas.kdbl.dsl.expression.ShortLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.StringLiteralExpr
@@ -52,12 +53,12 @@ class UpdateElement<T>(
 
 
 fun <T> Column<T>.set(expr: Expr<T>) = UpdateElement(this, expr)
-fun Column<Boolean>.set(value: Boolean) = UpdateElement(this, BooleanLiteralExpr(value))
-fun Column<Short>.set(value: Short) = UpdateElement(this, ShortLiteralExpr(value))
-fun Column<Int>.set(value: Int) = UpdateElement(this, IntLiteralExpr(value))
-fun Column<Long>.set(value: Long) = UpdateElement(this, LongLiteralExpr(value))
-fun Column<Float>.set(value: Float) = UpdateElement(this, FloatLiteralExpr(value))
-fun Column<Double>.set(value: Double) = UpdateElement(this, DoubleLiteralExpr(value))
-fun Column<String>.set(value: String) = UpdateElement(this, StringLiteralExpr(value))
-fun Column<SqlDate>.set(value: SqlDate) = UpdateElement(this, DateLiteralExpr(value))
-fun Column<SqlTime>.set(value: SqlTime) = UpdateElement(this, TimeLiteralExpr(value))
+fun Column<Boolean>.set(value: Boolean?) = UpdateElement(this, if(value == null) NullLiteralExpr() else BooleanLiteralExpr(value))
+fun Column<Short>.set(value: Short?) = UpdateElement(this, if(value == null) NullLiteralExpr() else ShortLiteralExpr(value))
+fun Column<Int>.set(value: Int?) = UpdateElement(this, if(value == null) NullLiteralExpr() else IntLiteralExpr(value))
+fun Column<Long>.set(value: Long?) = UpdateElement(this, if(value == null) NullLiteralExpr() else LongLiteralExpr(value))
+fun Column<Float>.set(value: Float?) = UpdateElement(this, if(value == null) NullLiteralExpr() else FloatLiteralExpr(value))
+fun Column<Double>.set(value: Double?) = UpdateElement(this, if(value == null) NullLiteralExpr() else DoubleLiteralExpr(value))
+fun Column<String>.set(value: String?) = UpdateElement(this, if(value == null) NullLiteralExpr() else StringLiteralExpr(value))
+fun Column<SqlDate>.set(value: SqlDate?) = UpdateElement(this, if(value == null) NullLiteralExpr() else DateLiteralExpr(value))
+fun Column<SqlTime>.set(value: SqlTime?) = UpdateElement(this, if(value == null) NullLiteralExpr() else TimeLiteralExpr(value))

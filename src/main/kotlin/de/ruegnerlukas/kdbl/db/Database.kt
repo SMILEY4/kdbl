@@ -2,10 +2,8 @@ package de.ruegnerlukas.kdbl.db
 
 import de.ruegnerlukas.kdbl.codegen.SQLCodeGenerator
 import de.ruegnerlukas.kdbl.db.actions.DbCreate
-import de.ruegnerlukas.kdbl.db.actions.DbDeleteReturnType
-import de.ruegnerlukas.kdbl.db.actions.DbInsertReturnType
+import de.ruegnerlukas.kdbl.db.actions.DbModification
 import de.ruegnerlukas.kdbl.db.actions.DbQuery
-import de.ruegnerlukas.kdbl.db.actions.DbUpdateReturnType
 import de.ruegnerlukas.kdbl.dsl.statements.CreateTableStatement
 import de.ruegnerlukas.kdbl.dsl.statements.DeleteBuilderEndStep
 import de.ruegnerlukas.kdbl.dsl.statements.DeleteStatement
@@ -83,8 +81,8 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param sql the sql-statement
 	 * @param placeholders the names of placeholders in the sql-string in the correct order
 	 */
-	fun startInsert(sql: String, placeholders: List<String>): DbInsertReturnType {
-		return DbInsertReturnType(this, sql, placeholders)
+	fun startInsert(sql: String, placeholders: List<String>): DbModification {
+		return DbModification(this, sql, placeholders)
 	}
 
 
@@ -92,7 +90,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * Start an INSERT-statement
 	 * @param builder a function providing the "insert"-statement
 	 */
-	fun startInsert(builder: () -> SqlInsertStatement): DbInsertReturnType {
+	fun startInsert(builder: () -> SqlInsertStatement): DbModification {
 		val placeholders = mutableListOf<String>()
 		return when (val sql = builder()) {
 			is InsertStatement -> startInsert(codeGen.insert(sql).buildExtended(placeholders), placeholders)
@@ -106,7 +104,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param id the unique id of the statement. The statement is only converted into a string the first time and is then reused
 	 * @param builder a function providing the "insert"-statement
 	 */
-	fun startInsert(id: String, builder: () -> SqlInsertStatement): DbInsertReturnType {
+	fun startInsert(id: String, builder: () -> SqlInsertStatement): DbModification {
 		val placeholders = mutableListOf<String>()
 		return startInsert(
 			sqlStringCache.getOrPut(id) {
@@ -125,8 +123,8 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param sql the sql-statement
 	 * @param placeholders the names of placeholders in the sql-string in the correct order
 	 */
-	fun startUpdate(sql: String, placeholders: List<String>): DbUpdateReturnType {
-		return DbUpdateReturnType(this, sql, placeholders)
+	fun startUpdate(sql: String, placeholders: List<String>): DbModification {
+		return DbModification(this, sql, placeholders)
 	}
 
 
@@ -134,7 +132,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * Start an UPDATE-statement
 	 * @param builder a function providing the "update"-statement
 	 */
-	fun startUpdate(builder: () -> SqlUpdateStatement): DbUpdateReturnType {
+	fun startUpdate(builder: () -> SqlUpdateStatement): DbModification {
 		val placeholders = mutableListOf<String>()
 		return when (val sql = builder()) {
 			is UpdateStatement -> startUpdate(codeGen.update(sql).buildExtended(placeholders), placeholders)
@@ -148,7 +146,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param id the unique id of the statement. The statement is only converted into a string the first time and is then reused
 	 * @param builder a function providing the "update"-statement
 	 */
-	fun startUpdate(id: String, builder: () -> SqlUpdateStatement): DbUpdateReturnType {
+	fun startUpdate(id: String, builder: () -> SqlUpdateStatement): DbModification {
 		val placeholders = mutableListOf<String>()
 		return startUpdate(
 			sqlStringCache.getOrPut(id) {
@@ -167,8 +165,8 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param sql the sql-statement
 	 * @param placeholders the names of placeholders in the sql-string in the correct order
 	 */
-	fun startDelete(sql: String, placeholders: List<String>): DbDeleteReturnType {
-		return DbDeleteReturnType(this, sql, placeholders)
+	fun startDelete(sql: String, placeholders: List<String>): DbModification {
+		return DbModification(this, sql, placeholders)
 	}
 
 
@@ -176,7 +174,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * Start a DELETE-statement
 	 * @param builder a function providing the "delete"-statement
 	 */
-	fun startDelete(builder: () -> SqlDeleteStatement): DbDeleteReturnType {
+	fun startDelete(builder: () -> SqlDeleteStatement): DbModification {
 		val placeholders = mutableListOf<String>()
 		return when (val sql = builder()) {
 			is DeleteStatement -> startDelete(codeGen.delete(sql).buildExtended(placeholders), placeholders)
@@ -190,7 +188,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param id the unique id of the statement. The statement is only converted into a string the first time and is then reused
 	 * @param builder a function providing the "delete"-statement
 	 */
-	fun startDelete(id: String, builder: () -> SqlDeleteStatement): DbDeleteReturnType {
+	fun startDelete(id: String, builder: () -> SqlDeleteStatement): DbModification {
 		val placeholders = mutableListOf<String>()
 		return startDelete(
 			sqlStringCache.getOrPut(id) {
