@@ -25,9 +25,13 @@ import de.ruegnerlukas.kdbl.utils.SqlDate
 import de.ruegnerlukas.kdbl.utils.SqlTime
 
 
-class ModificationsMap() {
+class ModificationsMap {
 
 	private val modifications = mutableListOf<UpdateElement<*>>()
+
+	operator fun <T> set(key: Column<T>, value: Expr<T>) {
+		modifications.add(UpdateElement(key, value))
+	}
 
 	operator fun <T> set(key: Column<T>, value: T?) {
 		@Suppress("UNCHECKED_CAST")
