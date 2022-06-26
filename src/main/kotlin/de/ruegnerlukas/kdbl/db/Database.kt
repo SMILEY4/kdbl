@@ -31,7 +31,6 @@ import java.sql.Types
  */
 abstract class Database(private val codeGen: SQLCodeGenerator, private val cache: SqlCache = SqlCache()) {
 
-
 	/**
 	 * @return the store for reusable sql-strings and placeholders
 	 */
@@ -104,7 +103,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	fun startInsert(id: String, builder: () -> SqlInsertStatement): DbModification {
 		val statement = cache.getOrPut(id) {
 			val placeholders = mutableListOf<String>()
-			val sql = when(val v = builder()) {
+			val sql = when (val v = builder()) {
 				is InsertStatement -> codeGen.insert(v).buildExtended(placeholders)
 				is InsertBuilderEndStep -> codeGen.insert(v.build()).buildExtended(placeholders)
 			}
@@ -123,7 +122,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	suspend fun <T> insertBatched(batchSize: Int, items: List<T>, builder: (batch: List<T>) -> SqlInsertStatement) {
 		startTransaction(true) { tdb ->
 			items.chunked(batchSize).forEach { batch ->
-				tdb.startInsert { builder(batch) }
+				tdb.startInsert { builder(batch) }.execute()
 			}
 		}
 	}
@@ -160,7 +159,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	fun startUpdate(id: String, builder: () -> SqlUpdateStatement): DbModification {
 		val statement = cache.getOrPut(id) {
 			val placeholders = mutableListOf<String>()
-			val sql = when(val v = builder()) {
+			val sql = when (val v = builder()) {
 				is UpdateStatement -> codeGen.update(v).buildExtended(placeholders)
 				is UpdateBuilderEndStep -> codeGen.update(v.build()).buildExtended(placeholders)
 			}
@@ -201,7 +200,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	fun startDelete(id: String, builder: () -> SqlDeleteStatement): DbModification {
 		val statement = cache.getOrPut(id) {
 			val placeholders = mutableListOf<String>()
-			val sql = when(val v = builder()) {
+			val sql = when (val v = builder()) {
 				is DeleteStatement -> codeGen.delete(v).buildExtended(placeholders)
 				is DeleteBuilderEndStep -> codeGen.delete(v.build()).buildExtended(placeholders)
 			}
@@ -242,7 +241,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	fun startQuery(id: String, builder: () -> SqlQueryStatement<*>): DbQuery {
 		val statement = cache.getOrPut(id) {
 			val placeholders = mutableListOf<String>()
-			val sql = when(val v = builder()) {
+			val sql = when (val v = builder()) {
 				is QueryStatement<*> -> codeGen.query(v).buildExtended(placeholders)
 				is QueryBuilderEndStep<*> -> codeGen.query(v.build<Any>()).buildExtended(placeholders)
 			}
@@ -352,14 +351,14 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	private fun setParameters(statement: PreparedStatement, params: List<Any?>) {
 		params.forEachIndexed { index, param ->
 			when (param) {
-				is Short -> statement.setShort(index+1, param)
-				is Int -> statement.setInt(index+1, param)
-				is Long -> statement.setLong(index+1, param)
-				is Float -> statement.setFloat(index+1, param)
-				is Double -> statement.setDouble(index+1, param)
-				is Boolean -> statement.setBoolean(index+1, param)
-				is String -> statement.setString(index+1, param)
-				null -> statement.setNull(index+1, Types.NULL)
+				is Short -> statement.setShort(index + 1, param)
+				is Int -> statement.setInt(index + 1, param)
+				is Long -> statement.setLong(index + 1, param)
+				is Float -> statement.setFloat(index + 1, param)
+				is Double -> statement.setDouble(index + 1, param)
+				is Boolean -> statement.setBoolean(index + 1, param)
+				is String -> statement.setString(index + 1, param)
+				null -> statement.setNull(index + 1, Types.NULL)
 				else -> throw Exception("Unknown parameter-type: '$param'")
 			}
 		}

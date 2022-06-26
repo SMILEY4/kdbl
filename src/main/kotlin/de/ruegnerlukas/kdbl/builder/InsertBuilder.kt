@@ -1,9 +1,9 @@
 package de.ruegnerlukas.kdbl.builder
 
 import de.ruegnerlukas.kdbl.dsl.expression.Column
-import de.ruegnerlukas.kdbl.dsl.expression.ReturnAllColumns
-import de.ruegnerlukas.kdbl.dsl.expression.ReturnColumns
-import de.ruegnerlukas.kdbl.dsl.expression.Returning
+import de.ruegnerlukas.kdbl.dsl.statements.ReturnAllColumns
+import de.ruegnerlukas.kdbl.dsl.statements.ReturnColumns
+import de.ruegnerlukas.kdbl.dsl.statements.Returning
 import de.ruegnerlukas.kdbl.dsl.expression.Table
 import de.ruegnerlukas.kdbl.dsl.statements.InsertBuilderEndStep
 import de.ruegnerlukas.kdbl.dsl.statements.InsertContent

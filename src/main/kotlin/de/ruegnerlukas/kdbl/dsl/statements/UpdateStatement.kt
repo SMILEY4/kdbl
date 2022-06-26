@@ -9,7 +9,6 @@ import de.ruegnerlukas.kdbl.dsl.expression.FloatLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.IntLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.LongLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.NullLiteralExpr
-import de.ruegnerlukas.kdbl.dsl.expression.Returning
 import de.ruegnerlukas.kdbl.dsl.expression.ShortLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.StringLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.Table

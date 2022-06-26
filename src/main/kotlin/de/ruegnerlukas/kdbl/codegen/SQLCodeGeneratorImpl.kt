@@ -69,9 +69,6 @@ import de.ruegnerlukas.kdbl.dsl.expression.OrExpr
 import de.ruegnerlukas.kdbl.dsl.expression.PlaceholderLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.PrimaryKeyProperty
 import de.ruegnerlukas.kdbl.dsl.expression.RefAction
-import de.ruegnerlukas.kdbl.dsl.expression.ReturnAllColumns
-import de.ruegnerlukas.kdbl.dsl.expression.ReturnColumns
-import de.ruegnerlukas.kdbl.dsl.expression.Returning
 import de.ruegnerlukas.kdbl.dsl.expression.ShortLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.StringLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.SubExpr
@@ -95,6 +92,9 @@ import de.ruegnerlukas.kdbl.dsl.statements.LimitStatement
 import de.ruegnerlukas.kdbl.dsl.statements.OrderByStatement
 import de.ruegnerlukas.kdbl.dsl.statements.QueryBuilderEndStep
 import de.ruegnerlukas.kdbl.dsl.statements.QueryStatement
+import de.ruegnerlukas.kdbl.dsl.statements.ReturnAllColumns
+import de.ruegnerlukas.kdbl.dsl.statements.ReturnColumns
+import de.ruegnerlukas.kdbl.dsl.statements.Returning
 import de.ruegnerlukas.kdbl.dsl.statements.SelectAllElement
 import de.ruegnerlukas.kdbl.dsl.statements.SelectAllFromTableElement
 import de.ruegnerlukas.kdbl.dsl.statements.SelectElement
@@ -111,7 +111,7 @@ class SQLCodeGeneratorImpl(private val dialect: SQLDialect) : SQLCodeGenerator {
 			.add("SET")
 			.add(CsvListToken(update.set.map {
 				ListToken()
-					.add(columnIdentifier(it.column))
+					.add(it.column.columnName)
 					.add("=")
 					.add(expression(it.value))
 			}))

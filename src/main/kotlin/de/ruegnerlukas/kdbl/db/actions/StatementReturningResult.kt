@@ -99,7 +99,7 @@ class StatementReturningResult(private val resultSet: ResultSet) {
 	 * throw a [NoSuchElementException] if the amount of returned rows is less or more than one
 	 */
 	fun checkOne() {
-		if (!isMultiple()) {
+		if (!isOne()) {
 			throw NoSuchElementException()
 		}
 	}
