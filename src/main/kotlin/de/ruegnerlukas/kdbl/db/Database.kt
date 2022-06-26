@@ -265,7 +265,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 * @param block the block with the sql-operations. A [Database] is provided that executes all its operations as part of the transaction
 	 */
 	suspend fun startTransaction(withRollback: Boolean, block: suspend (db: Database) -> Unit) {
-		getConnection().use {
+		getConnection {
 			try {
 				val transaction = SingleConnectionDatabase(it, codeGen)
 				it.autoCommit = false
@@ -292,7 +292,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 */
 	suspend fun execute(sql: String, params: List<Any?>) {
 		withContext(Dispatchers.IO) {
-			getConnection().use {
+			getConnection {
 				val statement = it.prepareStatement(sql)
 				setParameters(statement, params)
 				statement.execute()
@@ -309,7 +309,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 */
 	suspend fun executeReturning(sql: String, params: List<Any?>): ResultSet {
 		return withContext(Dispatchers.IO) {
-			getConnection().use {
+			getConnection {
 				val statement = it.prepareStatement(sql)
 				setParameters(statement, params)
 				statement.execute()
@@ -327,7 +327,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 */
 	suspend fun executeQuery(sql: String, params: List<Any?>): ResultSet {
 		return withContext(Dispatchers.IO) {
-			getConnection().use {
+			getConnection {
 				val statement = it.prepareStatement(sql)
 				setParameters(statement, params)
 				statement.executeQuery()
@@ -344,7 +344,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	 */
 	suspend fun executeUpdate(sql: String, params: List<Any?>): Int {
 		return withContext(Dispatchers.IO) {
-			getConnection().use {
+			getConnection {
 				val statement = it.prepareStatement(sql)
 				setParameters(statement, params)
 				statement.executeUpdate()
@@ -378,6 +378,6 @@ abstract class Database(private val codeGen: SQLCodeGenerator, sqlStringCache: M
 	/**
 	 * @return a (new) connection
 	 */
-	abstract fun getConnection(): Connection
+	abstract suspend fun <R> getConnection(block: suspend (connection: Connection) -> R): R
 
 }

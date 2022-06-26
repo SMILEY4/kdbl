@@ -15,6 +15,8 @@ class SingleConnectionDatabase(
 	sqlStringCache: Map<String, String> = mapOf()
 ) : Database(codeGen, sqlStringCache) {
 
-	override fun getConnection() = connection
+	override suspend fun <R> getConnection(block: suspend (connection: Connection) -> R): R {
+		return block(connection)
+	}
 
 }

@@ -1,6 +1,7 @@
 package de.ruegnerlukas.kdbl.db
 
 import de.ruegnerlukas.kdbl.codegen.SQLCodeGenerator
+import java.sql.Connection
 
 /**
  * A database using the given [ConnectionPool]
@@ -9,6 +10,8 @@ import de.ruegnerlukas.kdbl.codegen.SQLCodeGenerator
  */
 class PooledDatabase(private val connectionPool: ConnectionPool, codeGen: SQLCodeGenerator) : Database(codeGen) {
 
-	override fun getConnection() = connectionPool.getConnection()
+	override suspend fun <R> getConnection(block: suspend (connection: Connection) -> R): R {
+		return connectionPool.getConnection().use { block(it) }
+	}
 
 }
