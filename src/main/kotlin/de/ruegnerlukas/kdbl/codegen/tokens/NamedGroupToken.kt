@@ -9,5 +9,8 @@ class NamedGroupToken(private val name: String, private val token: Token) : Toke
 		return "$name(${token.buildString()})"
 	}
 
-	override fun buildExtended(placeholders: MutableList<String>) = buildString()
+	override fun buildExtended(placeholders: MutableList<String>): String {
+		return "$name(${token.buildExtended(placeholders)})"
+	}
+
 }

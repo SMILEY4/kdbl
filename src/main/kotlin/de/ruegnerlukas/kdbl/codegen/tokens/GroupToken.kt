@@ -12,5 +12,10 @@ class GroupToken(private val token: Token) : Token() {
 		}
 	}
 
-	override fun buildExtended(placeholders: MutableList<String>) = buildString()
+	override fun buildExtended(placeholders: MutableList<String>): String {
+		return when(token) {
+			is StringToken -> token.buildExtended(placeholders)
+			else -> "(${token.buildExtended(placeholders)})"
+		}
+	}
 }
