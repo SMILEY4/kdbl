@@ -1,6 +1,7 @@
 package de.ruegnerlukas.kdbl.db.actions
 
 import de.ruegnerlukas.kdbl.db.Database
+import de.ruegnerlukas.kdbl.utils.toMap
 
 
 class DbModification(
@@ -31,8 +32,10 @@ class DbModification(
 	 * Execute the "INSERT", "UPDATE" or "DELETE"-statement and return the result of a "RETURNING"-clause
 	 */
 	suspend fun executeReturning(): StatementReturningResult {
-		val resultSet = db.executeReturning(sql, getParameterValues())
-		return StatementReturningResult(resultSet)
+		val result = db.executeReturning(sql, getParameterValues()) { result ->
+			result.toMap()
+		}
+		return StatementReturningResult(result)
 	}
 
 }

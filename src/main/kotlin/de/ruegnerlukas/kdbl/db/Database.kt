@@ -120,11 +120,11 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	 * @param builder a function providing the "insert"-statement for a given batch
 	 */
 	suspend fun <T> insertBatched(batchSize: Int, items: List<T>, builder: (batch: List<T>) -> SqlInsertStatement) {
-		startTransaction(true) { tdb ->
-			items.chunked(batchSize).forEach { batch ->
-				tdb.startInsert { builder(batch) }.execute()
-			}
+//		startTransaction(true) { tdb ->
+		items.chunked(batchSize).forEach { batch ->
+			startInsert { builder(batch) }.execute()
 		}
+//		}
 	}
 
 
@@ -282,8 +282,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	 */
 	suspend fun execute(sql: String, params: List<Any?>) {
 		withContext(Dispatchers.IO) {
-			getConnection {
-				val statement = it.prepareStatement(sql)
+			getStatement(sql) { statement ->
 				setParameters(statement, params)
 				statement.execute()
 			}
@@ -292,14 +291,14 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 
 
 	/**
-	 * Execute the sql-operation and expect result (e.g. an "insert"-statement with a "returning"-clause)
+	 * Execute the sql-operation and expect result (e.g. a "select"-statement or an "insert"-statement with a "returning"-clause)
 	 * @param sql the sql-string
 	 * @param params the list of parameters in the correct order
 	 * @return the result of the operation
 	 */
 	suspend fun executeReturning(sql: String, params: List<Any?>): ResultSet {
 		return withContext(Dispatchers.IO) {
-			getConnection {
+			getConnection { // TODO
 				val statement = it.prepareStatement(sql)
 				setParameters(statement, params)
 				statement.execute()
@@ -310,17 +309,17 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 
 
 	/**
-	 * Execute the sql-query (i.e. a "SELECT"-Statement)
+	 * Execute the sql-operation and expect result (e.g. a "select"-statement or an "insert"-statement with a "returning"-clause)
 	 * @param sql the sql-string
 	 * @param params the list of parameters in the correct order
-	 * @return the result of the query
+	 * @return the result of the operation
 	 */
-	suspend fun executeQuery(sql: String, params: List<Any?>): ResultSet {
+	suspend fun <R> executeReturning(sql: String, params: List<Any?>, consumer: (resultSet: ResultSet) -> R): R {
 		return withContext(Dispatchers.IO) {
-			getConnection {
-				val statement = it.prepareStatement(sql)
+			getStatement(sql) { statement -> // TODO
 				setParameters(statement, params)
-				statement.executeQuery()
+				statement.execute()
+				consumer(statement.resultSet)
 			}
 		}
 	}
@@ -334,8 +333,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	 */
 	suspend fun executeUpdate(sql: String, params: List<Any?>): Int {
 		return withContext(Dispatchers.IO) {
-			getConnection {
-				val statement = it.prepareStatement(sql)
+			getStatement(sql) { statement ->
 				setParameters(statement, params)
 				statement.executeUpdate()
 			}
@@ -360,6 +358,16 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 				is String -> statement.setString(index + 1, param)
 				null -> statement.setNull(index + 1, Types.NULL)
 				else -> throw Exception("Unknown parameter-type: '$param'")
+			}
+		}
+	}
+
+
+	private suspend fun <R> getStatement(sql: String, block: suspend (statement: PreparedStatement) -> R): R {
+		return getConnection { connection ->
+			val statement = connection.prepareStatement(sql)
+			statement.use {
+				block(statement)
 			}
 		}
 	}

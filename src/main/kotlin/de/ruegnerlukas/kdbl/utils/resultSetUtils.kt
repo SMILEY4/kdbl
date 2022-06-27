@@ -34,3 +34,19 @@ fun ResultSet.getFirst(): ResultSet? {
 		return null
 	}
 }
+
+
+/**
+ * Returns this result-set as a list of maps
+ */
+fun ResultSet.toMap(): List<Map<String, Any?>> {
+	return map { current ->
+		val columnMap = mutableMapOf<String, Any?>()
+		for (index in 1..current.metaData.columnCount) {
+			val name = current.metaData.getColumnLabel(index)
+			val value = current.getObject(index).let { if(current.wasNull()) null else it }
+			columnMap[name] = value
+		}
+		columnMap
+	}
+}

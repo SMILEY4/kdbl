@@ -1,6 +1,7 @@
 package de.ruegnerlukas.kdbl.db.actions
 
 import de.ruegnerlukas.kdbl.db.Database
+import de.ruegnerlukas.kdbl.utils.toMap
 
 
 class DbQuery(
@@ -16,8 +17,10 @@ class DbQuery(
 	 * Execute the "SELECT"-statement
 	 */
 	suspend fun execute(): StatementReturningResult {
-		val resultSet = db.executeReturning(sql, getParameterValues())
-		return StatementReturningResult(resultSet)
+		val result = db.executeReturning(sql, getParameterValues()) { result ->
+			result.toMap()
+		}
+		return StatementReturningResult(result)
 	}
 
 }
