@@ -298,8 +298,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	 */
 	suspend fun executeReturning(sql: String, params: List<Any?>): ResultSet {
 		return withContext(Dispatchers.IO) {
-			getConnection { // TODO
-				val statement = it.prepareStatement(sql)
+			getStatement(sql) { statement ->
 				setParameters(statement, params)
 				statement.execute()
 				statement.resultSet
@@ -316,7 +315,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 	 */
 	suspend fun <R> executeReturning(sql: String, params: List<Any?>, consumer: (resultSet: ResultSet) -> R): R {
 		return withContext(Dispatchers.IO) {
-			getStatement(sql) { statement -> // TODO
+			getStatement(sql) { statement ->
 				setParameters(statement, params)
 				statement.execute()
 				consumer(statement.resultSet)

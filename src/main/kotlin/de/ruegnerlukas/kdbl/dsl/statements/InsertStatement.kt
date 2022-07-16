@@ -8,6 +8,7 @@ import de.ruegnerlukas.kdbl.dsl.expression.FloatLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.IntLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.LiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.LongLiteralExpr
+import de.ruegnerlukas.kdbl.dsl.expression.NullLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.ShortLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.StringLiteralExpr
 import de.ruegnerlukas.kdbl.dsl.expression.Table
@@ -59,15 +60,15 @@ class InsertItem {
 
 	private val values: MutableMap<Column<*>, LiteralExpr<*>> = mutableMapOf()
 
-	fun set(column: Column<Boolean>, value: Boolean) = this.apply { values[column] = BooleanLiteralExpr(value) }
-	fun set(column: Column<Short>, value: Short) = this.apply { values[column] = ShortLiteralExpr(value) }
-	fun set(column: Column<Int>, value: Int) = this.apply { values[column] = IntLiteralExpr(value) }
-	fun set(column: Column<Long>, value: Long) = this.apply { values[column] = LongLiteralExpr(value) }
-	fun set(column: Column<Float>, value: Float) = this.apply { values[column] = FloatLiteralExpr(value) }
-	fun set(column: Column<Double>, value: Double) = this.apply { values[column] = DoubleLiteralExpr(value) }
-	fun set(column: Column<String>, value: String) = this.apply { values[column] = StringLiteralExpr(value) }
-	fun set(column: Column<SqlDate>, value: SqlDate) = this.apply { values[column] = DateLiteralExpr(value) }
-	fun set(column: Column<SqlTime>, value: SqlTime) = this.apply { values[column] = TimeLiteralExpr(value) }
+	fun set(column: Column<Boolean>, value: Boolean?) = this.apply { values[column] = value.let { if(value!=null) BooleanLiteralExpr(value) else NullLiteralExpr() } }
+	fun set(column: Column<Short>, value: Short?) = this.apply { values[column] = value.let { if(value!=null) ShortLiteralExpr(value) else NullLiteralExpr() } }
+	fun set(column: Column<Int>, value: Int?) = this.apply { values[column] = value.let { if(value!=null) IntLiteralExpr(value) else NullLiteralExpr() } }
+	fun set(column: Column<Long>, value: Long?) = this.apply { values[column] = value.let { if(value!=null) LongLiteralExpr(value) else NullLiteralExpr() } }
+	fun set(column: Column<Float>, value: Float?) = this.apply { values[column] = value.let { if(value!=null) FloatLiteralExpr(value) else NullLiteralExpr() } }
+	fun set(column: Column<Double>, value: Double?) = this.apply { values[column] = value.let { if(value!=null) DoubleLiteralExpr(value) else NullLiteralExpr() } }
+	fun set(column: Column<String>, value: String?) = this.apply { values[column] = value.let { if(value!=null) StringLiteralExpr(value) else NullLiteralExpr() } }
+	fun set(column: Column<SqlDate>, value: SqlDate?) = this.apply { values[column] = value.let { if(value!=null) DateLiteralExpr(value) else NullLiteralExpr() } }
+	fun set(column: Column<SqlTime>, value: SqlTime?) = this.apply { values[column] = value.let { if(value!=null) TimeLiteralExpr(value) else NullLiteralExpr() } }
 
 	@JvmName("set_boolean") fun set(column: Column<Boolean>, value: LiteralExpr<Boolean>) = this.apply { values[column] = value }
 	@JvmName("set_short") fun set(column: Column<Short>, value: LiteralExpr<Short>) = this.apply { values[column] = value }
