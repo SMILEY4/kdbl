@@ -115,16 +115,44 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 
 	/**
 	 * INSERT-statement in batches
+	 * @param transaction whether to insert all batches in a new transaction
+	 * @param batchSize the (max) size of one batch
+	 * @param items the items to insert
+	 * @param builder a function providing the "insert"-statement for a given batch
+	 */
+	suspend fun <T> insertBatched(transaction: Boolean, batchSize: Int, items: List<T>, builder: (batch: List<T>) -> SqlInsertStatement) {
+		return when (transaction) {
+			true -> insertBatchedTransaction(batchSize, items, builder)
+			false -> insertBatched(batchSize, items, builder)
+		}
+	}
+
+
+	/**
+	 * INSERT-statement in batches
 	 * @param batchSize the (max) size of one batch
 	 * @param items the items to insert
 	 * @param builder a function providing the "insert"-statement for a given batch
 	 */
 	suspend fun <T> insertBatched(batchSize: Int, items: List<T>, builder: (batch: List<T>) -> SqlInsertStatement) {
-//		startTransaction(true) { tdb ->
 		items.chunked(batchSize).forEach { batch ->
 			startInsert { builder(batch) }.execute()
 		}
-//		}
+	}
+
+
+	/**
+	 * INSERT-statement in batches in a new transaction
+	 * @param batchSize the (max) size of one batch
+	 * @param items the items to insert
+	 * @param builder a function providing the "insert"-statement for a given batch
+	 */
+	suspend fun <T> insertBatchedTransaction(batchSize: Int, items: List<T>, builder: (batch: List<T>) -> SqlInsertStatement) {
+		startTransaction(true) { tdb ->
+			items.chunked(batchSize).forEach { batch ->
+				tdb.startInsert { builder(batch) }.execute()
+			}
+		}
 	}
 
 
