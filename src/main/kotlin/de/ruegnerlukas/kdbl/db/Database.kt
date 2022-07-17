@@ -296,6 +296,7 @@ abstract class Database(private val codeGen: SQLCodeGenerator, private val cache
 				if (withRollback) {
 					it.rollback()
 				}
+				throw e
 			} finally {
 				it.autoCommit = true
 			}
