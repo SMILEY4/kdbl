@@ -28,7 +28,7 @@ class UpdateTest {
 			.returning(Movie.title, Movie.releaseCountry)
 		assertQuery(
 			query,
-			"UPDATE movie SET movie.mov_title = 'New Title', movie.mov_rel_country = 'Somewhere' WHERE movie.mov_id = 42 RETURNING movie.mov_title, movie.mov_rel_country"
+			"UPDATE movie SET mov_title = 'New Title', mov_rel_country = 'Somewhere' WHERE movie.mov_id = 42 RETURNING movie.mov_title, movie.mov_rel_country"
 		)
 	}
 
@@ -52,7 +52,7 @@ class UpdateTest {
 			)
 		assertQuery(
 			query,
-			"UPDATE sale_mast SET sale_mast.sale_amt = result.sum FROM (SELECT (SUM(logs.marks)) AS sum FROM logs) AS result WHERE sale_mast.sale_id = 32"
+			"UPDATE sale_mast SET sale_amt = result.sum FROM (SELECT (SUM(logs.marks)) AS sum FROM logs) AS result WHERE sale_mast.sale_id = 32"
 		)
 	}
 

@@ -26,6 +26,7 @@ sealed interface SqlInsertStatement
  * An "INSERT-Statement
  */
 class InsertStatement(
+	val updateExisting: Boolean,
 	val target: Table,
 	val fields: List<Column<*>>,
 	val content: InsertContent,

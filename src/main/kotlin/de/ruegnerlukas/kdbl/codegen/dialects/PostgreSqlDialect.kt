@@ -1,6 +1,8 @@
 package de.ruegnerlukas.kdbl.codegen.dialects
 
+import de.ruegnerlukas.kdbl.codegen.tokens.CsvListToken
 import de.ruegnerlukas.kdbl.codegen.tokens.ListToken
+import de.ruegnerlukas.kdbl.codegen.tokens.StringToken
 import de.ruegnerlukas.kdbl.codegen.tokens.Token
 import de.ruegnerlukas.kdbl.dsl.expression.DataType
 import de.ruegnerlukas.kdbl.dsl.expression.FunctionType
@@ -109,6 +111,16 @@ class PostgreSqlDialect : BaseSqlDialect() {
 		FunctionType.AGG_TOTAL -> "SUM"
 		FunctionType.AGG_CONCAT -> "STRING_AGG"
 		else -> null
+	}
+
+	override fun upsertClause(columns: List<String>): Token {
+		return ListToken()
+			.add("ON CONFLICT TO UPDATE SET")
+			.add(
+				CsvListToken(
+					columns.map { StringToken("$it = EXCLUDED.$it") }
+				)
+			)
 	}
 
 }

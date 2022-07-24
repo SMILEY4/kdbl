@@ -1,9 +1,6 @@
 package de.ruegnerlukas.kdbl.builder
 
 import de.ruegnerlukas.kdbl.dsl.expression.Column
-import de.ruegnerlukas.kdbl.dsl.statements.ReturnAllColumns
-import de.ruegnerlukas.kdbl.dsl.statements.ReturnColumns
-import de.ruegnerlukas.kdbl.dsl.statements.Returning
 import de.ruegnerlukas.kdbl.dsl.expression.Table
 import de.ruegnerlukas.kdbl.dsl.statements.InsertBuilderEndStep
 import de.ruegnerlukas.kdbl.dsl.statements.InsertContent
@@ -12,6 +9,9 @@ import de.ruegnerlukas.kdbl.dsl.statements.InsertStatement
 import de.ruegnerlukas.kdbl.dsl.statements.ItemsInsertContent
 import de.ruegnerlukas.kdbl.dsl.statements.QueryBuilderEndStep
 import de.ruegnerlukas.kdbl.dsl.statements.QueryStatement
+import de.ruegnerlukas.kdbl.dsl.statements.ReturnAllColumns
+import de.ruegnerlukas.kdbl.dsl.statements.ReturnColumns
+import de.ruegnerlukas.kdbl.dsl.statements.Returning
 
 /**
  * Builder(-chain) for an [InsertStatement]
@@ -36,18 +36,27 @@ object InsertBuilder {
 		/**
 		 * insert items into a table
 		 */
-		fun insert() = PostInsertBuilder()
+		fun insert() = PostInsertBuilder(false)
+
+
+		/**
+		 * insert items into a table. Replace/update if item already exists
+		 */
+		fun insertOrUpdate() = PostInsertBuilder(true)
+
 	}
 
 
 	/**
 	 * Builder-step with options for after the "insert"-keyword
 	 */
-	class PostInsertBuilder {
+	class PostInsertBuilder(
+		private val updateExisting: Boolean
+	) {
 		/**
 		 * Insert the items into the given table
 		 */
-		fun into(table: Table) = PostIntoBuilder(table)
+		fun into(table: Table) = PostIntoBuilder(updateExisting, table)
 	}
 
 
@@ -55,25 +64,26 @@ object InsertBuilder {
 	 * Builder-step with options for after the "into"-statement
 	 */
 	class PostIntoBuilder(
+		private val updateExisting: Boolean,
 		private val target: Table
 	) {
 
 		/**
 		 * Insert values into the given columns
 		 */
-		fun columns(columns: List<Column<*>>) = PostFieldsBuilder(target, columns)
+		fun columns(columns: List<Column<*>>) = PostFieldsBuilder(updateExisting, target, columns)
 
 
 		/**
 		 * Insert values into the given columns
 		 */
-		fun columns(vararg columns: Column<*>) = PostFieldsBuilder(target, columns.toList())
+		fun columns(vararg columns: Column<*>) = PostFieldsBuilder(updateExisting, target, columns.toList())
 
 
 		/**
 		 * Insert values into all columns. Only use when inserting via a sub-query
 		 */
-		fun allColumns() = PostFieldsBuilder(target, listOf())
+		fun allColumns() = PostFieldsBuilder(updateExisting, target, listOf())
 
 	}
 
@@ -82,6 +92,7 @@ object InsertBuilder {
 	 * Builder-step with options for after specifying the columns
 	 */
 	class PostFieldsBuilder(
+		private val updateExisting: Boolean,
 		private val target: Table,
 		private val fields: List<Column<*>>
 	) {
@@ -89,7 +100,7 @@ object InsertBuilder {
 		/**
 		 * Insert the result of the given sub-query
 		 */
-		fun query(query: QueryStatement<*>) = PostContentBuilder(target, fields, query)
+		fun query(query: QueryStatement<*>) = PostContentBuilder(updateExisting, target, fields, query)
 
 
 		/**
@@ -101,7 +112,7 @@ object InsertBuilder {
 		/**
 		 * Insert the given items
 		 */
-		fun items(items: List<InsertItem>) = PostContentBuilder(target, fields, ItemsInsertContent(items))
+		fun items(items: List<InsertItem>) = PostContentBuilder(updateExisting, target, fields, ItemsInsertContent(items))
 
 
 		/**
@@ -116,6 +127,7 @@ object InsertBuilder {
 	 * Builder-step with options for after the "values"-statement
 	 */
 	class PostContentBuilder(
+		private val updateExisting: Boolean,
 		private val target: Table,
 		private val fields: List<Column<*>>,
 		private val content: InsertContent
@@ -125,6 +137,7 @@ object InsertBuilder {
 		 * Build the [InsertStatement] with the current data
 		 */
 		override fun build() = InsertStatement(
+			updateExisting = updateExisting,
 			target = target,
 			fields = fields,
 			content = content,
@@ -135,7 +148,7 @@ object InsertBuilder {
 		/**
 		 * Specify the columns of the inserted rows to return
 		 */
-		fun returning(columns: List<Column<*>>) = PostReturningBuilder(target, fields, content, ReturnColumns(columns))
+		fun returning(columns: List<Column<*>>) = PostReturningBuilder(updateExisting, target, fields, content, ReturnColumns(columns))
 
 
 		/**
@@ -147,7 +160,7 @@ object InsertBuilder {
 		/**
 		 * Return all columns of the inserted rows
 		 */
-		fun returningAll() = PostReturningBuilder(target, fields, content, ReturnAllColumns())
+		fun returningAll() = PostReturningBuilder(updateExisting, target, fields, content, ReturnAllColumns())
 
 	}
 
@@ -156,6 +169,7 @@ object InsertBuilder {
 	 * Builder-step with options for after the "returning"-statement
 	 */
 	class PostReturningBuilder(
+		private val updateExisting: Boolean,
 		private val target: Table,
 		private val fields: List<Column<*>>,
 		private val content: InsertContent,
@@ -166,6 +180,7 @@ object InsertBuilder {
 		 * Build the [InsertStatement] with the current data
 		 */
 		override fun build() = InsertStatement(
+			updateExisting = updateExisting,
 			target = target,
 			fields = fields,
 			content = content,

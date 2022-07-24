@@ -85,4 +85,10 @@ interface SQLDialect {
 	 */
 	fun function(type: FunctionType, args: List<Expr<*>>, exprBuilder: (e: Expr<*>) -> Token): Token?
 
+
+	/**
+	 * The clause to add to make an "insert" an "upsert"
+	 */
+	fun upsertClause(columns: List<String>): Token?
+
 }

@@ -153,6 +153,7 @@ class SQLCodeGeneratorImpl(private val dialect: SQLDialect) : SQLCodeGenerator {
 					else -> throwUnknown(insert.content)
 				}
 			)
+			.addIf(insert.updateExisting) { dialect.upsertClause(insert.fields.map { it.columnName }) ?: NoOpToken() }
 			.addIf(insert.returning != null) { returning(insert.returning!!) }
 	}
 

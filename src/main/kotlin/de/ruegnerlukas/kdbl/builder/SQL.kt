@@ -78,6 +78,12 @@ object SQL {
 	 */
 	fun insert() = insertBuilder.insert()
 
+	/**
+	 * insert items into a table. Replace/update if item already exists
+	 */
+	fun insertOrUpdate() = insertBuilder.insertOrUpdate()
+
+
 
 	/**
 	 * start building a single item to insert

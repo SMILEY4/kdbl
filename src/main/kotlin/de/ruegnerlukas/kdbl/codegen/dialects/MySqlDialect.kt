@@ -3,6 +3,7 @@ package de.ruegnerlukas.kdbl.codegen.dialects
 import de.ruegnerlukas.kdbl.codegen.tokens.CsvListToken
 import de.ruegnerlukas.kdbl.codegen.tokens.ListToken
 import de.ruegnerlukas.kdbl.codegen.tokens.NamedGroupToken
+import de.ruegnerlukas.kdbl.codegen.tokens.StringToken
 import de.ruegnerlukas.kdbl.codegen.tokens.Token
 import de.ruegnerlukas.kdbl.dsl.expression.DataType
 import de.ruegnerlukas.kdbl.dsl.expression.Expr
@@ -111,5 +112,15 @@ class MySqlDialect : BaseSqlDialect() {
 				.add(exprBuilder(args[0]))
 		)
 		else -> super.function(type, args, exprBuilder)
+	}
+
+	override fun upsertClause(columns: List<String>): Token {
+		return ListToken()
+			.add("ON DUPLICATE KEY UPDATE")
+			.add(
+				CsvListToken(
+					columns.map { StringToken("$it = @$it") }
+				)
+			)
 	}
 }
