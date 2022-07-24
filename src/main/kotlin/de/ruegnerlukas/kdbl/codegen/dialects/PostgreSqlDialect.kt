@@ -115,7 +115,7 @@ class PostgreSqlDialect : BaseSqlDialect() {
 
 	override fun upsertClause(columns: List<String>): Token {
 		return ListToken()
-			.add("ON CONFLICT TO UPDATE SET")
+			.add("ON CONFLICT DO UPDATE SET")
 			.add(
 				CsvListToken(
 					columns.map { StringToken("$it = EXCLUDED.$it") }
