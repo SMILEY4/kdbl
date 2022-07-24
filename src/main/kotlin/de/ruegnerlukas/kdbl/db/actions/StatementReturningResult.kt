@@ -125,6 +125,8 @@ class RowProvider(private val row: Map<String, Any?>) {
 		return when (val value = row.getOrDefault(columName, null)) {
 			null -> null
 			is Short -> value
+			is Int -> value.toShort()
+			is Long -> value.toShort()
 			else -> throw IllegalStateException("Value of requested column ($columName) is of unexpected type")
 		}
 	}
@@ -145,7 +147,9 @@ class RowProvider(private val row: Map<String, Any?>) {
 	fun getIntOrNull(columName: String): Int? {
 		return when (val value = row.getOrDefault(columName, null)) {
 			null -> null
+			is Short -> value.toInt()
 			is Int -> value
+			is Long -> value.toInt()
 			else -> throw IllegalStateException("Value of requested column ($columName) is of unexpected type")
 		}
 	}
@@ -166,6 +170,8 @@ class RowProvider(private val row: Map<String, Any?>) {
 	fun getLongOrNull(columName: String): Long? {
 		return when (val value = row.getOrDefault(columName, null)) {
 			null -> null
+			is Short -> value.toLong()
+			is Int -> value.toLong()
 			is Long -> value
 			else -> throw IllegalStateException("Value of requested column ($columName) is of unexpected type")
 		}
@@ -188,6 +194,7 @@ class RowProvider(private val row: Map<String, Any?>) {
 		return when (val value = row.getOrDefault(columName, null)) {
 			null -> null
 			is Float -> value
+			is Double -> value.toFloat()
 			else -> throw IllegalStateException("Value of requested column ($columName) is of unexpected type")
 		}
 	}
@@ -208,6 +215,7 @@ class RowProvider(private val row: Map<String, Any?>) {
 	fun getDoubleOrNull(columName: String): Double? {
 		return when (val value = row.getOrDefault(columName, null)) {
 			null -> null
+			is Float -> value.toDouble()
 			is Double -> value
 			else -> throw IllegalStateException("Value of requested column ($columName) is of unexpected type")
 		}
